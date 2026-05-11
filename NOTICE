@@ -1,0 +1,46 @@
+zh-thesis-risk-optimizer NOTICE
+
+This project is an independently written Chinese thesis AIGC-risk and
+similarity-risk optimization skill. It is not a simple copy of upstream
+projects. It reorganizes, extends, and adapts public design ideas with respect
+for the original authors and their licensing terms.
+
+Upstream inspiration and acknowledgements:
+
+1. houlaisan/deai-academic-zh
+   Link: https://github.com/houlaisan/deai-academic-zh
+   Observed license: MIT License, as displayed by the GitHub repository page
+   and its LICENSE file.
+   Inspired areas: scan-first workflow, iterative revision, report-driven
+   prioritization, chapter-level handling, high-risk paragraph prioritization,
+   and avoiding indiscriminate full-text rewriting.
+
+2. Yezery/aigc-down-skill
+   Link: https://github.com/Yezery/aigc-down-skill
+   Observed license: MIT License, as displayed by the GitHub repository page
+   and LICENSE.txt.
+   Inspired areas: AI writing pattern library, paragraph risk identification,
+   academic-style preservation, and quality review dimensions.
+
+3. zczjyq/de-AIGC-skill
+   Link: https://github.com/zczjyq/de-AIGC-skill
+   Observed license: no explicit LICENSE file or GitHub-detected license was
+   visible during review on 2026-05-11.
+   Inspired areas: length-preserving editing, long-context terminology
+   consistency, rolling paragraph summaries, and protection of Plain Text,
+   Word-style text, LaTeX commands, code, formulas, terms, abbreviations,
+   table names, field names, and technical identifiers.
+
+For upstream projects with explicit MIT licenses, this project preserves
+license awareness and attribution in this NOTICE. For upstream content without
+a clear license, this project only references public design ideas and does not
+copy substantial text or implementation.
+
+Academic integrity notice:
+
+This project is for text quality optimization, AIGC-risk diagnosis,
+similar-expression repair, citation integrity protection, and academic
+standard assistance. It does not promise any detection outcome and must not be
+used to fabricate data, fabricate experiments, fabricate citations, alter
+conclusions, remove necessary citations, or damage technical terms, formulas,
+code, interfaces, table names, field names, or parameters.
