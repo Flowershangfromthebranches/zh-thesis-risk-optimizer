@@ -16,6 +16,12 @@ Strategy:
 - Add scope, boundary, or analytical role already present in the thesis.
 - Keep citation if the definition comes from a source.
 
+Labels:
+
+- `查重-定义重复`
+- `查重-概念解释冗余`
+- `保护-经典定义` when the definition should not be freely rewritten.
+
 ## Risk Type 2: Textbook-Like Explanation
 
 Symptoms:
@@ -28,6 +34,11 @@ Strategy:
 - Compress general background.
 - Keep only concepts needed for the following method or analysis.
 - Connect explanation to dataset, method, system, chapter problem, or research question.
+
+Labels:
+
+- `查重-教材式表述`
+- `查重-背景套话`
 
 ## Risk Type 3: Generic Background
 
@@ -42,6 +53,11 @@ Strategy:
 - Move from macro background to the local problem.
 - Delete repeated motivational sentences.
 
+Labels:
+
+- `查重-背景套话`
+- `AI-宣传式表达`
+
 ## Risk Type 4: Source-Close Expression
 
 Symptoms:
@@ -54,6 +70,11 @@ Strategy:
 - Rebuild the argument order.
 - Change the paragraph function: definition -> application, source comparison -> limitation, background -> research gap.
 - Preserve citation boundaries.
+
+Labels:
+
+- `查重-相似源过近`
+- `查重-来源边界不清` when attribution is weak.
 
 ## Risk Type 5: Citation Boundary Risk
 
@@ -68,6 +89,12 @@ Strategy:
 - If the citation is missing, mark "建议补充来源".
 - Separate the author's own analysis from cited claims.
 
+Labels:
+
+- `查重-引用转述不足`
+- `查重-来源边界不清`
+- `保护-必要引用`
+
 ## Risk Type 6: Literature Review Stack
 
 Symptoms:
@@ -80,6 +107,43 @@ Strategy:
 - Group sources by method, object, data, or conclusion.
 - Keep author/source identities visible.
 - Add comparison words only when supported by the source.
+
+Labels:
+
+- `查重-综述堆叠`
+- `查重-引用转述不足`
+
+## Risk Type 7: No-Edit Similarity Zone
+
+Symptoms:
+
+- Text is a law, standard, policy clause, classic definition, formula, report excerpt, or required direct quotation.
+- Similarity may be high because the wording is intentionally fixed.
+
+Strategy:
+
+- Preserve the original text.
+- Mark the reason.
+- Ask for human confirmation before any change.
+- Only revise the explanatory prose before and after the protected material.
+
+Labels:
+
+- `保护-法规标准原文`
+- `保护-经典定义`
+- `保护-必要引用`
+
+## Scoring Signals
+
+When running similarity-risk scoring, treat these signals as heuristic features:
+
+- Definition repetition.
+- Textbook-like background expression.
+- Source-close wording.
+- Citation-heavy but under-paraphrased text.
+- Repeated common concept explanation.
+- Legal, standard, and classic definition zones that should be protected.
+- Dense professional terminology that should not be misread as a rewrite target.
 
 ## Mode Selection
 

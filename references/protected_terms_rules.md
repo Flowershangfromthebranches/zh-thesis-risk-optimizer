@@ -12,6 +12,29 @@ Build a protected list before revision. When uncertain, preserve the item and ma
 - Database names, table names, field names, indexes, enum values, and constants.
 - Figure names, table names, captions, labels, and cross-references.
 - Experimental values, device names, thresholds, datasets, and metrics.
+- Laws, standards, policies, classic definitions, and required direct quotations.
+- Detection report text supplied for diagnosis.
+
+## Protection Labels
+
+Use protection labels during sentence-level diagnosis:
+
+- `保护-必要引用`
+- `保护-公式`
+- `保护-代码`
+- `保护-接口路径`
+- `保护-数据库表名`
+- `保护-字段名`
+- `保护-实验参数`
+- `保护-法规标准原文`
+- `保护-经典定义`
+- `保护-参考文献条目`
+- `保护-图表编号`
+- `保护-模型名称`
+- `保护-算法名称`
+- `保护-LaTeX命令`
+
+Protection labels override rewrite pressure. If a sentence has both risk labels and protection labels, lower the rewrite intensity or restrict editing to surrounding explanatory prose.
 
 ## Plain Text
 
@@ -52,6 +75,15 @@ Do not rename:
 - Configuration values.
 
 If prose around code is unclear, revise explanation only.
+
+## Safe No-Edit Escalation
+
+If a protected item appears inside a risky sentence:
+
+1. Keep the protected item unchanged.
+2. Mark the reason.
+3. Rewrite only non-protected prose around it.
+4. If the protected item itself seems wrong, ask for human confirmation instead of editing.
 
 ## Term Consistency Table
 

@@ -12,6 +12,22 @@ Use this checklist before final output.
 - [ ] No damaged technical terms.
 - [ ] No accidental changes to formulas, code, interfaces, table names, field names, or parameters.
 - [ ] No promised detection outcome.
+- [ ] No score is presented as a real commercial detection result.
+
+## Scoring Checks
+
+- [ ] Scores are explicitly described as heuristic writing-risk scores.
+- [ ] The output does not claim equivalence to 知网、维普、万方、Turnitin or other commercial systems.
+- [ ] AIGC risk, similarity risk, and dual-optimization priority are separated.
+- [ ] Before/after scores are phrased as diagnostic estimates, not guaranteed results.
+- [ ] Risk heatmap ranking does not override citation or technical protection.
+
+## Sentence-Level Checks
+
+- [ ] Each analyzed sentence has risk labels or a clear no-risk note.
+- [ ] Protection labels are applied to formulas, code, citations, experiment data, and technical identifiers.
+- [ ] The output separates可改写句、轻改句、不建议改写句、需要保留引用句、涉及术语/公式/代码保护句.
+- [ ] No-edit zones are preserved unless the user explicitly asks for a targeted change.
 
 ## AIGC-Risk Checks
 
