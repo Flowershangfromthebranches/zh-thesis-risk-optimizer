@@ -151,3 +151,16 @@ When running similarity-risk scoring, treat these signals as heuristic features:
 - Use AIGC_ONLY when the paragraph is original but template-like.
 - Use DUAL_OPTIMIZATION when both risks appear.
 - Recommend no modification when the paragraph is precise, cited, and technically constrained.
+
+## Report-Driven Similarity Handling
+
+When a similarity report is provided:
+
+1. Extract marked fragments, source notes, contribution rates, and risk levels from the user-provided report text.
+2. Map each report fragment back to the thesis source text.
+3. Assign mapping confidence before making any revision decision.
+4. Classify the source type: citation-caused, definition-caused, textbook-like, source-close, literature-review stacking, dense self-citation, or protected no-edit content.
+5. Preserve necessary citations even if they contribute to similarity.
+6. For LOW or UNMAPPED mappings, request source context before rewriting.
+
+Do not invent report percentages, source names, URLs, or risk levels.

@@ -42,6 +42,28 @@ Upstream inspiration and acknowledgements:
    making the project public. This project only adapts the diagnostic ideas
    for a Chinese thesis AIGC-risk and similarity-risk optimization skill.
 
+5. lengsukq/ParaphrasingToolClient
+   Link: https://github.com/lengsukq/ParaphrasingToolClient
+   Observed license: no explicit LICENSE file, GitHub-detected license, or
+   package-level license field was visible during review on 2026-05-11.
+   Inspired areas: PaperYY HTML similarity-report parsing, AIGC HTML report
+   parsing, and original text - similarity source - revision suggestion display
+   workflow.
+   Acknowledgement: thank you to the original author and contributors. This
+   project only references public product-design and workflow ideas and does
+   not copy code, configuration, or long-form text.
+
+6. Abnerla/AI_paper
+   Link: https://github.com/Abnerla/AI_paper
+   Observed license: Apache License 2.0, as displayed by the GitHub repository
+   page and the root LICENSE file during review on 2026-05-11.
+   Inspired areas: local-first academic writing assistance, AI-trace self-check,
+   repeated-expression diagnosis, report import, marked-fragment-to-source
+   mapping, and human-review-first academic integrity framing.
+   Acknowledgement: thank you to the original author and contributors of
+   AI_paper / 纸研社. This project reorganizes related ideas into a report-driven
+   workflow for a Chinese thesis risk optimization Skill.
+
 For upstream projects with explicit MIT licenses, this project preserves
 license awareness and attribution in this NOTICE. For upstream content without
 a clear license, this project only references public design ideas and does not
@@ -51,6 +73,10 @@ This project does not copy code, configuration, or long-form text from
 openclaw/humanize-chinese. It uses newly written documentation and a separate
 academic-integrity-first framing.
 
+This project does not copy code, configuration, or long-form text from
+lengsukq/ParaphrasingToolClient or Abnerla/AI_paper. For sources with unclear
+licensing, this project only references public design ideas.
+
 Academic integrity notice:
 
 This project is for text quality optimization, AIGC-risk diagnosis,
@@ -59,4 +85,7 @@ sentence-level risk localization, and academic standard assistance. It does not
 promise any detection outcome and must not be used to fabricate data,
 fabricate experiments, fabricate citations, alter conclusions, remove
 necessary citations, or damage technical terms, formulas, code, interfaces,
-table names, field names, or parameters.
+table names, field names, or parameters. It must not be used to forge reports,
+forge report percentages, invent similarity sources, invent risk levels, crack
+or reverse engineer commercial detection systems, or disguise source content as
+uncited original writing.

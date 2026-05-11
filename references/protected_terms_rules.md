@@ -14,6 +14,7 @@ Build a protected list before revision. When uncertain, preserve the item and ma
 - Experimental values, device names, thresholds, datasets, and metrics.
 - Laws, standards, policies, classic definitions, and required direct quotations.
 - Detection report text supplied for diagnosis.
+- Report metadata, report percentages, source titles, URLs, risk levels, and color-mark explanations supplied by the user.
 
 ## Protection Labels
 
@@ -84,6 +85,17 @@ If a protected item appears inside a risky sentence:
 2. Mark the reason.
 3. Rewrite only non-protected prose around it.
 4. If the protected item itself seems wrong, ask for human confirmation instead of editing.
+
+## Report-Driven Protection
+
+In report-driven mode, also protect:
+
+- Report fragments quoted as evidence.
+- Similarity-source names and source descriptions.
+- Contribution rates and risk levels as report facts.
+- Color mark meanings copied from the report.
+
+Never alter these fields to make a task table look cleaner. If a report field is missing, mark it as missing instead of inventing it.
 
 ## Term Consistency Table
 

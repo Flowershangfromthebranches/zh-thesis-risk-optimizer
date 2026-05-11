@@ -13,6 +13,8 @@ Use this checklist before final output.
 - [ ] No accidental changes to formulas, code, interfaces, table names, field names, or parameters.
 - [ ] No promised detection outcome.
 - [ ] No score is presented as a real commercial detection result.
+- [ ] No forged report content, percentages, source names, or risk levels.
+- [ ] No commercial detection-system cracking or reverse-engineering workflow.
 
 ## Scoring Checks
 
@@ -53,3 +55,12 @@ Use this checklist before final output.
 - [ ] Rolling summaries are updated after each section.
 - [ ] Later sections do not contradict earlier findings.
 - [ ] Rewrite intensity is consistent across chapters unless intentionally varied.
+
+## Report-Driven Checks
+
+- [ ] Report facts are separated from heuristic diagnosis.
+- [ ] Each report fragment has mapping confidence.
+- [ ] LOW and UNMAPPED fragments are not directly rewritten.
+- [ ] Multiple matches are listed instead of silently choosing one.
+- [ ] Necessary citations remain visible.
+- [ ] Similarity-source content is not turned into uncited original writing.

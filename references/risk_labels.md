@@ -49,12 +49,25 @@ Use a unified label system for sentence-level and paragraph-level diagnosis.
 - `保护-算法名称`
 - `保护-LaTeX命令`
 
+## Report Labels
+
+- `报告-查重片段`
+- `报告-AIGC片段`
+- `报告-相似源说明`
+- `报告-贡献率`
+- `报告-风险等级`
+- `映射-HIGH`
+- `映射-MEDIUM`
+- `映射-LOW`
+- `映射-UNMAPPED`
+
 ## Label Priority
 
 1. Protection labels.
-2. Citation-boundary labels.
-3. Similarity labels.
-4. AIGC labels.
+2. Mapping-confidence labels.
+3. Citation-boundary labels.
+4. Similarity labels.
+5. AIGC labels.
 
 If protection labels are present, lower rewrite intensity and explain why.
 
@@ -75,3 +88,4 @@ If protection labels are present, lower rewrite intensity and explain why.
 | AI + similarity labels | DUAL_OPTIMIZATION, usually L2 |
 | Protection labels | Preserve, lightly explain, or ask for confirmation |
 | Citation-boundary labels | Keep or request citation before rewriting |
+| Mapping LOW or UNMAPPED | Do not rewrite before human confirmation |

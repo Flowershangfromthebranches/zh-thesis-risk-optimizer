@@ -18,6 +18,8 @@ Do not modify:
 - If several cited claims are compared, do not merge them into one uncited conclusion.
 - If the author is making their own conclusion, make the evidence basis visible.
 - If the source is missing, request or mark a citation rather than inventing one.
+- If a report marks cited text as repeated, preserve the citation first and revise only the wording around the source boundary.
+- If the report's similarity source differs from the paper's citation, flag the mismatch for human review.
 
 ## Safe Rewriting Patterns
 
@@ -59,3 +61,5 @@ Before output, confirm:
 - Citation markers still point to the same claims.
 - No cited claim became an uncited original claim.
 - No new unsupported source was introduced.
+- Report-driven revisions did not delete citations only to reduce similarity.
+- Any missing or conflicting report-source data is marked for human confirmation.

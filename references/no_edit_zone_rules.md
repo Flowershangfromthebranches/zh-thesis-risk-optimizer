@@ -19,6 +19,7 @@ The following content should not be automatically rewritten:
 11. 必须逐字引用的材料。
 12. 检测报告原文。
 13. 用户明确要求保留的内容。
+14. 报告中的检测系统名称、百分比、贡献率、相似源、风险等级和颜色含义。
 
 ## Required Output for No-Edit Zones
 
@@ -57,3 +58,5 @@ Ask for confirmation before changing:
 - Reference entries.
 - User-marked protected material.
 - Any sentence where the rewrite may change the conclusion.
+- Report fragments with LOW or UNMAPPED mapping confidence.
+- Multiple-match report fragments when the user has not selected the target location.

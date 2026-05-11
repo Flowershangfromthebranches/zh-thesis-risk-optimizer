@@ -24,7 +24,7 @@ Use this manual checklist before publishing v0.2-scoring-diagnosis.
 - [ ] Scores are not described as equivalent to any real detection system.
 - [ ] README thanks `openclaw/humanize-chinese`.
 - [ ] NOTICE records `openclaw/humanize-chinese`.
-- [ ] No promotional language such as "保证过检" or "绕过检测" appears outside negative safety-check contexts.
+- [ ] No promotional language that promises external detection outcomes or encourages detection evasion appears.
 - [ ] `SKILL.md` frontmatter is valid YAML.
 - [ ] Markdown raw files keep normal line breaks.
 

@@ -141,3 +141,12 @@ Use estimated scores after revision:
 ```
 
 Never present the after score as guaranteed.
+
+## Report-Driven Scoring
+
+When a report is provided, keep report values and heuristic scores separate:
+
+- Report value: a value copied from the user-provided report.
+- Heuristic score: this Skill's writing-risk estimate.
+
+Output them in separate fields. Do not infer report percentages from heuristic scores, and do not claim that a revised heuristic score predicts a future report result.
