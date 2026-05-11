@@ -97,6 +97,15 @@ In report-driven mode, also protect:
 
 Never alter these fields to make a task table look cleaner. If a report field is missing, mark it as missing instead of inventing it.
 
+## Full-Thesis Protection
+
+In full-thesis projects, maintain protected items at two levels:
+
+- Global list in `THESIS_MASTER_OVERVIEW`.
+- Chapter-specific list in each chapter task.
+
+If a term, symbol, API, table, field, citation key, or experiment value appears in several chapters, use the global form consistently.
+
 ## Term Consistency Table
 
 Use this table during long tasks:

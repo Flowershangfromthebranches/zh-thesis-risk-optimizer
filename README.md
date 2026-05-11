@@ -6,6 +6,25 @@
 
 本项目不是检测结果承诺工具，不替代作者完成研究，也不鼓励掩盖引用来源。它的定位是：中文论文文本质量优化、AIGC 风险诊断、相似表达修复、引用完整性保护和学术规范辅助。
 
+## v0.4-full-thesis-workflow 新增能力
+
+第四版新增全文项目管理、章节任务拆分、进度追踪、修改日志和迭代优化能力。适合 15000 字、30000 字甚至更长论文的分阶段处理。
+
+本版同时完成 `SKILL.md` 瘦身：`SKILL.md` 现在只作为总纲式调度文件，详细规则下沉到 `references/`，执行提示词下沉到 `prompts/`，项目模板下沉到 `workflow/`。
+
+新增能力包括：
+
+- `FULL_THESIS_PROJECT_MODE`
+- `THESIS_MASTER_OVERVIEW`
+- `CHAPTER_TASK_MODE`
+- `PROGRESS_TRACKING_MODE`
+- `REVISION_LOG_MODE`
+- `ITERATIVE_REVISION_MODE`
+- `PROJECT_HANDOFF_MODE`
+- `SKILL_SLIM_MODE`
+
+本项目不会照搬 thesis-optimizer 中关于检测率阈值的承诺，不承诺任何外部检测系统结果。
+
 ## v0.3-report-driven-mapping 新增能力
 
 第三版新增“报告驱动精准定位”工作流：当用户提供查重报告、AIGC 报告、HTML 报告文本、PDF 报告复制文本、Word 颜色标记报告或手动复制的标红片段时，Skill 会先把报告片段映射回论文原文，再生成定点处理任务表。
@@ -77,6 +96,12 @@
 - `REPORT_AIGC_ONLY`：只处理 AIGC 报告定位出的风险片段。
 - `REPORT_SIMILARITY_ONLY`：只处理查重报告定位出的相似片段。
 - `REPORT_DUAL_OPTIMIZATION`：处理报告中的重叠风险和双降优先片段。
+- `FULL_THESIS_PROJECT_MODE`：完整论文先建项目总览，不立即重写全文。
+- `CHAPTER_TASK_MODE`：按章节拆分任务、验收标准和保护项。
+- `PROGRESS_TRACKING_MODE`：维护每章状态、待人工核对项和复测队列。
+- `REVISION_LOG_MODE`：记录每次修改目标、强度、保护项和风险变化。
+- `ITERATIVE_REVISION_MODE`：根据新报告进行第二轮、第三轮定点优化。
+- `PROJECT_HANDOFF_MODE`：生成可恢复上下文的项目交接摘要。
 
 ## 风险热区表示例
 
@@ -209,6 +234,46 @@
 
 输出会包含映射置信度、相似源处理类型、保护项、建议模式和人工复核清单。
 
+### 完整论文项目初始化
+
+```text
+请对我的完整论文建立全文双降项目总览，不要先改写。先输出章节结构、风险热区、保护清单和处理顺序。
+```
+
+输出会先生成 `THESIS_MASTER_OVERVIEW`，再建议章节任务拆分。
+
+### 单章任务
+
+```text
+只处理第 3 章，目标是双降。请生成章节任务表，不要直接全文重写。
+```
+
+输出会生成章节任务、诊断表、改写计划和验收清单。
+
+### 查看进度
+
+```text
+显示当前每章处理状态，列出待人工核对和待复测章节。
+```
+
+输出会使用 `PROGRESS_TRACKING_MODE` 汇总章节状态。
+
+### 二轮优化
+
+```text
+这是新的查重报告，请根据报告更新进度表，只处理残留高风险片段。
+```
+
+输出会使用 `ITERATIVE_REVISION_MODE` 生成本轮目标和处理顺序。
+
+### 项目交接
+
+```text
+请根据当前总览文档和章节任务文档，生成项目交接摘要，方便下次继续处理。
+```
+
+输出会使用 `PROJECT_HANDOFF_MODE` 记录已完成工作、待处理问题和恢复提示。
+
 ## 与上游项目的关系
 
 本项目受到以下项目启发，并对原作者表示感谢：
@@ -219,6 +284,7 @@
 - [openclaw/humanize-chinese](https://github.com/openclaw/skills/tree/main/skills/swaylq/humanize-chinese)
 - [lengsukq/ParaphrasingToolClient](https://github.com/lengsukq/ParaphrasingToolClient)
 - [Abnerla/AI_paper](https://github.com/Abnerla/AI_paper)
+- [Haimbeau1o/thesis-optimizer](https://github.com/Haimbeau1o/thesis-optimizer)
 
 感谢原作者开源这些优秀项目，本项目在其思想基础上进行重新组织、扩展与适配。
 
@@ -227,6 +293,8 @@
 感谢 lengsukq/ParaphrasingToolClient 项目提供的 PaperYY HTML 查重报告、AIGC HTML 报告解析以及原文—相似源—修改建议展示思路。本项目仅吸收其公开可见的产品设计与工作流思想，不复制其代码实现。
 
 感谢 Abnerla/AI_paper（纸研社）项目提供的本地优先学术写作辅助、AI 痕迹自检、重复表达诊断、检测报告导入与原文段落映射等思路。本项目在尊重原作者和许可证的前提下，将相关思想重新组织为中文论文风险优化 Skill 的报告驱动工作流。
+
+感谢 Haimbeau1o/thesis-optimizer 项目提供的全文论文优化、两层文档架构、章节任务拆分、显式状态追踪和闭环迭代优化思路。本项目在尊重原作者和许可证的前提下，吸收其项目管理思想，并面向中文论文 AIGC 风险、查重相似风险、报告驱动定位和学术诚信保护场景重新组织。
 
 本项目吸收的是工作流和诊断设计层面的思路，例如分轮诊断、模式识别、长文保护、章节级处理、评分诊断和句子级定位；文本和规则均重新组织编写。对于未看到明确许可证的上游内容，本项目仅借鉴公开可见的设计思想，不复制大段原文或实现。
 

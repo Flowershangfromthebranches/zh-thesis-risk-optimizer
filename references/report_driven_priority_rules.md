@@ -46,3 +46,14 @@ Assign low priority when:
 3. Handle medium-confidence mappings with explicit notes.
 4. Defer LOW or UNMAPPED items until the user confirms context.
 5. Run citation and technical protection review before final output.
+
+## Full-Thesis Integration
+
+In `FULL_THESIS_PROJECT_MODE`, report-driven priority should update:
+
+- `THESIS_MASTER_OVERVIEW` risk heatmap.
+- Chapter task priority.
+- Progress tracker report status.
+- Iteration plan when a new report is uploaded.
+
+Do not mark a chapter complete when it still has LOW or UNMAPPED report fragments.

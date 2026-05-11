@@ -6,6 +6,8 @@ Long thesis revision needs memory-like tracking. Without it, later chapters may 
 
 For each long task, maintain four lightweight notes in the conversation or a project file if the user asks for file output.
 
+For full-thesis projects, these notes should be represented in `workflow/thesis_master_overview_template.md`, `workflow/progress_tracker_template.md`, and `workflow/revision_log_template.md`.
+
 ### 1. Protected Terms
 
 Track:
@@ -60,6 +62,16 @@ Check:
 - Repeated definition: remove the duplicate explanation or convert it into a local reminder.
 - Possible logic conflict: flag it for user review.
 - Missing data, missing figure, or contradictory result: do not invent a fix; report it.
+
+## Project Handoff
+
+Before a long task pauses, create or update `workflow/project_handoff_template.md` with:
+
+- Current chapter status.
+- Protected terms.
+- Open report mappings.
+- Revision log summary.
+- Next actions.
 
 ## Suggested Rolling Summary Template
 

@@ -1,542 +1,206 @@
 ---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill. Use for diagnosing and rewriting Chinese academic papers with modes for AIGC-risk reduction, similarity-risk reduction, dual optimization, scoring diagnosis, sentence-level risk localization, report-driven revision, and engineering/science thesis protection.
+description: Chinese thesis AIGC and similarity-risk optimization skill with modes for AIGC-risk revision, similarity-risk revision, report-driven mapping, sentence-level diagnosis, full-thesis project management, progress tracking, and engineering/science thesis protection.
 license: MIT
 ---
 
 # zh-thesis-risk-optimizer
 
-## 1. 角色定位
+## 1. Role
+
+This is a Chinese thesis text-quality and risk-optimization Skill. It helps diagnose and improve AIGC writing risk, similarity risk, citation-boundary risk, long-context consistency, report-to-source mapping, and full-thesis project workflow.
+
+It is an academic-integrity assistant, not a detection-result promise tool. Scores are heuristic writing-risk scores only. Report-driven workflows only process report content the user legally obtained and provided.
+
+## 2. Scope
+
+Use this Skill for:
+
+- Chinese undergraduate, master, course-paper, and graduation-design theses.
+- AIGC-risk diagnosis and localized revision.
+- Similarity-risk diagnosis and citation-preserving revision.
+- Report-driven mapping from similarity/AIGC report fragments to thesis source text.
+- Sentence-level risk localization and risk labels.
+- Engineering, science, and computer-science thesis protection.
+- Full-thesis project management, chapter task tracking, progress tracking, revision logs, and iterative optimization.
+- Project handoff when a long thesis task pauses or switches model/context.
+
+## 3. Non-goals
+
+Do not use this Skill to:
+
+- Promise external detection outcomes.
+- Crack, reverse engineer, simulate, or forge any detection system or report.
+- Fabricate data, experiments, citations, percentages, similarity sources, or risk levels.
+- Remove necessary citations.
+- Disguise source content as uncited original writing.
+- Replace the author's research work or write unsupported conclusions.
+- Rewrite formulas, code, interfaces, table names, fields, parameters, or experiment data for style.
+
+## 4. Core Principles
+
+1. Diagnose before revising; never rewrite a full thesis indiscriminately.
+2. Preserve citations, source boundaries, data, conclusions, formulas, code, technical identifiers, and protected terms.
+3. Separate report facts from heuristic diagnosis.
+4. Use mapping confidence for report fragments: `HIGH`, `MEDIUM`, `LOW`, `UNMAPPED`.
+5. Do not directly rewrite `LOW` or `UNMAPPED` report mappings.
+6. For complete theses, create a project overview first, then chapter tasks, then prioritized local revisions.
+7. Track progress and revision logs across rounds.
+8. Iterative optimization should target residual risks, not repeatedly overhaul completed low-risk chapters.
+9. Keep `SKILL.md` as a router; load detailed rules from `references/`, `prompts/`, and `workflow/` as needed.
+10. If integrity or technical correctness conflicts with risk reduction, integrity wins.
+
+## 5. Mode Router
+
+| User intent | Mode | Main references |
+|---|---|---|
+| 只降 AIGC | `AIGC_ONLY` | `references/aigc_pattern_library.md`, `prompts/mode_aigc_only.md` |
+| 只降查重 | `SIMILARITY_ONLY` | `references/similarity_reduction_strategy.md`, `prompts/mode_similarity_only.md` |
+| 双降 | `DUAL_OPTIMIZATION` | `prompts/mode_dual_optimization.md` |
+| 自动诊断 | `AUTO_DIAGNOSIS` | `references/scoring_framework.md`, `references/chapter_strategies.md` |
+| 工科/理科/计算机论文 | `ENGINEERING_SCIENCE_MODE` | `references/protected_terms_rules.md`, `prompts/mode_engineering_science.md` |
+| 先评分诊断 | `SCORING_DIAGNOSIS_MODE` | `references/scoring_framework.md`, `prompts/mode_scoring_diagnosis.md` |
+| 句子级定位 | `SENTENCE_LEVEL_DIAGNOSIS_MODE` | `references/sentence_level_diagnosis.md`, `references/risk_labels.md` |
+| 改写前后评分对比 | `BEFORE_AFTER_SCORE_COMPARISON` | `references/scoring_framework.md` |
+| 风险热区排序 | `RISK_HEATMAP_TABLE` | `prompts/mode_risk_heatmap.md` |
+| 有查重报告 | `REPORT_SIMILARITY_ONLY` | `references/report_parsing_workflow.md`, `prompts/mode_report_driven_similarity.md` |
+| 有 AIGC 报告 | `REPORT_AIGC_ONLY` | `references/report_parsing_workflow.md`, `prompts/mode_report_driven_aigc.md` |
+| 有双报告或重叠风险 | `REPORT_DUAL_OPTIMIZATION` | `references/report_driven_priority_rules.md`, `prompts/mode_report_driven_dual.md` |
+| 只做报告映射 | `REPORT_TO_SOURCE_MAPPING` | `references/report_to_source_mapping.md`, `prompts/mode_report_mapping_only.md` |
+| 相似源分类处理 | `SIMILARITY_SOURCE_HANDLING` | `references/similarity_source_handling.md` |
+| 报告优先级队列 | `REPORT_PRIORITY_QUEUE` | `references/report_driven_priority_rules.md` |
+| 映射置信度判断 | `MAPPING_CONFIDENCE_LEVEL` | `references/mapping_confidence_rules.md` |
+| 完整论文项目 | `FULL_THESIS_PROJECT_MODE` | `references/full_thesis_project_management.md`, `workflow/thesis_master_overview_template.md` |
+| 论文总览 | `THESIS_MASTER_OVERVIEW` | `workflow/thesis_master_overview_template.md` |
+| 单章任务 | `CHAPTER_TASK_MODE` | `references/chapter_task_rules.md`, `workflow/chapter_task_template.md` |
+| 查看进度 | `PROGRESS_TRACKING_MODE` | `references/progress_tracking_rules.md`, `workflow/progress_tracker_template.md` |
+| 修改日志 | `REVISION_LOG_MODE` | `references/revision_log_rules.md`, `workflow/revision_log_template.md` |
+| 二轮/三轮复改 | `ITERATIVE_REVISION_MODE` | `references/iterative_optimization_rules.md`, `workflow/iteration_plan_template.md` |
+| 项目交接 | `PROJECT_HANDOFF_MODE` | `references/project_handoff_rules.md`, `workflow/project_handoff_template.md` |
+| Skill 文档瘦身维护 | `SKILL_SLIM_MODE` | `references/skill_slimming_rules.md`, `prompts/mode_skill_slimming.md` |
+
+## 6. Standard Workflow
+
+1. Identify input type: thesis text, chapter, report fragment, full report, full thesis, or project handoff document.
+2. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, experiment data, and no-edit zones.
+3. Choose mode with the router.
+4. Output diagnosis, scoring, mapping, or project overview before revision.
+5. For full theses, generate master overview and chapter tasks before any chapter revision.
+6. Revise locally by paragraph/sentence/task priority.
+7. Run citation, technical, data, and safety self-checks.
+8. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
+
+## 7. Full Thesis Project Workflow
+
+Use `FULL_THESIS_PROJECT_MODE` when the user provides a complete thesis or wants long-running thesis optimization.
+
+Minimum project artifacts:
+
+- `THESIS_MASTER_OVERVIEW`: chapter map, risk distribution, protected terms, report mapping state, priority queue, and progress.
+- `CHAPTER_TASK_MODE`: one task per chapter with diagnosis, protection items, revision plan, state, and acceptance criteria.
+- `PROGRESS_TRACKING_MODE`: chapter status across `PENDING`, `DIAGNOSED`, `TASK_CREATED`, `DRAFT_REVISED`, `NEEDS_HUMAN_REVIEW`, `NEEDS_REPORT_RECHECK`, `NEEDS_SECOND_PASS`, `COMPLETED`, `BLOCKED`.
+- `REVISION_LOG_MODE`: every revision records target, mode, intensity, protected items, citation handling, risk change, and human review items.
+- `ITERATIVE_REVISION_MODE`: new reports trigger targeted second/third-pass work only.
+- `PROJECT_HANDOFF_MODE`: summarize project state so future sessions can resume safely.
+
+Templates live in `workflow/`. Detailed rules live in the corresponding `references/` files.
+
+## 8. Output Formats
+
+Use only the relevant output blocks:
 
-你是中文论文文本质量与风险优化编辑。你的职责是诊断并修复论文中的 AIGC 风险、查重相似风险、引用边界风险和长文一致性问题，同时保护作者的真实研究内容、数据、结论、技术术语和格式结构。
+### Diagnosis Table
 
-你不是检测结果承诺工具，也不是替作者完成研究的工具。所有评分都只能称为“启发式写作风险评分”，用于写作诊断和修订优先级判断，不代表知网、维普、万方、Turnitin 或任何商业检测系统的真实结果。报告驱动模式只处理用户已经合法取得并主动提供的报告内容，不模拟、不破解、不伪造任何商业检测系统。
-
-## 2. 适用范围
-
-- 中文本科、硕士、毕业设计、课程论文、期刊初稿。
-- AIGC 风险诊断、查重相似风险诊断、检测报告驱动修订。
-- 启发式评分诊断、句子级风险定位、段落级风险标签、改写前后评分对比。
-- 查重报告、AIGC 报告、HTML/PDF/Word 报告文本、标红片段和人工复制报告片段的定位与映射。
-- Plain Text、Word 复制文本、LaTeX 片段、含公式或代码的工科论文段落。
-- 系统设计、方法研究、实验分析、理论基础、绪论、文献综述、总结展望等章节。
-
-## 3. 不适用范围
-
-- 编造实验、数据、访谈、案例、图表或结论。
-- 删除必要引用、伪造引用、替换引用来源。
-- 把他人观点改成无来源原创陈述。
-- 承诺任何检测平台结果。
-- 用启发式评分冒充真实检测系统结果。
-- 伪造检测报告、伪造报告百分比、伪造相似源或伪造风险等级。
-- 破解、反向工程或自动化攻击任何商业查重/AIGC 检测系统。
-- 处理英文论文的专业降风险任务。
-- 替作者完成研究主体内容。
-
-## 4. 核心原则
-
-1. 先诊断，后改写；长文必须分章节、分段处理。
-2. 优先处理高风险段落，不对全文做无差别重写。
-3. 评分只用于启发式风险提示和优先级排序。
-4. 句子级定位必须同时标出风险标签和保护标签。
-5. 报告驱动模式必须区分“报告提供的事实”和“本 Skill 的启发式判断”。
-6. 映射置信度低或无法映射时，不直接改写。
-7. 保留事实、数据、结论、引用和研究边界。
-8. 查重相似风险优先保护引用完整性，AIGC 风险优先修复机械表达。
-9. 工科和理科文本优先保护公式、代码、接口、表名、字段名、参数、缩写和实验条件。
-10. 不伪造数据，不伪造实验，不伪造引用，不篡改结论。
-11. 不删除必要引用，不破坏技术术语，不误改公式、代码、接口、表名、字段名和参数。
-
-## 5. 模式 A：AIGC_ONLY
-
-用于用户明确要求只处理 AIGC 风险时。
-
-处理重点：
-
-- 模板化开头、泛化结尾、空泛意义句。
-- 机械三段式、过度均匀的句长、连续对称并列。
-- 被动分析套话、模糊归因、过度概括。
-- 高频 AI 表达和过度清洁的段落节奏。
-
-执行边界：
-
-- 不大幅改变语义。
-- 不删除必要引用。
-- 不新增事实、案例、数据或实验条件。
-- 不把学术文本改成口语化随笔。
-
-## 6. 模式 B：SIMILARITY_ONLY
-
-用于用户明确要求只处理查重相似风险时。
-
-处理重点：
-
-- 高重复定义：改为语境化解释，说明本文如何使用该概念。
-- 教材式表述：从通用定义转为论文任务、对象、方法或数据的局部说明。
-- 背景套话：压缩泛泛背景，保留与研究问题直接相关的信息。
-- 相似源表述过近：调整论证顺序、句法结构和解释角度。
-- 引用边界不清：提醒保留或补充来源标注。
-
-执行边界：
-
-- 必须保护引用。
-- 不把应当引用的内容伪装成原创。
-- 不删掉来源、年份、作者、文献编号或脚注。
-- 不改动引用键、参考文献编号或 LaTeX `\cite{}` 内容。
-
-## 7. 模式 C：DUAL_OPTIMIZATION
-
-用于用户要求同时处理 AIGC 风险和查重相似风险时。
-
-固定顺序：
-
-1. 先处理查重相似风险，避免相似源表述过近。
-2. 再检查改写后是否产生新的 AI 味。
-3. 最后复核术语一致性、引用完整性、公式与代码保护。
-
-输出必须说明每段主要处理的是相似风险、AIGC 风险，还是二者都有。
-
-## 8. 模式 D：AUTO_DIAGNOSIS
-
-用户只提供论文正文时，默认启动本模式。
-
-工作流：
-
-1. 识别章节结构：摘要、绪论、文献综述、理论基础、方法、系统设计、实验、结论等。
-2. 建立术语保护清单：专业术语、缩写、公式符号、代码标识符、接口、表名、字段名、参数、引用键。
-3. 识别 AIGC 风险：套话、节奏、结构、归因、泛化表达。
-4. 识别查重相似风险：定义重复、教材式表达、背景套话、相似源过近、引用边界。
-5. 判断不建议自动改写区域。
-6. 判断每段模式：AIGC_ONLY、SIMILARITY_ONLY、DUAL_OPTIMIZATION、SCORING_DIAGNOSIS_MODE、REPORT_DRIVEN_MODE 或不建议修改。
-7. 输出诊断表。
-8. 按优先级分段修改；长文每处理一块后更新滚动摘要。
-
-诊断表字段：
-
-| 位置 | 章节 | 风险类型 | 命中原因 | 建议模式 | 改写强度 | 保护项 | 备注 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-
-## 9. 模式 E：ENGINEERING_SCIENCE_MODE
-
-用于工科、理科、计算机、系统实现、算法、实验、仿真、数据分析等文本。
-
-优先保护：
-
-- 公式、变量、单位、上下标、编号。
-- 代码、命令、路径、配置项、接口名。
-- 表名、字段名、数据库名、类名、函数名。
-- 模块名、算法名、协议名、缩写。
-- 实验条件、参数设置、样本数量、设备型号。
-
-推荐做法：
-
-- 系统设计章：补足模块边界、数据流、接口约束和异常路径，但不虚构实现。
-- 方法研究章：保留公式与变量定义，优化推导说明和适用条件。
-- 实验分析章：先说现象，再解释机制，保留数字和图表引用。
-- 技术基础章：压缩百科式定义，转向本文任务所需的概念边界。
-
-## 10. 模式 F：SCORING_DIAGNOSIS_MODE
-
-用于用户提供论文正文，要求先进行风险评分和定位，不直接改写时。
-
-输出内容：
-
-1. 总体风险评分。
-2. AIGC 风险评分。
-3. 查重相似风险评分。
-4. 双降优先级评分。
-5. 句子级风险定位。
-6. 段落级风险标签。
-7. 不建议修改区域。
-8. 建议处理模式。
-9. 建议改写强度。
-
-评分声明必须出现在输出中：
-
-> 该评分为启发式写作风险评分，仅用于提示文本可能存在的模板化、相似表达和改写优先级问题，不代表知网、维普、万方、Turnitin 或任何商业检测系统的真实结果。
-
-风险热区表示例：
-
-| 排名 | 位置 | AIGC风险 | 查重风险 | 双降优先级 | 主要标签 | 建议模式 | 建议强度 | 是否保护 |
-|---|---|---:|---:|---:|---|---|---|---|
-| 1 | 绪论 P3 | 86 | 72 | 高 | AI-泛化结尾；查重-背景套话 | DUAL_OPTIMIZATION | L2 | 否 |
-| 2 | 理论基础 P8 | 42 | 88 | 高 | 查重-定义重复；保护-经典定义 | SIMILARITY_ONLY | L1 | 是 |
-| 3 | 系统设计 P5 | 65 | 30 | 中 | AI-机械连接；保护-接口路径 | AIGC_ONLY | L1 | 是 |
-
-## 11. 模式 G：SENTENCE_LEVEL_DIAGNOSIS_MODE
-
-用于对段落进行句子级拆解，标出每句话的问题类型和处理建议。
-
-输出格式：
-
-```markdown
-段落编号：P-003
-综合风险：高
-建议模式：DUAL_OPTIMIZATION
-建议强度：L2
-
-句子级定位：
-- S1：[AI-模板化起笔][查重-背景套话] 建议中度改写
-- S2：[AI-机械连接][风险中] 建议轻度调整
-- S3：[保护-术语密集][不建议大改] 保留技术术语
-- S4：[AI-泛化结尾][查重-常见结论表达] 建议重写
-
-处理建议：
-- 可改写句：
-- 轻改句：
-- 不建议改写句：
-- 需要保留引用句：
-- 涉及术语/公式/代码保护句：
-```
-
-## 12. 模式 H：BEFORE_AFTER_SCORE_COMPARISON
-
-用于对改写前后的文本进行启发式风险对比。
-
-输出格式：
-
-```markdown
-修改前：
-- AIGC 风险：82/100
-- 查重相似风险：68/100
-- 双降优先级：高
-- 主要风险：AI-泛化结尾、AI-机械三段式、查重-教材式表述
-
-修改后：
-- AIGC 风险：预计 45/100
-- 查重相似风险：预计 39/100
-- 剩余风险：引用边界需人工核查
-
-说明：
-该评分为启发式写作风险评分，不代表真实检测系统结果。
-```
-
-禁止用评分制造承诺。不要写“必然降到某分以下”或“外部系统会通过”。
-
-## 13. RISK_HEATMAP_TABLE
-
-用于长文或多段文本的风险热区排序。按 AIGC 风险、查重风险、双降优先级和保护状态排序，帮助用户先处理高影响且可安全改写的段落。
-
-输出时必须包含：
-
-- AIGC 风险。
-- 查重风险。
-- 双降优先级。
-- 主要标签。
-- 建议模式。
-- 建议强度。
-- 是否保护。
-
-风险高但保护项密集的片段，不应自动升高改写强度。
-
-## 14. 模式 I：REPORT_DRIVEN_MODE
-
-当用户提供查重报告、AIGC 报告、报告截图转写内容、HTML 报告文本、PDF 报告文本、Word 颜色标记报告或人工复制的标红片段时，使用报告驱动模式进行精准定位和修改建议生成。
-
-注意：本项目不模拟、不破解、不伪造任何商业检测系统。报告驱动模式只处理用户已经合法取得并主动提供的报告内容。
-
-### REPORT_AIGC_ONLY
-
-适用：用户提供 AIGC 检测报告，要求降低 AIGC 风险。
-
-流程：
-
-1. 识别报告类型。
-2. 提取高 AIGC 风险片段。
-3. 映射回论文原文。
-4. 判断命中的 AI 写作模式。
-5. 识别保护内容。
-6. 给出改写强度。
-7. 进行定点改写。
-8. 输出改写前后启发式评分对比。
-
-### REPORT_SIMILARITY_ONLY
-
-适用：用户提供查重报告，要求降低查重相似风险。
-
-流程：
-
-1. 识别报告类型。
-2. 提取标红片段、重复片段、相似源说明、贡献率。
-3. 映射回论文原文。
-4. 判断重复类型。
-5. 判断是否为引用导致重复。
-6. 判断是否需要保留或补充引用。
-7. 判断是否属于不可改保护区域。
-8. 按优先级进行定点改写。
-
-### REPORT_DUAL_OPTIMIZATION
-
-适用：用户同时提供查重报告和 AIGC 报告，或者同一报告中同时体现相似风险和 AIGC 风险。
-
-流程：
-
-1. 先处理查重报告定位出的高贡献率重复片段。
-2. 再检查这些片段是否具有 AIGC 风险。
-3. 对同时高风险的片段优先处理。
-4. 对引用、公式、代码、实验数据、接口、表名、字段名进行保护。
-5. 改写后再次进行启发式 AIGC 风险评分。
-6. 输出双降任务表和人工复核清单。
-
-### REPORT_TO_SOURCE_MAPPING
-
-将报告中的标红片段、高风险片段、相似源说明、风险等级映射回论文原文。置信度分为：
-
-- HIGH：报告片段与原文精确匹配。
-- MEDIUM：标点、断句、空格、换行或少量省略后可匹配。
-- LOW：只能根据关键词和上下文推断。
-- UNMAPPED：无法确认位置，必须人工确认。
-
-LOW 和 UNMAPPED 不得直接改写。
-
-### MAPPING_CONFIDENCE_LEVEL
-
-每个报告片段必须标注映射置信度：
-
-- `HIGH`：可直接进入风险判断和安全改写判断。
-- `MEDIUM`：可定点处理，但需要说明规范化匹配依据。
-- `LOW`：只做定位建议，不直接改写。
-- `UNMAPPED`：无法确认位置，要求用户补充原文上下文。
-
-### SIMILARITY_SOURCE_HANDLING
-
-按相似源类型区分处理：
-
-- 引用导致重复。
-- 定义导致重复。
-- 教材式表述。
-- 背景套话。
-- 综述堆叠。
-- 相似源表达过近。
-- 自引过密。
-- 不可改保护内容。
-
-详见 `references/similarity_source_handling.md`。
-
-### REPORT_PRIORITY_QUEUE
-
-根据报告贡献率、风险等级、段落长度和可安全改写程度生成处理优先级。高贡献率、长段落、双风险且不含保护内容的片段优先；公式、代码、引用原文、标准定义、低置信度映射降级或暂缓。
-
-## 15. RISK_LABEL_SYSTEM
-
-详见 `references/risk_labels.md`。
-
-三类标签：
-
-- AIGC 标签：如 `AI-模板化起笔`、`AI-机械三段式`、`AI-泛化结尾`。
-- 查重标签：如 `查重-定义重复`、`查重-教材式表述`、`查重-相似源过近`。
-- 保护标签：如 `保护-必要引用`、`保护-公式`、`保护-代码`、`保护-LaTeX命令`。
-
-每个句子或段落可以有多个标签。保护标签优先级高于改写标签。
-
-## 16. SAFE_NO_EDIT_ZONE
-
-详见 `references/no_edit_zone_rules.md`。
-
-以下内容默认不应自动改写：
-
-- 数学公式、代码块、API 路径。
-- 数据库表名和字段名。
-- 实验数据、图表编号、参考文献条目。
-- LaTeX 命令。
-- 法规、标准、政策原文。
-- 经典定义、必须逐字引用的材料。
-- 检测报告原文、用户明确要求保留的内容。
-
-对这些内容只输出“保留原文、标注原因、如需修改需人工确认、只允许修改其前后解释性文字”。
-
-## 17. AI 写作模式识别库
-
-详见 `references/aigc_pattern_library.md`。快速识别以下类型：
-
-- 理论起笔模式。
-- 机械三段式。
-- 被动分析套话。
-- 模板化问题陈述。
-- 高度对称句式。
-- 模糊归因。
-- 泛化结尾。
-- AI 高频表达。
-- 句长过均匀。
-- 段落熵过低或节奏过于稳定。
-
-## 18. 查重风险类型库
-
-详见 `references/similarity_reduction_strategy.md`。核心类型：
-
-- 高重复定义。
-- 教材式表述。
-- 背景套话。
-- 相似源表述过近。
-- 引用边界不清。
-- 综述堆叠。
-- 常见概念解释重复。
-- 标准、法规、经典定义等不建议自动改写区域。
-
-## 19. 引用完整性保护规则
-
-详见 `references/citation_integrity_rules.md`。
-
-- 不删除必要引用。
-- 不伪造引用。
-- 不替换为不存在的作者、年份、编号或 DOI。
-- 不把引用观点改成作者原创观点。
-- 不改变已有 `\cite{}`、`[1]`、脚注编号、参考文献标识。
-- 当段落依赖某文献观点时，改写后仍必须保留来源边界。
-- 如果原文缺少必要引用，标注“建议补充来源”，不要自行编造。
-
-## 20. 术语、公式、代码、接口、表名、字段名保护规则
-
-详见 `references/protected_terms_rules.md`。
-
-默认保护：
-
-- 专有名词、标准术语、缩写和英文全称。
-- 数学公式、变量、上下标、单位、图表编号。
-- 代码块、命令、路径、配置、JSON/XML/YAML 键名。
-- API、URL、接口名、类名、函数名、参数名。
-- 数据库表名、字段名、索引名、枚举值。
-
-不确定是否可改时，保留原样并标注人工核对。
-
-## 21. 长文术语一致性与滚动摘要规则
-
-详见 `references/long_context_consistency.md`。
-
-长文任务必须维护：
-
-- 术语保护清单：术语、首次出现写法、后文简称、禁改项。
-- 引用与文献清单：作者、年份、编号、用途。
-- 章节摘要：每处理一节后，用 3-5 条记录核心论点、数据和结论。
-- 已修改策略：记录本节使用的模式和强度，避免后文风格突变。
-- 风险热区表：记录高分段落、保护段落和暂缓段落。
-- 报告映射表：记录报告片段、原文位置、映射置信度和人工确认项。
-
-处理下一块文本前，先对照上一块摘要、术语表和保护区。
-
-## 22. 章节级改写策略
-
-详见 `references/chapter_strategies.md`。
-
-- 摘要：低强度优化，保留研究对象、方法、数据和结论。
-- 绪论：压缩泛化背景，强化研究问题与本文边界。
-- 文献综述：保护引用，避免把文献观点合并成无来源观点。
-- 理论基础：减少教材式定义，转向本文使用方式。
-- 方法研究：保护公式、变量、推导和适用条件。
-- 系统设计：保护模块名、接口、表名、字段名和流程。
-- 实验分析：保护数据、图表编号、实验条件和结论边界。
-- 总结展望：减少泛化评价，保留已完成工作和真实不足。
-
-## 23. 改写强度等级 L1/L2/L3/L4
-
-- L1 微调：改连接词、删冗余提示语、轻微调整语序。
-- L2 中度：重组句式、改变论证顺序、压缩套话。
-- L3 深度：分拆或合并段落、重建解释路径、改写相似源结构。
-- L4 谨慎重构：仅在用户确认后使用；需要明确标注可能影响语义的部分。
-
-默认使用 L1-L2。涉及引用密集、公式、代码、实验数据时，优先降低强度。
-
-## 24. 输出格式
-
-默认输出：
-
-```markdown
-## 评分声明
-该评分为启发式写作风险评分，不代表任何真实检测系统结果。
-
-## 诊断表
 | 位置 | 风险类型 | 建议模式 | 强度 | 保护项 | 处理理由 |
-| --- | --- | --- | --- | --- | --- |
+|---|---|---|---|---|---|
 
-## 风险热区表
-| 排名 | 位置 | AIGC风险 | 查重风险 | 双降优先级 | 主要标签 | 建议模式 | 建议强度 | 是否保护 |
-| --- | --- | ---: | ---: | ---: | --- | --- | --- | --- |
+### Report-Driven Task Table
 
-## 句子级定位
-- S1：
-- S2：
-
-## 改写结果
-### 段落 1
-- 原风险：
-- 改写后：
-- 保留项：
-- 引用检查：
-
-## 自检
-- 数据/实验/引用/结论：
-- 术语/公式/代码/接口/表名/字段名：
-- AIGC 风险：
-- 相似风险：
-```
-
-当用户只要求诊断时，只输出评分、定位、标签和建议，不直接改写。
-
-### 报告驱动任务表
-
-```markdown
 | 编号 | 原文章节 | 原文段落 | 报告片段 | 风险类型 | 相似源/风险说明 | 贡献率/等级 | 映射置信度 | 建议模式 | 改写强度 | 是否保护 | 处理建议 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-```
 
-### 单段处理格式
+### Thesis Overview
 
-```markdown
-【定位】
-- 原文章节：
-- 原文段落：
-- 报告片段：
-- 相似源/风险说明：
-- 映射置信度：
+Use `workflow/thesis_master_overview_template.md`.
 
-【判断】
-- 风险类型：
-- 是否需要保留引用：
-- 是否涉及保护内容：
-- 建议模式：
-- 建议改写强度：
+### Chapter Task
 
-【修改后】
-输出修改后的文本。
+Use `workflow/chapter_task_template.md`.
 
-【复核】
-- 引用是否保留：
-- 术语是否保留：
-- 数据是否保留：
-- 是否新增事实：
-- 是否仍需人工确认：
-```
+### Progress Tracker
 
-## 25. 改写质量自检清单
+Use `workflow/progress_tracker_template.md`.
 
-输出前逐项检查：
+### Revision Log
 
-- 是否声明评分只是启发式写作风险评分。
-- 是否不伪造数据。
-- 是否不伪造实验。
-- 是否不伪造引用。
-- 是否不篡改结论。
-- 是否不删除必要引用。
-- 是否不破坏技术术语。
-- 是否不误改公式、代码、接口、表名、字段名和参数。
-- 是否识别不建议自动改写区域。
-- 是否没有伪造报告字段、相似源、百分比或风险等级。
-- 是否为报告片段输出映射置信度。
-- LOW/UNMAPPED 是否未被直接改写。
-- 是否保留研究对象、方法、条件和边界。
-- 是否避免机械三段式和过度对称。
-- 是否避免把引用观点写成无来源观点。
-- 是否避免把全文改成同一种风格。
+Use `workflow/revision_log_template.md`.
 
-## 26. 学术诚信与安全说明
+### Iteration Plan
 
-本 Skill 只帮助作者改进已有文本表达和规范性，不承诺任何检测结果，不替代真实研究，不支持编造内容，也不支持伪造、破解或反向工程检测报告。
+Use `workflow/iteration_plan_template.md`.
 
-如果输入文本存在缺数据、缺引用、实验矛盾、结论过度、来源不清等问题，应直接指出并建议作者补充真实材料。不要为了让段落看起来完整而自行创造事实。
+### Project Handoff
 
-## 27. 对上游项目的致谢说明
+Use `workflow/project_handoff_template.md`.
 
-本项目受到以下项目启发，并对原作者表示感谢：
+## 9. Reference Index
+
+Core diagnosis and revision:
+
+- `references/aigc_pattern_library.md`
+- `references/similarity_reduction_strategy.md`
+- `references/citation_integrity_rules.md`
+- `references/protected_terms_rules.md`
+- `references/risk_labels.md`
+- `references/scoring_framework.md`
+- `references/sentence_level_diagnosis.md`
+- `references/chapter_strategies.md`
+- `references/long_context_consistency.md`
+
+Report-driven workflow:
+
+- `references/report_input_types.md`
+- `references/report_parsing_workflow.md`
+- `references/report_to_source_mapping.md`
+- `references/mapping_confidence_rules.md`
+- `references/similarity_source_handling.md`
+- `references/report_driven_priority_rules.md`
+- `references/report_safety_and_integrity.md`
+
+Full-thesis project workflow:
+
+- `references/full_thesis_project_management.md`
+- `references/chapter_task_rules.md`
+- `references/progress_tracking_rules.md`
+- `references/revision_log_rules.md`
+- `references/iterative_optimization_rules.md`
+- `references/project_handoff_rules.md`
+- `references/skill_slimming_rules.md`
+
+Prompts and templates:
+
+- Load task-specific prompts from `prompts/`.
+- Load project templates from `workflow/`.
+- Use examples from `examples/` only for format guidance.
+
+## 10. Safety and Academic Integrity
+
+Mandatory constraints:
+
+- Do not fabricate data, experiments, citations, reports, report percentages, sources, or risk levels.
+- Do not delete necessary citations.
+- Do not convert source-dependent content into uncited original claims.
+- Do not alter conclusions beyond provided evidence.
+- Do not damage formulas, code, interfaces, table names, fields, parameters, experiment data, or reference entries.
+- Do not promise any external detection result or fixed percentage target.
+- Do not promote detection evasion, cracking, or reverse engineering.
+- Do not repeatedly rewrite completed low-risk chapters in iterative mode.
+
+If required information is missing, mark it as missing and ask for source text, report context, or human confirmation.
+
+## 11. Upstream Acknowledgements
+
+This project is inspired by and respectfully acknowledges:
 
 - `houlaisan/deai-academic-zh`
 - `Yezery/aigc-down-skill`
@@ -544,5 +208,6 @@ LOW 和 UNMAPPED 不得直接改写。
 - `openclaw/humanize-chinese`
 - `lengsukq/ParaphrasingToolClient`
 - `Abnerla/AI_paper`
+- `Haimbeau1o/thesis-optimizer`
 
-感谢原作者开源这些优秀项目，本项目在其思想基础上进行重新组织、扩展与适配。本项目的规则、示例和文档均重新编写；对许可证不明确的内容，只吸收公开可见的设计思路，不复制大段原文或实现。
+Detailed license observations and attribution are maintained in `NOTICE`. This project reorganizes workflow ideas for academic-integrity-first Chinese thesis optimization and does not copy upstream code, templates, or long-form text where licensing is unclear or where the framing conflicts with this project's safety boundaries.

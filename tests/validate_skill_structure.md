@@ -37,33 +37,24 @@ Expected:
 ```yaml
 ---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill. Use for diagnosing and rewriting Chinese academic papers with modes for AIGC-risk reduction, similarity-risk reduction, dual optimization, report-driven revision, and engineering/science thesis protection.
+description: Chinese thesis AIGC and similarity-risk optimization skill with modes for AIGC-risk revision, similarity-risk revision, report-driven mapping, sentence-level diagnosis, full-thesis project management, progress tracking, and engineering/science thesis protection.
 license: MIT
 ---
 ```
 
 ## Required SKILL.md Sections
 
-- [ ] 1. 角色定位
-- [ ] 2. 适用范围
-- [ ] 3. 不适用范围
-- [ ] 4. 核心原则
-- [ ] 5. 模式 A：AIGC_ONLY
-- [ ] 6. 模式 B：SIMILARITY_ONLY
-- [ ] 7. 模式 C：DUAL_OPTIMIZATION
-- [ ] 8. 模式 D：AUTO_DIAGNOSIS
-- [ ] 9. 模式 E：ENGINEERING_SCIENCE_MODE
-- [ ] 10. AI 写作模式识别库
-- [ ] 11. 查重风险类型库
-- [ ] 12. 引用完整性保护规则
-- [ ] 13. 术语、公式、代码、接口、表名、字段名保护规则
-- [ ] 14. 长文术语一致性与滚动摘要规则
-- [ ] 15. 章节级改写策略
-- [ ] 16. 改写强度等级 L1/L2/L3/L4
-- [ ] 17. 输出格式
-- [ ] 18. 改写质量自检清单
-- [ ] 19. 学术诚信与安全说明
-- [ ] 20. 对上游项目的致谢说明
+- [ ] 1. Role
+- [ ] 2. Scope
+- [ ] 3. Non-goals
+- [ ] 4. Core Principles
+- [ ] 5. Mode Router
+- [ ] 6. Standard Workflow
+- [ ] 7. Full Thesis Project Workflow
+- [ ] 8. Output Formats
+- [ ] 9. Reference Index
+- [ ] 10. Safety and Academic Integrity
+- [ ] 11. Upstream Acknowledgements
 
 ## Mode Coverage
 
@@ -72,3 +63,11 @@ license: MIT
 - [ ] DUAL_OPTIMIZATION exists.
 - [ ] AUTO_DIAGNOSIS exists.
 - [ ] ENGINEERING_SCIENCE_MODE exists.
+- [ ] REPORT_DRIVEN_MODE exists.
+- [ ] FULL_THESIS_PROJECT_MODE exists.
+- [ ] CHAPTER_TASK_MODE exists.
+- [ ] PROGRESS_TRACKING_MODE exists.
+- [ ] REVISION_LOG_MODE exists.
+- [ ] ITERATIVE_REVISION_MODE exists.
+- [ ] PROJECT_HANDOFF_MODE exists.
+- [ ] SKILL_SLIM_MODE exists.

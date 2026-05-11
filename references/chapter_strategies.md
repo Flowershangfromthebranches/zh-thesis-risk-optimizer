@@ -2,6 +2,8 @@
 
 Different thesis chapters need different risk strategies.
 
+For full-thesis projects, convert each chapter strategy into a `CHAPTER_TASK_MODE` task using `workflow/chapter_task_template.md`. Do not revise the whole thesis before chapter tasks are created.
+
 ## Abstract
 
 Risk:
@@ -110,3 +112,13 @@ Strategy:
 - List completed work based on actual chapters.
 - Keep real limitations.
 - Avoid broad future promises.
+
+## Project-Level Use
+
+When operating in `FULL_THESIS_PROJECT_MODE`:
+
+- Add each chapter to `THESIS_MASTER_OVERVIEW`.
+- Assign a status from `references/progress_tracking_rules.md`.
+- Mark high-risk, high-impact, safely editable chapters first.
+- Move citation-heavy, formula-heavy, or experiment-data-heavy chapters into human review if needed.
+- Update progress and revision logs after each chapter-level action.

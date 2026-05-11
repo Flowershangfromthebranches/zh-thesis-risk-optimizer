@@ -64,3 +64,12 @@ Use this checklist before final output.
 - [ ] Multiple matches are listed instead of silently choosing one.
 - [ ] Necessary citations remain visible.
 - [ ] Similarity-source content is not turned into uncited original writing.
+
+## Full-Thesis Project Checks
+
+- [ ] Complete thesis work starts with a master overview.
+- [ ] Chapter tasks exist before chapter revisions.
+- [ ] Progress states are updated after each major step.
+- [ ] Revision logs record mode, intensity, protected items, and human review items.
+- [ ] Iterative revision targets residual risk only.
+- [ ] Completed low-risk chapters are not repeatedly overhauled.

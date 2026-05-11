@@ -35,11 +35,26 @@
 - Do not promote detection evasion.
 - Separate user-provided report facts from the Skill's heuristic diagnosis.
 
+## v0.4 Full-Thesis Workflow Rules
+
+- `SKILL.md` must stay slim and function as a router, not a full rule library.
+- New complex rules should go in `references/`, not in `SKILL.md`.
+- Templates go in `workflow/`.
+- Execution prompts go in `prompts/`.
+- Examples go in `examples/`.
+- Do not promise specific AI-rate, similarity-rate, or detection-rate targets.
+- Do not promise external detection outcomes.
+- Full-thesis mode must not rewrite the whole thesis in one pass.
+- Always create an overview first, then chapter tasks, then prioritized paragraph work.
+- Low-confidence report mappings, citation-heavy paragraphs, and experiment-data-heavy paragraphs must enter human-review status.
+- Iterative optimization must not repeatedly overhaul completed chapters.
+- Progress tracking must record protected items and human review items.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.
 - README explains positioning, modes, limitations, upstream relationship, license, scoring disclaimer, and academic integrity.
 - NOTICE thanks upstream authors and records observed license status.
-- Prompts cover AIGC_ONLY, SIMILARITY_ONLY, DUAL_OPTIMIZATION, scoring diagnosis, sentence-level diagnosis, report-driven mapping, engineering/science mode, general academic mode, heatmap use, and checklist use.
-- Examples cover AIGC-only, similarity-only, dual optimization, engineering thesis, citation-heavy text, long-thesis workflow, scoring diagnosis, sentence-level localization, before/after comparison, report mapping, and report-driven revision.
-- Tests document structure checks, safety checks, scoring-output checks, report-mapping checks, and report-driven safety checks.
+- Prompts cover AIGC_ONLY, SIMILARITY_ONLY, DUAL_OPTIMIZATION, scoring diagnosis, sentence-level diagnosis, report-driven mapping, full-thesis project management, progress tracking, handoff, engineering/science mode, general academic mode, heatmap use, and checklist use.
+- Examples cover AIGC-only, similarity-only, dual optimization, engineering thesis, citation-heavy text, long-thesis workflow, scoring diagnosis, sentence-level localization, before/after comparison, report mapping, report-driven revision, full-thesis project setup, chapter tasks, progress tracking, iterative revision, project handoff, and Skill slimming.
+- Tests document structure checks, safety checks, scoring-output checks, report-mapping checks, report-driven safety checks, workflow-template checks, full-thesis project checks, and Skill slimming checks.

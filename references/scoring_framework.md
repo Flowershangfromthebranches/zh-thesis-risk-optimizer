@@ -150,3 +150,14 @@ When a report is provided, keep report values and heuristic scores separate:
 - Heuristic score: this Skill's writing-risk estimate.
 
 Output them in separate fields. Do not infer report percentages from heuristic scores, and do not claim that a revised heuristic score predicts a future report result.
+
+## Full-Thesis Scoring
+
+For long theses, avoid pretending the entire manuscript has a precise score. Prefer chapter-level and paragraph-level bands:
+
+- Low, medium, high, very high.
+- Heatmap rank.
+- Suggested mode.
+- Protection status.
+
+Use the score to prioritize work, not to promise a target.

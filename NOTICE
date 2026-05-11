@@ -64,6 +64,18 @@ Upstream inspiration and acknowledgements:
    AI_paper / 纸研社. This project reorganizes related ideas into a report-driven
    workflow for a Chinese thesis risk optimization Skill.
 
+7. Haimbeau1o/thesis-optimizer
+   Link: https://github.com/Haimbeau1o/thesis-optimizer
+   Observed license: MIT License, as displayed by the GitHub repository page
+   and root LICENSE file during review on 2026-05-11.
+   Inspired areas: two-layer document architecture, master overview documents,
+   chapter task documents, progress tracking, closed-loop iterative
+   optimization, and chapter status management.
+   Acknowledgement: thank you to the original author and contributors for
+   open-sourcing the project and providing full-thesis project optimization
+   ideas. This project only adapts project-management concepts and does not
+   copy templates, code, or long-form text.
+
 For upstream projects with explicit MIT licenses, this project preserves
 license awareness and attribution in this NOTICE. For upstream content without
 a clear license, this project only references public design ideas and does not
@@ -76,6 +88,11 @@ academic-integrity-first framing.
 This project does not copy code, configuration, or long-form text from
 lengsukq/ParaphrasingToolClient or Abnerla/AI_paper. For sources with unclear
 licensing, this project only references public design ideas.
+
+This project does not copy code, templates, or long-form text from
+Haimbeau1o/thesis-optimizer. It does not adopt that project's fixed detection
+rate target claims; this project does not promise any external detection
+system result.
 
 Academic integrity notice:
 
