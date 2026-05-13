@@ -18,6 +18,7 @@
 - 报告驱动映射：把用户提供的查重/AIGC 报告片段映射回论文原文。
 - 目标驱动多轮优化：支持用户设置相似度和 AIGC 目标阈值，并用报告趋势安排下一轮任务。
 - AIGC 反升防线：识别正式化润色、抽象名词膨胀、证据稀释等回归问题。
+- AIGC 专项控长修复：在查重已基本满足要求后，定点降低 AIGC 风险并控制全文增幅。
 - 工科/理科/计算机论文保护：保护公式、代码、接口、表名、字段名、参数和实验数据。
 - 全文项目管理：生成论文总览、章节任务、进度追踪、修改日志和项目交接摘要。
 - 迭代优化：根据新报告进行第二轮、第三轮定点处理，不反复大改低风险章节。
@@ -50,6 +51,20 @@
 - 加入真实内容增量机制，用模块、参数、接口、测试环境、结果数据和边界条件替代空泛模板句。
 - 加入 Web 漏洞扫描工具论文回归案例，明确 v0.4 只是历史参考，不是成功标准，v0.5 的形式化润色也不是高质量。
 
+## v0.7 AIGC 专项控长引擎
+
+`v0.7-aigc-focused-length-controlled-engine` 在查重相似风险已经基本满足用户要求时启用。它不再把继续降重作为主目标，而是聚焦 AIGC 高风险段落的定点修复。
+
+新增能力：
+
+- 当查重已达标或接近达标时，进入 AIGC-focused 模式。
+- 默认全文增幅控制在 0-2000 中文字；用户指定范围时以用户范围为准。
+- 新增长度预算控制和 Compression Pass，处理从约 17000 字扩到约 24000 字这类过度扩写。
+- 新增句子级 AIGC 定位，每段优先处理 1-3 个关键句，不做全文无差别重写。
+- 新增重复 AI 腔压缩、节奏/突发性控制、人工证据补充清单和保守修复模式。
+- 优先替换高风险句，不保留模板句后再追加解释。
+- 仍然不承诺任何检测平台结果。
+
 ## 快速开始
 
 ### 1. 完整论文自分析
@@ -76,6 +91,12 @@
 我的目标是查重相似度 <10%、AIGC <20%。下面是原文、当前稿、历史报告和新报告，请先做报告差异诊断，再进入 TARGETED_MULTIPASS_ENGINE，不要直接全文改写。
 ```
 
+### 5. AIGC 专项控长处理
+
+```text
+查重已经基本达标，下一步只重点降 AIGC。原文约 17000 字，当前稿约 24000 字，请进入 AIGC_FOCUSED_LENGTH_CONTROLLED，并把全文增幅控制在 0-2000 中文字内。
+```
+
 更多示例见 [QUICKSTART.md](QUICKSTART.md)。
 
 ## 支持模式
@@ -88,6 +109,13 @@
 | `DUAL_OPTIMIZATION` | 同时处理 AIGC 与相似风险 | 高风险段落、章节 |
 | `NO_REPORT_FALLBACK_WORKFLOW` | 无报告保底双降 | 无检测报告的正文 |
 | `TARGETED_MULTIPASS_ENGINE` | 目标驱动多轮闭环 | 原文、当前稿、历史稿、报告、目标阈值 |
+| `AIGC_FOCUSED_LENGTH_CONTROLLED` | AIGC 专项控长修复 | 查重已够用但 AIGC 仍高、字数扩写过多 |
+| `LENGTH_BUDGET_CONTROLLER` | 全文字数预算控制 | 完整论文、多章节改写稿 |
+| `SENTENCE_LEVEL_AIGC_LOCALIZER` | 句子级 AIGC 定位 | 高风险段落 |
+| `BURSTINESS_RHYTHM_CONTROL` | 节奏和突发性控制 | 过度平滑、过度均匀段落 |
+| `REPEATED_EXPRESSION_COMPRESSOR` | 重复 AI 腔压缩 | 全文重复表达扫描 |
+| `HUMAN_EVIDENCE_REQUEST` | 作者证据补充清单 | 信息不足但 AIGC 风险高 |
+| `CONSERVATIVE_AIGC_REPAIR` | 保守 AIGC 修复 | 信息不足且需要控字数 |
 | `REPORT_FEEDBACK_LOOP` | 新报告反馈分析 | 多轮查重/AIGC 报告 |
 | `AIGC_REGRESSION_GUARD` | AIGC 反升诊断 | 查重下降但 AIGC 上升的稿件 |
 | `CONTENT_SUBSTANCE_INJECTION` | 真实内容增量 | 信息密度不足的段落 |

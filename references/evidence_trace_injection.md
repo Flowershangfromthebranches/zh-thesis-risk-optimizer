@@ -6,6 +6,8 @@
 
 In v0.6, this mechanism is strengthened as content substance injection: the rewrite should increase evidence density when the source provides enough information.
 
+In v0.7, evidence injection must be budget-aware. Evidence should usually replace empty wording, not add long explanations after the original sentence.
+
 ## Allowed Sources
 
 Only use information from:
@@ -31,6 +33,15 @@ Only use information from:
 Evidence density means the amount of concrete technical material per 100 Chinese characters, such as modules, parameters, input/output relations, test conditions, result values, class names, methods, local addresses, and report fields.
 
 For high AIGC-risk paragraphs, do not only reduce template phrases. Try to increase evidence density using provided facts.
+
+## Budget-Aware Injection
+
+- Evidence injection is not unlimited expansion.
+- Prefer using existing evidence to replace empty sentences.
+- If evidence must be added, consume chapter budget first.
+- If the budget is insufficient, output `HUMAN_EVIDENCE_REQUEST` and do not keep expanding.
+- Do not explain every module in every paragraph; choose only evidence that directly helps the paragraph's AIGC risk.
+- Keep protected tokens such as code, parameters, paths, table names, and result values unchanged.
 
 ## Evidence Categories
 

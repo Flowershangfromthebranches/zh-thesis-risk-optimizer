@@ -26,6 +26,11 @@ Poor dual optimization often happens because:
 - Each round must end with one of: `COMPLETED`, `PARTIAL`, or `FAILED`.
 - Similarity improvement alone must not be treated as dual-optimization success.
 - If similarity improves but AIGC worsens, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
+- When the similarity target is already met, downgrade similarity repair to stability check.
+- When AIGC remains above the user target, switch the main flow to `AIGC_FOCUSED_LENGTH_CONTROLLED`.
+- Do not continue reducing similarity if that pushes total length beyond budget.
+- If similarity is acceptable but AIGC still needs work, mark `SIMILARITY_OK_AIGC_NEEDS_FOCUSED_REPAIR`.
+- If AIGC improves but the draft exceeds the length budget, mark `AIGC_IMPROVED_LENGTH_BUDGET_FAILED`.
 
 ### Similarity High, AIGC Low
 

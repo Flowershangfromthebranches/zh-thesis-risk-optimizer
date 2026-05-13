@@ -57,6 +57,19 @@ Use this checklist before final output.
 - [ ] Protected areas are clearly marked.
 - [ ] Missing evidence is listed as author supplementation instead of being fabricated.
 
+## v0.7 AIGC-Focused Length-Control Checks
+
+- [ ] Similarity is not still being aggressively reduced after it is already acceptable.
+- [ ] Whole-thesis growth stays within the user's budget, default 0-2000 Chinese characters.
+- [ ] AIGC repair uses replacement-based reconstruction instead of appending explanations.
+- [ ] Not every paragraph is expanded.
+- [ ] A length budget table is included for whole-thesis or multi-chapter work.
+- [ ] Sentence-level AIGC localization was performed before high-risk paragraph rewriting.
+- [ ] Repeated AI-like expressions were compressed or replaced.
+- [ ] Technical facts, protected tokens, and citations were preserved.
+- [ ] Missing evidence is listed for the author when needed.
+- [ ] Formalization regression phrases such as "持续演进", "深度嵌入", "赋能", "支撑", "机制", "体系", and "价值" are avoided unless technically necessary.
+
 ## Similarity-Risk Checks
 
 - [ ] High-repeat definitions were converted into thesis-specific explanations.

@@ -70,6 +70,17 @@ Mandatory rules:
 - If information is insufficient, output `建议作者补充：...` instead of inventing modules, data, interfaces, test results, or limitations.
 - Prefer module names, parameters, input/output relations, local test environments, result values, and supported limitations over words such as "体系", "机制", "价值", or "能力".
 
+## v0.7 Length-Controlled AIGC Rules
+
+- AIGC deep rewriting is not expansion.
+- Prefer replacing high-risk sentences instead of appending explanations after them.
+- If similarity is already acceptable, do not continue high-intensity similarity restructuring.
+- High-AIGC paragraphs must run sentence-level localization before L4/L5 rewriting.
+- Process at most 1-3 key sentences per paragraph when possible.
+- The length budget outranks nonessential detail supplementation.
+- The main AIGC-reduction methods are structure, rhythm, evidence density, and template removal, not simply adding content.
+- If an AIGC repair needs evidence that is not present, use `HUMAN_EVIDENCE_REQUEST` or `CONSERVATIVE_AIGC_REPAIR`.
+
 ## Safety Boundaries
 
 - Do not fabricate data, experiments, modules, interfaces, roles, test results, references, failures, or limitations.

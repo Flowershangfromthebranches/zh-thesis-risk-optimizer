@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.7.0-aigc-focused-length-controlled-engine
+
+- Added AIGC-focused length-controlled engine for cases where similarity reduction is already enough.
+- Added length budget controller with default whole-thesis growth of 0-2000 Chinese characters.
+- Added sentence-level AIGC localization, burstiness/rhythm control, repeated-expression compression, human evidence requests, and conservative AIGC repair.
+- Added AIGC-focused execution prompt and length compression pass prompt.
+- Added Web vulnerability scanner AIGC-focused length-control example and v0.7 regression tests.
+- Updated deep rewrite, evidence injection, arbitration, and quality checklist rules to prevent over-expansion.
+
 ## v0.6.0-targeted-multipass-engine
 
 - Added target-driven multi-pass workflow for similarity and AIGC goals.

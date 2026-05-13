@@ -1,6 +1,6 @@
 ---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with modes for targeted multi-pass revision, report-feedback loops, AIGC-regression guarding, similarity-risk revision, sentence-level diagnosis, full-thesis project management, and engineering/science thesis protection.
+description: Chinese thesis AIGC and similarity-risk optimization skill with modes for AIGC-focused length-controlled revision, targeted multi-pass revision, report-feedback loops, AIGC-regression guarding, sentence-level diagnosis, full-thesis project management, and engineering/science thesis protection.
 license: MIT
 ---
 
@@ -60,6 +60,13 @@ Do not use this Skill to:
 | 双降 | `DUAL_OPTIMIZATION` | `references/dual_optimization_arbitration.md`, `prompts/mode_dual_optimization.md` |
 | 无报告保底双降 | `NO_REPORT_FALLBACK_WORKFLOW` | `references/no_report_fallback_workflow.md`, `prompts/mode_no_report_dual_fallback.md` |
 | 目标驱动多轮双降 | `TARGETED_MULTIPASS_ENGINE` | `references/targeted_multipass_engine.md`, `prompts/mode_targeted_multipass.md` |
+| 查重够用后继续降 AIGC | `AIGC_FOCUSED_LENGTH_CONTROLLED` | `references/aigc_focused_length_controlled_engine.md`, `prompts/mode_aigc_focused_length_controlled.md` |
+| 全文字数预算控制 | `LENGTH_BUDGET_CONTROLLER` | `references/length_budget_controller.md`, `prompts/mode_length_compression_pass.md` |
+| 句子级 AIGC 定位 | `SENTENCE_LEVEL_AIGC_LOCALIZER` | `references/sentence_level_aigc_localizer.md` |
+| 节奏和突发性控制 | `BURSTINESS_RHYTHM_CONTROL` | `references/burstiness_rhythm_control.md` |
+| 重复 AI 腔压缩 | `REPEATED_EXPRESSION_COMPRESSOR` | `references/repeated_expression_compressor.md` |
+| 作者证据补充 | `HUMAN_EVIDENCE_REQUEST` | `references/human_evidence_request.md` |
+| 信息不足保守修复 | `CONSERVATIVE_AIGC_REPAIR` | `references/conservative_aigc_repair.md` |
 | 用户目标阈值 | `OPTIMIZATION_TARGETS` | `references/optimization_targets.md` |
 | 新报告反馈闭环 | `REPORT_FEEDBACK_LOOP` | `references/report_feedback_loop.md`, `prompts/mode_targeted_multipass.md` |
 | AIGC 反升防线 | `AIGC_REGRESSION_GUARD` | `references/aigc_regression_guard.md` |
@@ -98,18 +105,21 @@ Do not use this Skill to:
 1. Identify input type: thesis text, chapter, report fragment, full report, full thesis, or project handoff document.
 2. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, experiment data, and no-edit zones.
 3. If the user gives explicit targets such as similarity `<10%` and AIGC `<20%`, use `TARGETED_MULTIPASS_ENGINE`.
-4. If the user provides multiple reports or historical drafts, run report difference analysis before revising.
-5. If the new version has higher AIGC risk than an earlier version, diagnose the failure cause before continuing revision.
-6. If similarity decreases but AIGC increases, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
-7. If deep rewriting lacks enough real evidence, output an author supplementation list instead of fabricating details.
-8. Choose mode with the router.
-9. Output diagnosis, scoring, mapping, or project overview before revision.
-10. For full theses, generate master overview and chapter tasks before any chapter revision.
-11. Revise locally by paragraph/sentence/task priority.
-12. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
-13. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
-14. Run citation, technical, data, and safety self-checks.
-15. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
+4. If similarity is already acceptable and the user asks to keep reducing AIGC or control over-expansion, use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
+5. If the revised draft exceeds the length budget, run `LENGTH_BUDGET_CONTROLLER` and Compression Pass.
+6. If the user provides multiple reports or historical drafts, run report difference analysis before revising.
+7. If the new version has higher AIGC risk than an earlier version, diagnose the failure cause before continuing revision.
+8. If similarity decreases but AIGC increases, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
+9. If deep rewriting lacks enough real evidence, output an author supplementation list or use conservative repair instead of fabricating details.
+10. Choose mode with the router.
+11. Output diagnosis, scoring, mapping, or project overview before revision.
+12. For full theses, generate master overview and chapter tasks before any chapter revision.
+13. Revise locally by paragraph/sentence/task priority.
+14. For AIGC-heavy text, run sentence-level localization and process only the key 1-3 sentences per paragraph when possible.
+15. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
+16. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
+17. Run citation, technical, data, and safety self-checks.
+18. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
 
 ## 7. Full Thesis Project Workflow
 
@@ -170,6 +180,14 @@ Core diagnosis and revision:
 
 - `references/aigc_pattern_library.md`
 - `references/aigc_deep_rewrite_engine.md`
+- `references/aigc_focused_length_controlled_engine.md`
+- `references/length_budget_controller.md`
+- `references/aigc_focused_rewrite_strategy.md`
+- `references/sentence_level_aigc_localizer.md`
+- `references/burstiness_rhythm_control.md`
+- `references/repeated_expression_compressor.md`
+- `references/human_evidence_request.md`
+- `references/conservative_aigc_repair.md`
 - `references/targeted_multipass_engine.md`
 - `references/optimization_targets.md`
 - `references/aigc_regression_guard.md`

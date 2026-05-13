@@ -51,6 +51,10 @@ For Codex, Claude Code, Copilot, or similar agents:
 我的目标是查重相似度 <10%、AIGC <20%。请读取原文、当前稿、历史报告和新报告，先做报告差异诊断，再生成 TARGETED_MULTIPASS_ENGINE 下一轮任务表。
 ```
 
+```text
+查重已经基本达标，当前稿比原文扩写太多。请进入 AIGC_FOCUSED_LENGTH_CONTROLLED，把全文增幅控制在 0-2000 中文字内，先输出 AIGC 热点句表和长度预算表。
+```
+
 ## 4. Full Thesis Workflow
 
 1. Provide the full thesis or chaptered text.
@@ -86,7 +90,20 @@ Use this when the user provides targets and multi-round reports.
 6. Output next-pass task table.
 7. Treat targets as goals, not guaranteed results.
 
-## 7. Similarity Report Workflow
+## 7. AIGC-Focused Length-Control Workflow
+
+Use this when similarity reduction is already enough but AIGC risk remains high.
+
+1. Use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
+2. Downgrade similarity handling to stability check.
+3. Run sentence-level AIGC localization.
+4. Compress repeated AI-like expressions.
+5. Use replacement-based repair instead of appending explanations.
+6. Keep the total growth within the user's budget, default 0-2000 Chinese characters.
+7. If the draft exceeds budget, run `LENGTH_COMPRESSION_PASS`.
+8. If evidence is missing, output `HUMAN_EVIDENCE_REQUEST` or use conservative repair.
+
+## 8. Similarity Report Workflow
 
 1. Provide thesis source text and report fragments.
 2. Use `REPORT_SIMILARITY_ONLY`.
@@ -98,7 +115,7 @@ Use this when the user provides targets and multi-round reports.
 8. In dual-risk cases, run `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`.
 9. After similarity revision, run AIGC deep rewrite and safety review before rechecking.
 
-## 8. AIGC Report Workflow
+## 9. AIGC Report Workflow
 
 1. Provide thesis source text and AIGC report fragments.
 2. Use `REPORT_AIGC_ONLY`.
@@ -108,7 +125,7 @@ Use this when the user provides targets and multi-round reports.
 6. Revise locally and compare heuristic writing-risk scores.
 7. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
 
-## 9. Engineering / Science / CS Notes
+## 10. Engineering / Science / CS Notes
 
 Always protect:
 
@@ -120,7 +137,7 @@ Always protect:
 - Experiment data, metrics, and chart numbers.
 - Model, algorithm, dataset, and protocol names.
 
-## 10. Common Misuse
+## 11. Common Misuse
 
 Do not use this Skill to:
 
@@ -130,7 +147,8 @@ Do not use this Skill to:
 - Attack or reverse engineer detection systems.
 - Rewrite formulas, code, identifiers, or experiment values for style.
 - Repeatedly rewrite already completed low-risk chapters.
+- Expand every paragraph to reduce AIGC risk.
 
-## 11. Academic Integrity Reminder
+## 12. Academic Integrity Reminder
 
 If a sentence depends on a source, keep the citation boundary visible. If a report fragment cannot be mapped confidently, ask for more context before revising. If technical facts are unclear, flag them for human review instead of inventing a fix.

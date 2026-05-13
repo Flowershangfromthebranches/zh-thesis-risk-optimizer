@@ -88,6 +88,17 @@
 - AIGC regression guard must run when a rewrite becomes more formal, smoother, or less concrete.
 - Completion requires report trend improvement plus no factual, citation, data, or technical damage.
 
+## v0.7 AIGC-Focused Length-Control Rules
+
+- When similarity is already acceptable, do not keep similarity reduction as the main objective.
+- AIGC-focused work must use a whole-thesis length budget, default 0-2000 added Chinese characters.
+- Prefer replacement-based reconstruction over append-based expansion.
+- Sentence-level AIGC localization should precede high-risk paragraph rewriting.
+- Process only key high-risk sentences when possible; do not rewrite every sentence by default.
+- If the draft exceeds the budget, run Compression Pass before marking completion.
+- Missing evidence should trigger author questions or conservative repair, not invented detail.
+- Repeated AI-like expressions should be compressed to create budget for necessary evidence.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.
