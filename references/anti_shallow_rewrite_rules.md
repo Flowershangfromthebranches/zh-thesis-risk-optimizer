@@ -18,6 +18,13 @@ The following are invalid when used alone:
 8. Only changing active voice to passive voice.
 9. Only deleting a few connectors.
 10. Only turning formal prose into casual prose.
+11. Replacing plain words with more formal "advanced" words.
+12. Merging sentences into longer and smoother academic sentences.
+13. Formal polishing that increases abstraction without adding evidence.
+14. Stacking abstract nouns.
+15. Lowering similarity risk without checking AIGC regression.
+16. Deleting concrete technical objects.
+17. Replacing implementation details with vague words such as "机制", "体系", "能力", or "价值".
 
 ## Effective Rewrite Requirements
 
@@ -31,6 +38,8 @@ A valid rewrite must satisfy at least two:
 - Compress repeated definitions.
 - Clarify the thesis-specific context.
 - Replace generic conclusion with a concrete transition or boundary.
+- Increase evidence density without fabricating facts.
+- Preserve concrete technical objects rather than abstracting them away.
 
 ## Relation To SKILL.md
 

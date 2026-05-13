@@ -18,6 +18,7 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] Files referenced from `SKILL.md` under `references/` exist.
 - [ ] Files referenced from `SKILL.md` under `prompts/` exist.
 - [ ] Files referenced from `SKILL.md` under `workflow/` exist.
+- [ ] v0.6 target-driven routes point to existing files.
 
 ## Repository Docs
 
@@ -34,3 +35,4 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] The project does not promote detection evasion.
 - [ ] The project does not promise fixed reduction percentages.
 - [ ] The project does not support forged reports, data, experiments, citations, sources, or risk levels.
+- [ ] Targets such as similarity below 10% and AIGC below 20% are described as goals, not guarantees.

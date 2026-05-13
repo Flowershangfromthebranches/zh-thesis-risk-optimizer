@@ -47,6 +47,10 @@ For Codex, Claude Code, Copilot, or similar agents:
 请用 AIGC_DEEP_REWRITE_ENGINE 深度改写下面段落，先列出保留事实和禁止改动项。
 ```
 
+```text
+我的目标是查重相似度 <10%、AIGC <20%。请读取原文、当前稿、历史报告和新报告，先做报告差异诊断，再生成 TARGETED_MULTIPASS_ENGINE 下一轮任务表。
+```
+
 ## 4. Full Thesis Workflow
 
 1. Provide the full thesis or chaptered text.
@@ -70,7 +74,19 @@ When no report is available, do not ask the Skill to promise actual detection ch
 6. Run pass two for AIGC deep rewrite and self-audit.
 7. Mark remaining uncertainty as needing report-based localization.
 
-## 6. Similarity Report Workflow
+## 6. Targeted Multipass Workflow
+
+Use this when the user provides targets and multi-round reports.
+
+1. Use `TARGETED_MULTIPASS_ENGINE`.
+2. Record only user-provided metrics.
+3. Compare original, current, and historical drafts.
+4. If AIGC rises after similarity revision, run `AIGC_REGRESSION_GUARD`.
+5. Increase evidence density using existing thesis facts.
+6. Output next-pass task table.
+7. Treat targets as goals, not guaranteed results.
+
+## 7. Similarity Report Workflow
 
 1. Provide thesis source text and report fragments.
 2. Use `REPORT_SIMILARITY_ONLY`.
@@ -82,7 +98,7 @@ When no report is available, do not ask the Skill to promise actual detection ch
 8. In dual-risk cases, run `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`.
 9. After similarity revision, run AIGC deep rewrite and safety review before rechecking.
 
-## 7. AIGC Report Workflow
+## 8. AIGC Report Workflow
 
 1. Provide thesis source text and AIGC report fragments.
 2. Use `REPORT_AIGC_ONLY`.
@@ -92,7 +108,7 @@ When no report is available, do not ask the Skill to promise actual detection ch
 6. Revise locally and compare heuristic writing-risk scores.
 7. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
 
-## 8. Engineering / Science / CS Notes
+## 9. Engineering / Science / CS Notes
 
 Always protect:
 
@@ -104,7 +120,7 @@ Always protect:
 - Experiment data, metrics, and chart numbers.
 - Model, algorithm, dataset, and protocol names.
 
-## 9. Common Misuse
+## 10. Common Misuse
 
 Do not use this Skill to:
 
@@ -115,6 +131,6 @@ Do not use this Skill to:
 - Rewrite formulas, code, identifiers, or experiment values for style.
 - Repeatedly rewrite already completed low-risk chapters.
 
-## 10. Academic Integrity Reminder
+## 11. Academic Integrity Reminder
 
 If a sentence depends on a source, keep the citation boundary visible. If a report fragment cannot be mapped confidently, ask for more context before revising. If technical facts are unclear, flag them for human review instead of inventing a fix.

@@ -37,7 +37,7 @@ Expected:
 ```yaml
 ---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with modes for AIGC-risk revision, similarity-risk revision, report-driven mapping, sentence-level diagnosis, full-thesis project management, progress tracking, and engineering/science thesis protection.
+description: Chinese thesis AIGC and similarity-risk optimization skill with modes for targeted multi-pass revision, report-feedback loops, AIGC-regression guarding, similarity-risk revision, sentence-level diagnosis, full-thesis project management, and engineering/science thesis protection.
 license: MIT
 ---
 ```
@@ -60,6 +60,10 @@ license: MIT
 
 - [ ] AIGC_ONLY exists.
 - [ ] AIGC_DEEP_REWRITE_ENGINE exists.
+- [ ] TARGETED_MULTIPASS_ENGINE exists.
+- [ ] REPORT_FEEDBACK_LOOP exists.
+- [ ] AIGC_REGRESSION_GUARD exists.
+- [ ] CONTENT_SUBSTANCE_INJECTION exists.
 - [ ] SIMILARITY_ONLY exists.
 - [ ] DUAL_OPTIMIZATION exists.
 - [ ] NO_REPORT_FALLBACK_WORKFLOW exists.

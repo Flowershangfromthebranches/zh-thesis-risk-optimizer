@@ -18,6 +18,15 @@ Poor dual optimization often happens because:
 
 ## Arbitration Rules
 
+### Target Arbitration
+
+- When the user target is similarity below 10%, prioritize high-contribution similarity fragments first.
+- When the user target is AIGC below 20%, run `AIGC_REGRESSION_GUARD` after every substantial rewrite.
+- When the two targets conflict, do not sacrifice facts, citations, data, code, formulas, or technical identifiers.
+- Each round must end with one of: `COMPLETED`, `PARTIAL`, or `FAILED`.
+- Similarity improvement alone must not be treated as dual-optimization success.
+- If similarity improves but AIGC worsens, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
+
 ### Similarity High, AIGC Low
 
 Use `SIMILARITY_ONLY`. Focus on source expression, citation boundaries, and thesis-specific framing. Do not over-stylize.

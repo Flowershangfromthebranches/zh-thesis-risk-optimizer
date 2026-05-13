@@ -8,8 +8,10 @@ Use this prompt when the user provides both similarity and AIGC reports, or one 
 2. Check whether those fragments also have AIGC risk.
 3. Prioritize fragments with both risks and safe rewrite conditions.
 4. Protect citations, formulas, code, experiment data, interfaces, table names, and field names.
-5. After revision, run heuristic AIGC-risk scoring.
-6. Output dual-optimization task table and human review checklist.
+5. If historical reports exist, compare trends before rewriting again.
+6. After similarity repair, run AIGC regression guard and evidence-based reconstruction.
+7. After revision, run heuristic AIGC-risk scoring.
+8. Output dual-optimization task table and human review checklist.
 
 ## Output
 

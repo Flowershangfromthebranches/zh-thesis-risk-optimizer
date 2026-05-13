@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v0.6.0-targeted-multipass-engine
+
+- Added target-driven multi-pass workflow for similarity and AIGC goals.
+- Added optimization target interpretation with explicit non-guarantee boundaries.
+- Added report feedback loop for multi-round report comparison.
+- Added AIGC regression guard for formalization, over-smoothing, abstract noun inflation, and evidence dilution.
+- Added content substance injection and evidence-density rules.
+- Added paragraph-type strategies for abstract, background, literature review, technology overview, feasibility, design, testing, and conclusion.
+- Added similarity below 10 and AIGC below 20 specialty strategies as user-goal workflows.
+- Added Web vulnerability scanner regression case and v0.6 targeted multipass tests.
+
 ## v0.5.0-effective-rewrite-engine
 
 - Added AIGC deep rewrite engine for structure, rhythm, specificity, and argument rebuilding.

@@ -57,6 +57,19 @@
 10. Reorganize meaning, not words.
     At least one of sentence structure, information order, or argument angle must change. Replacing "通过" with "借助" is not enough.
 
+## v0.6 Specificity Requirements
+
+Deep rewriting must not turn ordinary wording into more abstract, high-register prose. A paragraph that becomes smoother but loses concrete objects is a failed rewrite.
+
+Mandatory rules:
+
+- Do not replace common expressions with grander abstract phrases just to look academic.
+- Do not output pure polishing as deep rewriting.
+- Deep rewriting must increase specificity.
+- Each high-risk paragraph should introduce at least one concrete object or boundary from the available source.
+- If information is insufficient, output `建议作者补充：...` instead of inventing modules, data, interfaces, test results, or limitations.
+- Prefer module names, parameters, input/output relations, local test environments, result values, and supported limitations over words such as "体系", "机制", "价值", or "能力".
+
 ## Safety Boundaries
 
 - Do not fabricate data, experiments, modules, interfaces, roles, test results, references, failures, or limitations.

@@ -45,6 +45,18 @@ Use this checklist before final output.
 - [ ] Post-rewrite AIGC self-audit was performed for substantial rewrites.
 - [ ] If three or more AI-risk items remain, second-pass rewrite was triggered.
 
+## v0.6 Targeted Multipass Checks
+
+- [ ] User targets are treated as optimization goals, not guaranteed detection results.
+- [ ] The output checks whether the draft is moving toward the user targets.
+- [ ] The output flags cases where similarity improved but AIGC worsened.
+- [ ] Formalization regression was checked.
+- [ ] Evidence density increased where source evidence exists.
+- [ ] Citations and technical details were preserved.
+- [ ] A next-pass task table exists when targets are not reached.
+- [ ] Protected areas are clearly marked.
+- [ ] Missing evidence is listed as author supplementation instead of being fabricated.
+
 ## Similarity-Risk Checks
 
 - [ ] High-repeat definitions were converted into thesis-specific explanations.

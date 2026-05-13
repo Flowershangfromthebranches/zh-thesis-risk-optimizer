@@ -1,6 +1,6 @@
 ---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with modes for AIGC-risk revision, similarity-risk revision, report-driven mapping, sentence-level diagnosis, full-thesis project management, progress tracking, and engineering/science thesis protection.
+description: Chinese thesis AIGC and similarity-risk optimization skill with modes for targeted multi-pass revision, report-feedback loops, AIGC-regression guarding, similarity-risk revision, sentence-level diagnosis, full-thesis project management, and engineering/science thesis protection.
 license: MIT
 ---
 
@@ -59,6 +59,14 @@ Do not use this Skill to:
 | 只降查重 | `SIMILARITY_ONLY` | `references/similarity_reduction_strategy.md`, `prompts/mode_similarity_only.md` |
 | 双降 | `DUAL_OPTIMIZATION` | `references/dual_optimization_arbitration.md`, `prompts/mode_dual_optimization.md` |
 | 无报告保底双降 | `NO_REPORT_FALLBACK_WORKFLOW` | `references/no_report_fallback_workflow.md`, `prompts/mode_no_report_dual_fallback.md` |
+| 目标驱动多轮双降 | `TARGETED_MULTIPASS_ENGINE` | `references/targeted_multipass_engine.md`, `prompts/mode_targeted_multipass.md` |
+| 用户目标阈值 | `OPTIMIZATION_TARGETS` | `references/optimization_targets.md` |
+| 新报告反馈闭环 | `REPORT_FEEDBACK_LOOP` | `references/report_feedback_loop.md`, `prompts/mode_targeted_multipass.md` |
+| AIGC 反升防线 | `AIGC_REGRESSION_GUARD` | `references/aigc_regression_guard.md` |
+| 真实内容增量 | `CONTENT_SUBSTANCE_INJECTION` | `references/content_substance_injection.md` |
+| 相似度目标专项 | `SIMILARITY_BELOW_10_STRATEGY` | `references/similarity_below_10_strategy.md` |
+| AIGC 目标专项 | `AIGC_BELOW_20_STRATEGY` | `references/aigc_below_20_strategy.md` |
+| 段落类型分流 | `PARAGRAPH_TYPE_STRATEGIES` | `references/paragraph_type_strategies.md` |
 | 自动诊断 | `AUTO_DIAGNOSIS` | `references/scoring_framework.md`, `references/chapter_strategies.md` |
 | 工科/理科/计算机论文 | `ENGINEERING_SCIENCE_MODE` | `references/protected_terms_rules.md`, `prompts/mode_engineering_science.md` |
 | 先评分诊断 | `SCORING_DIAGNOSIS_MODE` | `references/scoring_framework.md`, `prompts/mode_scoring_diagnosis.md` |
@@ -89,14 +97,19 @@ Do not use this Skill to:
 
 1. Identify input type: thesis text, chapter, report fragment, full report, full thesis, or project handoff document.
 2. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, experiment data, and no-edit zones.
-3. Choose mode with the router.
-4. Output diagnosis, scoring, mapping, or project overview before revision.
-5. For full theses, generate master overview and chapter tasks before any chapter revision.
-6. Revise locally by paragraph/sentence/task priority.
-7. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
-8. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
-9. Run citation, technical, data, and safety self-checks.
-10. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
+3. If the user gives explicit targets such as similarity `<10%` and AIGC `<20%`, use `TARGETED_MULTIPASS_ENGINE`.
+4. If the user provides multiple reports or historical drafts, run report difference analysis before revising.
+5. If the new version has higher AIGC risk than an earlier version, diagnose the failure cause before continuing revision.
+6. If similarity decreases but AIGC increases, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
+7. If deep rewriting lacks enough real evidence, output an author supplementation list instead of fabricating details.
+8. Choose mode with the router.
+9. Output diagnosis, scoring, mapping, or project overview before revision.
+10. For full theses, generate master overview and chapter tasks before any chapter revision.
+11. Revise locally by paragraph/sentence/task priority.
+12. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
+13. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
+14. Run citation, technical, data, and safety self-checks.
+15. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
 
 ## 7. Full Thesis Project Workflow
 
@@ -157,6 +170,13 @@ Core diagnosis and revision:
 
 - `references/aigc_pattern_library.md`
 - `references/aigc_deep_rewrite_engine.md`
+- `references/targeted_multipass_engine.md`
+- `references/optimization_targets.md`
+- `references/aigc_regression_guard.md`
+- `references/content_substance_injection.md`
+- `references/paragraph_type_strategies.md`
+- `references/similarity_below_10_strategy.md`
+- `references/aigc_below_20_strategy.md`
 - `references/structure_rebuilding_rules.md`
 - `references/evidence_trace_injection.md`
 - `references/dual_optimization_arbitration.md`
@@ -184,6 +204,7 @@ Report-driven workflow:
 - `references/similarity_source_handling.md`
 - `references/report_driven_priority_rules.md`
 - `references/report_safety_and_integrity.md`
+- `references/report_feedback_loop.md`
 
 Full-thesis project workflow:
 

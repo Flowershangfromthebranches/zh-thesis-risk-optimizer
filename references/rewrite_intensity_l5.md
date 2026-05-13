@@ -39,6 +39,10 @@ Requirements:
 - Output preserved fact list.
 - Output no-change list.
 - Do not fabricate.
+- Increase evidence density using provided facts.
+- Run AIGC regression guard before accepting the final version.
+
+Do not use L5 to produce smoother but more abstract prose. If the paragraph lacks enough evidence for L5, ask the author to supplement evidence instead of inventing it.
 
 ## Relation To SKILL.md
 

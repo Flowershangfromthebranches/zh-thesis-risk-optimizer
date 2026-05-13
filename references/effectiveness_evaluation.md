@@ -27,6 +27,16 @@ An effective rewrite should show:
 - Preserved citations and data.
 - No fabricated facts.
 - AIGC self-audit below second-pass threshold.
+- No formalization regression after similarity reduction.
+- Evidence density increased when source evidence exists.
+
+## v0.6 Regression Lesson
+
+The Web vulnerability scanner regression case shows that similarity improvement alone is not enough. A draft can reduce repeated expressions while increasing AIGC risk if it replaces concrete thesis content with smoother and more abstract wording.
+
+Treat v0.4 historical improvement as a partial reference only, not a success standard. Treat v0.5-style formalization as a failure signal when AIGC rises.
+
+Use `references/report_feedback_loop.md` and `references/aigc_regression_guard.md` before accepting another rewrite round.
 
 ## Boundary
 

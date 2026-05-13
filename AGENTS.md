@@ -77,6 +77,17 @@
 - If the self-audit hits three or more AI-risk items, run a second-pass rewrite.
 - Technical facts, citation boundaries, data, conclusions, formulas, code, interfaces, table names, fields, and parameters still outrank rewrite aggressiveness.
 
+## v0.6 Targeted Multipass Rules
+
+- User targets such as similarity below 10% and AIGC below 20% are goals, not guarantees.
+- If a new report shows similarity improved but AIGC worsened, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
+- Do not treat v0.4 historical improvement as a success standard.
+- Do not treat v0.5-style formalization as quality improvement.
+- Run report difference diagnosis before another rewrite when historical reports are available.
+- Use existing evidence before rewriting; ask for author supplementation when evidence is missing.
+- AIGC regression guard must run when a rewrite becomes more formal, smoother, or less concrete.
+- Completion requires report trend improvement plus no factual, citation, data, or technical damage.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.

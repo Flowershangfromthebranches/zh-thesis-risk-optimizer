@@ -4,6 +4,8 @@
 
 `EVIDENCE_AND_TRACE_INJECTION` increases concrete research trace without fabricating content.
 
+In v0.6, this mechanism is strengthened as content substance injection: the rewrite should increase evidence density when the source provides enough information.
+
 ## Allowed Sources
 
 Only use information from:
@@ -23,6 +25,50 @@ Only use information from:
 - Under which condition a conclusion applies.
 - What limitation is already implied by the user's data or text.
 - How a result supports a conclusion.
+
+## Evidence Density
+
+Evidence density means the amount of concrete technical material per 100 Chinese characters, such as modules, parameters, input/output relations, test conditions, result values, class names, methods, local addresses, and report fields.
+
+For high AIGC-risk paragraphs, do not only reduce template phrases. Try to increase evidence density using provided facts.
+
+## Evidence Categories
+
+### Existing Evidence
+
+Use directly when provided:
+
+- Class names.
+- Method names.
+- Parameters.
+- Local addresses.
+- Test counts.
+- Vulnerability counts.
+- Report fields.
+- Database fields.
+- Dependency library versions.
+- Module names and input/output relations.
+
+### Author-Supplied Evidence
+
+Ask for these when missing:
+
+- Why a library was chosen.
+- Why a parameter was set.
+- How the test sample was built.
+- What false-positive or false-negative cases appeared.
+- What limitation the current implementation has.
+
+### Forbidden Evidence
+
+Do not invent:
+
+- Untested data.
+- Missing interfaces.
+- Unused algorithms.
+- Unprovided runtime logs.
+- Uncited literature claims.
+- Nonexistent comparison experiments.
 
 ## Forbidden Injections
 

@@ -16,10 +16,14 @@ Every substantial rewrite should be checked for remaining AIGC-style risk.
 8. Does it include real process, boundary, or limitation from the source?
 9. Does the rewritten version sound more AI-like than the original?
 10. Did it damage citations, terms, data, or conclusions?
+11. Did it replace concrete objects with abstract nouns?
+12. Did it create formalization regression after similarity repair?
 
 ## Second-Pass Trigger
 
 If 3 or more questions are answered "yes", run `SECOND_PASS_REWRITE_REQUIREMENT`.
+
+If the paragraph also matches three or more categories in `references/aigc_regression_guard.md`, mark `AIGC_REGRESSION_FAIL` and do not accept it as final text.
 
 ## Output
 
