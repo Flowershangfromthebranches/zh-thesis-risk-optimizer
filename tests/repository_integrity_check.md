@@ -1,0 +1,36 @@
+# Repository Integrity Check
+
+Use this checklist before publishing documentation cleanup releases.
+
+## Markdown Format
+
+- [ ] `README.md` is normal multi-line Markdown.
+- [ ] `SKILL.md` is normal multi-line Markdown.
+- [ ] `NOTICE` is normal multi-line text/Markdown.
+- [ ] `AGENTS.md` is normal multi-line Markdown.
+- [ ] Markdown tables have line breaks.
+- [ ] Code blocks are closed.
+
+## SKILL.md
+
+- [ ] `SKILL.md` frontmatter is valid YAML.
+- [ ] `SKILL.md` remains a concise routing document.
+- [ ] Files referenced from `SKILL.md` under `references/` exist.
+- [ ] Files referenced from `SKILL.md` under `prompts/` exist.
+- [ ] Files referenced from `SKILL.md` under `workflow/` exist.
+
+## Repository Docs
+
+- [ ] README is concise and user-facing.
+- [ ] Detailed version notes live in `CHANGELOG.md`.
+- [ ] `QUICKSTART.md` exists.
+- [ ] `THIRD_PARTY_NOTICES.md` exists.
+- [ ] NOTICE is concise and points to third-party notices.
+- [ ] Third-party notices record links, license observations, referenced ideas, code-copy status, and thanks.
+
+## Safety
+
+- [ ] The project does not promise external detection outcomes.
+- [ ] The project does not promote detection evasion.
+- [ ] The project does not promise fixed reduction percentages.
+- [ ] The project does not support forged reports, data, experiments, citations, sources, or risk levels.

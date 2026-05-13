@@ -149,7 +149,7 @@ When running similarity-risk scoring, treat these signals as heuristic features:
 
 - Use SIMILARITY_ONLY when expression is source-close but not mechanically written.
 - Use AIGC_ONLY when the paragraph is original but template-like.
-- Use DUAL_OPTIMIZATION when both risks appear.
+- Use DUAL_OPTIMIZATION when both risks appear, then run a post-rewrite AIGC self-audit after similarity repair.
 - Recommend no modification when the paragraph is precise, cited, and technically constrained.
 
 ## Report-Driven Similarity Handling
@@ -164,3 +164,12 @@ When a similarity report is provided:
 6. For LOW or UNMAPPED mappings, request source context before rewriting.
 
 Do not invent report percentages, source names, URLs, or risk levels.
+
+## Dual-Optimization Follow-Up
+
+Similarity repair can accidentally create smoother, more template-like prose. In dual mode:
+
+1. Repair source-close expression first.
+2. Preserve citations and source boundaries.
+3. Run `references/post_rewrite_aigc_self_audit.md`.
+4. If the audit still finds three or more AI-like risks, use `prompts/mode_second_pass_rewrite.md`.

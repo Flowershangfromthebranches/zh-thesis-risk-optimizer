@@ -59,15 +59,20 @@ license: MIT
 ## Mode Coverage
 
 - [ ] AIGC_ONLY exists.
+- [ ] AIGC_DEEP_REWRITE_ENGINE exists.
 - [ ] SIMILARITY_ONLY exists.
 - [ ] DUAL_OPTIMIZATION exists.
+- [ ] NO_REPORT_FALLBACK_WORKFLOW exists.
 - [ ] AUTO_DIAGNOSIS exists.
 - [ ] ENGINEERING_SCIENCE_MODE exists.
 - [ ] REPORT_DRIVEN_MODE exists.
+- [ ] REPORT_DRIVEN_MULTI_PASS_WORKFLOW exists.
 - [ ] FULL_THESIS_PROJECT_MODE exists.
 - [ ] CHAPTER_TASK_MODE exists.
 - [ ] PROGRESS_TRACKING_MODE exists.
 - [ ] REVISION_LOG_MODE exists.
 - [ ] ITERATIVE_REVISION_MODE exists.
+- [ ] POST_REWRITE_AIGC_SELF_AUDIT exists.
+- [ ] SECOND_PASS_REWRITE_REQUIREMENT exists.
 - [ ] PROJECT_HANDOFF_MODE exists.
 - [ ] SKILL_SLIM_MODE exists.

@@ -39,6 +39,11 @@ Use this checklist before final output.
 - [ ] Empty positive endings were removed or made evidence-based.
 - [ ] Vague attribution was replaced with citation reminders or concrete source boundaries.
 - [ ] Sentence rhythm varies naturally without becoming casual.
+- [ ] The rewrite is not only synonym replacement, connector replacement, or word-order shuffling.
+- [ ] High-risk AIGC paragraphs changed at least two of: information order, sentence relationship, concrete object density, generic conclusion, supported boundary.
+- [ ] L3-L5 rewrites include preserved facts and no-change items where needed.
+- [ ] Post-rewrite AIGC self-audit was performed for substantial rewrites.
+- [ ] If three or more AI-risk items remain, second-pass rewrite was triggered.
 
 ## Similarity-Risk Checks
 

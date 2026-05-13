@@ -55,17 +55,21 @@ Do not use this Skill to:
 | User intent | Mode | Main references |
 |---|---|---|
 | 只降 AIGC | `AIGC_ONLY` | `references/aigc_pattern_library.md`, `prompts/mode_aigc_only.md` |
+| AIGC 深度改写 | `AIGC_DEEP_REWRITE_ENGINE` | `references/aigc_deep_rewrite_engine.md`, `prompts/mode_aigc_deep_rewrite.md` |
 | 只降查重 | `SIMILARITY_ONLY` | `references/similarity_reduction_strategy.md`, `prompts/mode_similarity_only.md` |
-| 双降 | `DUAL_OPTIMIZATION` | `prompts/mode_dual_optimization.md` |
+| 双降 | `DUAL_OPTIMIZATION` | `references/dual_optimization_arbitration.md`, `prompts/mode_dual_optimization.md` |
+| 无报告保底双降 | `NO_REPORT_FALLBACK_WORKFLOW` | `references/no_report_fallback_workflow.md`, `prompts/mode_no_report_dual_fallback.md` |
 | 自动诊断 | `AUTO_DIAGNOSIS` | `references/scoring_framework.md`, `references/chapter_strategies.md` |
 | 工科/理科/计算机论文 | `ENGINEERING_SCIENCE_MODE` | `references/protected_terms_rules.md`, `prompts/mode_engineering_science.md` |
 | 先评分诊断 | `SCORING_DIAGNOSIS_MODE` | `references/scoring_framework.md`, `prompts/mode_scoring_diagnosis.md` |
 | 句子级定位 | `SENTENCE_LEVEL_DIAGNOSIS_MODE` | `references/sentence_level_diagnosis.md`, `references/risk_labels.md` |
 | 改写前后评分对比 | `BEFORE_AFTER_SCORE_COMPARISON` | `references/scoring_framework.md` |
 | 风险热区排序 | `RISK_HEATMAP_TABLE` | `prompts/mode_risk_heatmap.md` |
+| 报告驱动总流程 | `REPORT_DRIVEN_MODE` | `references/report_parsing_workflow.md`, `references/report_to_source_mapping.md` |
 | 有查重报告 | `REPORT_SIMILARITY_ONLY` | `references/report_parsing_workflow.md`, `prompts/mode_report_driven_similarity.md` |
 | 有 AIGC 报告 | `REPORT_AIGC_ONLY` | `references/report_parsing_workflow.md`, `prompts/mode_report_driven_aigc.md` |
 | 有双报告或重叠风险 | `REPORT_DUAL_OPTIMIZATION` | `references/report_driven_priority_rules.md`, `prompts/mode_report_driven_dual.md` |
+| 报告驱动多轮双降 | `REPORT_DRIVEN_MULTI_PASS_WORKFLOW` | `references/report_driven_multi_pass_workflow.md`, `prompts/mode_report_driven_multi_pass.md` |
 | 只做报告映射 | `REPORT_TO_SOURCE_MAPPING` | `references/report_to_source_mapping.md`, `prompts/mode_report_mapping_only.md` |
 | 相似源分类处理 | `SIMILARITY_SOURCE_HANDLING` | `references/similarity_source_handling.md` |
 | 报告优先级队列 | `REPORT_PRIORITY_QUEUE` | `references/report_driven_priority_rules.md` |
@@ -76,6 +80,8 @@ Do not use this Skill to:
 | 查看进度 | `PROGRESS_TRACKING_MODE` | `references/progress_tracking_rules.md`, `workflow/progress_tracker_template.md` |
 | 修改日志 | `REVISION_LOG_MODE` | `references/revision_log_rules.md`, `workflow/revision_log_template.md` |
 | 二轮/三轮复改 | `ITERATIVE_REVISION_MODE` | `references/iterative_optimization_rules.md`, `workflow/iteration_plan_template.md` |
+| 改写后 AIGC 自检 | `POST_REWRITE_AIGC_SELF_AUDIT` | `references/post_rewrite_aigc_self_audit.md`, `prompts/mode_effectiveness_audit.md` |
+| 第二轮强制改写 | `SECOND_PASS_REWRITE_REQUIREMENT` | `prompts/mode_second_pass_rewrite.md` |
 | 项目交接 | `PROJECT_HANDOFF_MODE` | `references/project_handoff_rules.md`, `workflow/project_handoff_template.md` |
 | Skill 文档瘦身维护 | `SKILL_SLIM_MODE` | `references/skill_slimming_rules.md`, `prompts/mode_skill_slimming.md` |
 
@@ -87,8 +93,10 @@ Do not use this Skill to:
 4. Output diagnosis, scoring, mapping, or project overview before revision.
 5. For full theses, generate master overview and chapter tasks before any chapter revision.
 6. Revise locally by paragraph/sentence/task priority.
-7. Run citation, technical, data, and safety self-checks.
-8. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
+7. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
+8. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
+9. Run citation, technical, data, and safety self-checks.
+10. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
 
 ## 7. Full Thesis Project Workflow
 
@@ -148,6 +156,16 @@ Use `workflow/project_handoff_template.md`.
 Core diagnosis and revision:
 
 - `references/aigc_pattern_library.md`
+- `references/aigc_deep_rewrite_engine.md`
+- `references/structure_rebuilding_rules.md`
+- `references/evidence_trace_injection.md`
+- `references/dual_optimization_arbitration.md`
+- `references/no_report_fallback_workflow.md`
+- `references/report_driven_multi_pass_workflow.md`
+- `references/rewrite_intensity_l5.md`
+- `references/anti_shallow_rewrite_rules.md`
+- `references/post_rewrite_aigc_self_audit.md`
+- `references/effectiveness_evaluation.md`
 - `references/similarity_reduction_strategy.md`
 - `references/citation_integrity_rules.md`
 - `references/protected_terms_rules.md`

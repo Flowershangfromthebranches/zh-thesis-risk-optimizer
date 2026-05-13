@@ -15,6 +15,8 @@ Use `ITERATIVE_REVISION_MODE` when the user provides a new report or asks for an
 - Prioritize fragments that remain high risk.
 - Do not heavily rewrite content that is already accepted or low risk.
 - Record why each target is processed again.
+- If residual risk is AIGC-heavy, run `AIGC_DEEP_REWRITE_ENGINE` instead of another light polish.
+- If post-rewrite self-audit hits three or more AI-risk items, run `prompts/mode_second_pass_rewrite.md`.
 
 ## Third Round
 

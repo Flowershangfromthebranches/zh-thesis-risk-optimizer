@@ -46,6 +46,14 @@ Use `CHAPTER_TASK_MODE` to create a bounded task for each thesis chapter.
 - Preserve completed work.
 - Write concrete limitations and future improvement directions.
 
+## v0.5 Rewrite Intensity Guidance
+
+- Use L3 when the chapter has repeated paragraph order but few protected entities.
+- Use L4 when the argument must be rebuilt from concrete problem, process, or result.
+- Use L5 only for high-risk, non-protected, non-citation-heavy paragraphs.
+- For high AIGC-risk chapter tasks, run post-rewrite self-audit before marking the task complete.
+- If three or more AI-risk items remain after self-audit, create a second-pass revision item instead of accepting the paragraph.
+
 ## Chapter Task Output
 
 Use `workflow/chapter_task_template.md` and include:

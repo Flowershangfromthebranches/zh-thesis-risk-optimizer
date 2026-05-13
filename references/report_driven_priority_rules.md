@@ -45,7 +45,18 @@ Assign low priority when:
 2. Process high-contribution and safely editable fragments.
 3. Handle medium-confidence mappings with explicit notes.
 4. Defer LOW or UNMAPPED items until the user confirms context.
-5. Run citation and technical protection review before final output.
+5. For dual-risk fragments, run the multi-pass workflow after similarity repair.
+6. Run citation and technical protection review before final output.
+
+## v0.5 Multi-Pass Integration
+
+When a report provides clear locations, prefer `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`:
+
+- Round 0 maps report fragments.
+- Round 1 handles high-contribution similarity risk.
+- Round 2 runs AIGC deep rewrite on the same confirmed paragraphs.
+- Round 3 checks citations, data, formulas, conclusions, and unsupported additions.
+- Round 4 recommends rechecking and continuing only on residual local risks.
 
 ## Full-Thesis Integration
 

@@ -142,6 +142,12 @@ Use estimated scores after revision:
 
 Never present the after score as guaranteed.
 
+## Post-Rewrite Self-Audit
+
+After any L3-L5 rewrite, run `references/post_rewrite_aigc_self_audit.md` before finalizing the paragraph.
+
+If three or more AI-like risk items remain, the first rewrite is not sufficient. Run `prompts/mode_second_pass_rewrite.md` and compare the final text with the protected facts and no-change list.
+
 ## Report-Driven Scoring
 
 When a report is provided, keep report values and heuristic scores separate:

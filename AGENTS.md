@@ -50,11 +50,40 @@
 - Iterative optimization must not repeatedly overhaul completed chapters.
 - Progress tracking must record protected items and human review items.
 
+## Repository Documentation Rules
+
+- README is user-facing and should stay concise.
+- CHANGELOG records version history.
+- THIRD_PARTY_NOTICES records upstream sources, license observations, referenced ideas, and attribution.
+- NOTICE stays short and points to THIRD_PARTY_NOTICES for details.
+- `SKILL.md` remains a high-level routing document.
+- New rules go in `references/`.
+- New templates go in `workflow/`.
+- New prompts go in `prompts/`.
+- New examples go in `examples/`.
+- Do not promise detection outcomes.
+- Do not promote detection evasion.
+- Do not fabricate reports, data, experiments, citations, percentages, sources, or risk levels.
+- Audit every path referenced from `SKILL.md`; referenced files must exist.
+
+## v0.5 Effective Rewrite Engine Rules
+
+- Do not keep adding new modes when the problem is weak execution; prioritize rewrite effectiveness.
+- AIGC-risk reduction must not rely on synonym replacement.
+- Dual optimization must state the order of operations.
+- No-report mode must state its limits and remain heuristic.
+- Report-driven mode must use multi-pass processing.
+- Every substantial rewrite must run a post-rewrite self-audit.
+- If the self-audit hits three or more AI-risk items, run a second-pass rewrite.
+- Technical facts, citation boundaries, data, conclusions, formulas, code, interfaces, table names, fields, and parameters still outrank rewrite aggressiveness.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.
-- README explains positioning, modes, limitations, upstream relationship, license, scoring disclaimer, and academic integrity.
-- NOTICE thanks upstream authors and records observed license status.
+- README explains positioning, core capabilities, quick start, modes, recommended workflow, limitations, upstream relationship, and license.
+- CHANGELOG records version changes.
+- NOTICE is concise and points to THIRD_PARTY_NOTICES.
+- THIRD_PARTY_NOTICES thanks upstream authors and records observed license status.
 - Prompts cover AIGC_ONLY, SIMILARITY_ONLY, DUAL_OPTIMIZATION, scoring diagnosis, sentence-level diagnosis, report-driven mapping, full-thesis project management, progress tracking, handoff, engineering/science mode, general academic mode, heatmap use, and checklist use.
 - Examples cover AIGC-only, similarity-only, dual optimization, engineering thesis, citation-heavy text, long-thesis workflow, scoring diagnosis, sentence-level localization, before/after comparison, report mapping, report-driven revision, full-thesis project setup, chapter tasks, progress tracking, iterative revision, project handoff, and Skill slimming.
 - Tests document structure checks, safety checks, scoring-output checks, report-mapping checks, report-driven safety checks, workflow-template checks, full-thesis project checks, and Skill slimming checks.
