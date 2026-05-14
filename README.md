@@ -150,6 +150,20 @@
 5. 人工核对：引用密集、低置信度映射、实验数据密集段落进入人工核对。
 6. 根据新报告迭代：只处理残留高风险片段，不反复大改已完成章节。
 
+## 推荐使用方式（效果最好）
+
+1. 先基于原版查重一次。
+2. 针对检测报告，哪个高先降哪个。
+3. 使用查重/aigc检测报告（选高的）进行降重，由于混合了AIGC和降重双结构，降其中一个的过程也会降另一个
+4. 再查重一次，针对不满意的再降低。
+5. 两次下来结果非常好（强烈建议使用DeepSeek，gpt-5.5，claude4.5/4.6）千万不要使用mimo，实测mimo-v2.5-pro模型会导致AIGC率直接飙升
+
+## 实测
+原版：<img width="857" height="89" alt="截屏2026-05-14 12 06 40" src="https://github.com/user-attachments/assets/c00f01a5-b603-4d46-b843-9fa94e738324" />
+两次降重后：<img width="857" height="89" alt="截屏2026-05-14 12 06 48" src="https://github.com/user-attachments/assets/765538b5-778e-4bc9-802b-b933e55cbd27" />
+mimo-v2.5-pro:<img width="857" height="89" alt="截屏2026-05-14 12 15 02" src="https://github.com/user-attachments/assets/f8806792-1fc5-4e99-87ad-4169e2d10689" />
+！！！千万不要使用mimo!!!
+
 ## 不适用场景
 
 - 编造数据、实验、案例、访谈、问卷或图表。
