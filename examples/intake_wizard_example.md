@@ -1,25 +1,26 @@
-# Intake Wizard Example
+# Intake Wizard And Precheck Example
 
-## Scenario 1: User Only Says They Want To Use The Skill
+## Scenario 1: Matching Task With Missing Required Fields
 
 User:
 
 ```text
-我想用这个 Skill 帮我处理论文。
+帮我给论文降 AIGC。
 ```
 
 Assistant:
 
 ```text
-为了正确选择模式，请先补充下面几项。可以直接选项作答，也可以写“自动判断”。
+当前任务需要使用 zh-thesis-risk-optimizer，但关键信息还不完整。
+请复制 workflow/intake_request_template.md 中的模板，替换参考值后发送；不知道的字段可以写“请自动判断”。
 
-1. 目标：只降 AIGC / 只降查重 / 双降 / 只诊断 / 报告映射 / 文件副本处理 / 自动判断
-2. 输入：粘贴文本 / DOCX 文件 / Markdown 或 TXT / LaTeX / 原文+报告 / 历史稿+新报告
-3. 报告：AIGC 报告 / 查重报告 / 两者都有 / 没有报告 / 只有截图或复制片段
-4. 范围：单段 / 单章 / 全文 / 只处理红橙 / 只输出任务表
-5. 输出：诊断表 / 修改后文本 / 报告任务表 / 文件副本 / 作者补充清单
-6. 字数约束：默认全文 ±10%，或请写你的范围
-7. 保护项：引用、公式、代码、表名、字段、参数、路径、实验数据等，是否还有其他必须保留内容？
+必填项包括：
+- 任务目标
+- 论文输入
+- 处理范围
+- 输出形式
+- 字数约束
+- 保护项
 ```
 
 ## Scenario 2: User Provides Enough Information
@@ -33,11 +34,22 @@ User:
 Assistant:
 
 ```text
+Intake Confirmation
+
+| field | value | status |
+|---|---|---|
+| 任务目标 | 首轮降低 AIGC 风险 | OK |
+| 论文输入 | 原版论文 | OK |
+| 报告输入 | 原版 AIGC 报告 | OK |
+| 处理范围 | 红色和橙色片段 | OK |
+| 输出形式 | 任务表和可安全修改段落 | DEFAULT |
+| 字数约束 | 全文 ±10% | USER_SPECIFIED |
+| 保护项 | 引用、术语、公式、代码、路径、数据、参考文献 | DEFAULT |
+
 模式判断：
 - 进入模式：FIRST_PASS_RED_ORANGE_ENGINE
 - 理由：用户提供了原版论文、原版 AIGC 报告、颜色规则和首轮红橙处理目标。
 - 需要加载：prompts/mode_first_pass_red_orange.md；references/first_pass_red_orange_engine.md；references/character_delta_guard.md
-- 默认约束：红色和橙色进入主处理区；黑色/低风险段落冻结；全文字符变动控制在 ±10%。
 - 下一步输出：红橙首轮任务表、颜色原因分析表、字符变动表和可安全修改段落。
 ```
 
@@ -52,6 +64,18 @@ User:
 Assistant:
 
 ```text
+Intake Confirmation
+
+| field | value | status |
+|---|---|---|
+| 任务目标 | AIGC 报告驱动修复 | OK |
+| 论文输入 | DOCX 文件 | OK |
+| 报告输入 | AIGC 报告 | OK |
+| 处理范围 | 待确认 | MISSING |
+| 输出形式 | 文件副本 | OK |
+| 字数约束 | 全文 ±10% | DEFAULT |
+| 保护项 | 引用、术语、代码、路径、表名、字段、参数、数据 | DEFAULT |
+
 模式判断：
 - 进入模式：FILE_INPUT_COPY_WORKFLOW + REPORT_AIGC_ONLY
 - 理由：用户提供文件和 AIGC 报告，并要求文件交付。
@@ -70,6 +94,18 @@ User:
 Assistant:
 
 ```text
+Intake Confirmation
+
+| field | value | status |
+|---|---|---|
+| 任务目标 | 双降 | OK |
+| 论文输入 | 本章文本 | OK |
+| 报告输入 | 无 | NOT NEEDED |
+| 处理范围 | 单章 | OK |
+| 输出形式 | 诊断表和修改建议 | DEFAULT |
+| 字数约束 | 全文/章节 ±10% | DEFAULT |
+| 保护项 | 引用、术语、公式、代码、数据 | DEFAULT |
+
 模式判断：
 - 进入模式：NO_REPORT_FALLBACK_WORKFLOW + AUTO_DIAGNOSIS
 - 理由：用户没有提供检测报告，只能进行启发式风险诊断和保底优化。

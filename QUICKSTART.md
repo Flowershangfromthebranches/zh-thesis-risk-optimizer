@@ -17,20 +17,31 @@ For Codex, Claude Code, Copilot, or similar agents:
 
 1. Put this repository where the agent can read it.
 2. Ask the agent to load `SKILL.md`.
-3. Provide the thesis text, chapter, report fragment, or project state.
-4. Specify a mode when you know what you want.
-5. Ask the agent to preserve citations, data, conclusions, formulas, code, and technical identifiers.
+3. Start with `INTAKE_WIZARD_PRECHECK`.
+4. Fill in the required fields from `workflow/intake_request_template.md`.
+5. Provide the thesis text, chapter, report fragment, file path, or project state.
+6. Ask the agent to preserve citations, data, conclusions, formulas, code, and technical identifiers.
 
-If you do not know which mode to use, ask for the startup wizard first:
+Every use of this Skill should start with intake precheck. If the required fields are already present, the agent should output an `Intake Confirmation` block and continue without asking the full template.
 
 ```text
-我要使用这个 Skill，但还不确定该提供哪些材料。请进入 INTAKE_WIZARD，先用选项式问题引导我。
+当前任务需要使用 zh-thesis-risk-optimizer。请先执行 INTAKE_WIZARD_PRECHECK。
+如果信息不足，请让我复制填写 workflow/intake_request_template.md；
+如果信息足够，请输出 Intake Confirmation 后继续。
 ```
 
 ## 3. Common Commands
 
 ```text
-请进入 INTAKE_WIZARD。我不确定该选只降 AIGC、只降查重、双降、报告映射还是文件副本处理，请先问我必要信息。
+请使用 zh-thesis-risk-optimizer。下面是我的 intake 模板：
+【任务目标】只降 AIGC
+【论文输入】原文 DOCX：/path/to/original.docx
+【处理范围】全文，只处理报告红橙片段
+【输出形式】创建副本并回写，同时输出诊断表
+【字数约束】全文 ±10%
+【保护项】引用、数据、图表编号、参考文献、学校声明
+【AIGC 报告】/path/to/aigc_report.docx
+【论文专业和题目】人力资源管理，《……》
 ```
 
 ```text
@@ -82,10 +93,31 @@ If you do not know which mode to use, ask for the startup wizard first:
 ```
 
 ```text
-改写后 AIGC 率反而上升了，请进入 AIGC_REGRESSION_GUARD，分析哪些段落改写后变得更精致/更平衡/更抽象，然后用 BURSTINESS_INJECTION 重新改写，重点制造句长波动和删除连接词。
+改写后 AIGC 率反而上升了，请进入 AIGC_REGRESSION_GUARD，分析哪些段落改写后变得更精致/更平衡/更抽象，然后用 BURSTINESS_INJECTION 做节奏审计，只对确实过度均整的段落做自然节奏修复。
 ```
 
-## 4. Full Thesis Workflow
+## 4. Intake Template
+
+The full copyable template is in [workflow/intake_request_template.md](workflow/intake_request_template.md).
+
+Required fields:
+
+- Task goal.
+- Thesis input.
+- Processing scope.
+- Output format.
+- Character constraint.
+- Protected items.
+
+Strongly recommended fields:
+
+- AIGC report if reducing AIGC risk.
+- Similarity report if revising similarity risk.
+- Report color legend if color-marked reports are used.
+- Thesis major and title.
+- Current state, such as original draft, rewritten draft, AIGC regression, or plateau.
+
+## 5. Full Thesis Workflow
 
 1. Provide the full thesis or chaptered text.
 2. Ask for `FULL_THESIS_PROJECT_MODE`.
@@ -96,7 +128,7 @@ If you do not know which mode to use, ask for the startup wizard first:
 7. Update progress and revision logs after each pass.
 8. Use `PROJECT_HANDOFF_MODE` before pausing.
 
-## 5. No-Report Dual Fallback Workflow
+## 6. No-Report Dual Fallback Workflow
 
 When no report is available, do not ask the Skill to promise actual detection changes.
 
@@ -108,7 +140,7 @@ When no report is available, do not ask the Skill to promise actual detection ch
 6. Run pass two for AIGC deep rewrite and self-audit.
 7. Mark remaining uncertainty as needing report-based localization.
 
-## 6. Targeted Multipass Workflow
+## 7. Targeted Multipass Workflow
 
 Use this when the user provides targets and multi-round reports.
 
@@ -120,7 +152,7 @@ Use this when the user provides targets and multi-round reports.
 6. Output next-pass task table.
 7. Treat targets as goals, not guaranteed results.
 
-## 7. AIGC-Focused Length-Control Workflow
+## 8. AIGC-Focused Length-Control Workflow
 
 Use this when similarity reduction is already enough but AIGC risk remains high.
 
@@ -133,7 +165,7 @@ Use this when similarity reduction is already enough but AIGC risk remains high.
 7. If the draft exceeds budget, run `LENGTH_COMPRESSION_PASS`.
 8. If evidence is missing, output `HUMAN_EVIDENCE_REQUEST` or use conservative repair.
 
-## 8. AIGC Plateau Breaker Workflow
+## 9. AIGC Plateau Breaker Workflow
 
 Use this when several AIGC rounds improve slowly or report colors show red text falling while orange text remains high.
 
@@ -146,7 +178,7 @@ Use this when several AIGC rounds improve slowly or report colors show red text 
 7. For computer-science plateaus, protect code, APIs, parameters, paths, formulas, table names, fields, and data.
 8. If a paragraph has been rewritten repeatedly without report improvement, mark `NO_PROGRESS_REWRITE_LOOP` and request missing evidence or human review.
 
-## 9. First-Pass Red-Orange Workflow
+## 10. First-Pass Red-Orange Workflow
 
 Use this when the user provides the original thesis and original AIGC report before any rewrite.
 
@@ -160,7 +192,7 @@ Use this when the user provides the original thesis and original AIGC report bef
 8. Apply `CHARACTER_DELTA_GUARD`; default whole-thesis character change is `±10%`.
 9. If safe revision cannot reach the heuristic purple/black target, mark protected, evidence-limited, character-delta, or no-progress status.
 
-## 10. Three-Mode Color-Band Workflow
+## 11. Three-Mode Color-Band Workflow
 
 Use this as the default work mode for similarity-only, AIGC-only, or dual revision.
 
@@ -174,7 +206,7 @@ Use this as the default work mode for similarity-only, AIGC-only, or dual revisi
 8. Apply whole-thesis character delta guard, default `±10%`.
 9. For file input, create a copy and write revisions back to the copy only.
 
-## 11. Similarity Report Workflow
+## 12. Similarity Report Workflow
 
 1. Provide thesis source text and report fragments.
 2. Use `REPORT_SIMILARITY_ONLY`.
@@ -186,7 +218,7 @@ Use this as the default work mode for similarity-only, AIGC-only, or dual revisi
 8. In dual-risk cases, run `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`.
 9. After similarity revision, run AIGC deep rewrite and safety review before rechecking.
 
-## 12. AIGC Report Workflow
+## 13. AIGC Report Workflow
 
 1. Provide thesis source text and AIGC report fragments.
 2. Use `REPORT_AIGC_ONLY`.
@@ -196,7 +228,7 @@ Use this as the default work mode for similarity-only, AIGC-only, or dual revisi
 6. Revise locally and compare heuristic writing-risk scores.
 7. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
 
-## 13. Engineering / Science / CS Notes
+## 14. Engineering / Science / CS Notes
 
 Always protect:
 
@@ -208,7 +240,7 @@ Always protect:
 - Experiment data, metrics, and chart numbers.
 - Model, algorithm, dataset, and protocol names.
 
-## 14. Common Misuse
+## 15. Common Misuse
 
 Do not use this Skill to:
 
@@ -221,6 +253,6 @@ Do not use this Skill to:
 - Expand every paragraph to reduce AIGC risk.
 - Edit the original file directly when the user provided a file.
 
-## 15. Academic Integrity Reminder
+## 16. Academic Integrity Reminder
 
 If a sentence depends on a source, keep the citation boundary visible. If a report fragment cannot be mapped confidently, ask for more context before revising. If technical facts are unclear, flag them for human review instead of inventing a fix.

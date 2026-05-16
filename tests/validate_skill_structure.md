@@ -9,6 +9,7 @@ Use this manual checklist before publishing.
 - [ ] `LICENSE`
 - [ ] `NOTICE`
 - [ ] `AGENTS.md`
+- [ ] `workflow/intake_request_template.md`
 - [ ] `prompts/mode_aigc_only.md`
 - [ ] `prompts/mode_similarity_only.md`
 - [ ] `prompts/mode_dual_optimization.md`
@@ -60,6 +61,7 @@ license: MIT
 ## Mode Coverage
 
 - [ ] AIGC_ONLY exists.
+- [ ] INTAKE_WIZARD_PRECHECK exists.
 - [ ] INTAKE_WIZARD exists.
 - [ ] AIGC_DEEP_REWRITE_ENGINE exists.
 - [ ] THREE_MODE_COLOR_BAND_WORKFLOW exists.

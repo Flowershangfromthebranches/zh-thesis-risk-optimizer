@@ -27,6 +27,8 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] v0.8.3 three-mode file workflow routes point to existing files.
 - [ ] v0.8.4 social-science template bottleneck routes point to existing files.
 - [ ] v0.8.5 intake wizard routes point to existing files.
+- [ ] v0.9.2 intake precheck routes point to existing files.
+- [ ] `workflow/intake_request_template.md` exists and is referenced by `SKILL.md`.
 - [ ] DOCX color report extraction routes point to existing files.
 
 ## Repository Docs
@@ -53,4 +55,7 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] File input workflows do not modify the original file directly.
 - [ ] Social-science bottleneck workflows request missing evidence instead of fabricating case facts.
 - [ ] Intake wizard workflows ask only for missing context and do not start rewriting before route and safety constraints are clear.
+- [ ] Intake precheck runs for every matching Skill task, not only when the user explicitly says "use this Skill".
+- [ ] Enough-context tasks produce `Intake Confirmation` and continue without forcing the full wizard.
+- [ ] Missing-context tasks show or reference `workflow/intake_request_template.md`.
 - [ ] Color-marked Word reports are not processed through plain-text extraction alone.

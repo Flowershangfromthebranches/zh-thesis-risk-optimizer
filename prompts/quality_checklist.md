@@ -121,13 +121,25 @@ Use this checklist before final output.
 
 ## v0.8.5 Intake Wizard Checks
 
-- [ ] `INTAKE_WIZARD` is used when goal, input type, report availability, scope, output format, or protection rules are unclear.
+- [ ] `INTAKE_WIZARD_PRECHECK` runs whenever the task is routed to this Skill.
+- [ ] `INTAKE_WIZARD` is used when goal, input type, report availability, scope, output format, or protection rules are unclear after precheck.
 - [ ] The wizard is skipped when enough context is already present.
 - [ ] The wizard asks only for missing information.
 - [ ] Options include "自动判断 / 其他补充".
 - [ ] Defaults are visible: whole-thesis `±10%` character delta, default color legend, file-copy handling, and protected items.
 - [ ] No rewrite starts before the required route and safety constraints are clear.
 - [ ] No fabricated report facts, data, experiments, citations, interviews, case facts, or risk percentages are requested or invented.
+
+## v0.9.2 Intake Precheck Template Checks
+
+- [ ] The task starts with intake precheck even when the user does not explicitly say "use this Skill".
+- [ ] If required information is already present, the output contains `Intake Confirmation` and proceeds directly to the selected mode.
+- [ ] If required information is missing, the output uses or references `workflow/intake_request_template.md`.
+- [ ] Required, strongly recommended, and optional fields are clearly separated.
+- [ ] The user is not asked to memorize the full mode router.
+- [ ] The intake template includes character constraint and protected-item defaults.
+- [ ] File input defaults to copy-based handling and does not modify the original file.
+- [ ] The intake flow does not ask the user to invent reports, facts, data, citations, interviews, cases, or detection percentages.
 
 ## v0.8.6 DOCX Color Report And Social-Science Failure Checks
 

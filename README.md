@@ -31,15 +31,19 @@
 - 工科/理科/计算机论文保护：保护公式、代码、接口、表名、字段名、参数和实验数据。
 - 全文项目管理：生成论文总览、章节任务、进度追踪、修改日志和项目交接摘要。
 - 迭代优化：根据新报告进行第二轮、第三轮定点处理，不反复大改低风险章节。
-- 启动引导：在目标、输入、报告或输出不清楚时，先用选项式问题收集必要信息，再选择模式。
+- 启动预检：任何匹配本 Skill 的任务都先做 `INTAKE_WIZARD_PRECHECK`；信息足够时直接继续，信息不足时给出可复制模板。
 
 ## 快速开始
 
-### 0. 不确定怎么开始
+### 0. 推荐入口：复制模板
 
 ```text
-我要使用这个 Skill 处理论文，但还不确定应该选哪种模式。请先进入 INTAKE_WIZARD，用选项式问题引导我提供材料。
+当前任务需要使用 zh-thesis-risk-optimizer。请先执行 INTAKE_WIZARD_PRECHECK。
+如果信息不足，请让我复制填写 workflow/intake_request_template.md 中的模板；
+如果信息足够，请输出 Intake Confirmation 后直接继续。
 ```
+
+可复制模板见 [workflow/intake_request_template.md](workflow/intake_request_template.md)。
 
 ### 1. 完整论文自分析
 
@@ -99,59 +103,27 @@
 
 ## 支持模式
 
-| 模式 | 用途 | 适用输入 |
+日常使用不需要记住全部模式。一般先走 `INTAKE_WIZARD_PRECHECK`，再由 Skill 自动路由到下列常用工作流。
+
+| 常见需求 | 推荐路由 | 需要材料 |
 |---|---|---|
-| `INTAKE_WIZARD` | 启动引导和材料收集 | 用户不确定模式、输入、报告、范围或输出格式 |
-| `AIGC_ONLY` | 只处理 AIGC 风险 | 论文段落、章节 |
-| `AIGC_DEEP_REWRITE_ENGINE` | 深度处理高 AIGC 风险 | AIGC 味重、浅层改写无效的段落 |
-| `THREE_MODE_COLOR_BAND_WORKFLOW` | 三模式颜色分级工作流 | 纯文本、论文文件、查重/AIGC 报告 |
-| `FIRST_PASS_RED_ORANGE_ENGINE` | 首轮红橙联合处理 | 原版论文 + 原版 AIGC 报告 |
-| `AIGC_PLATEAU_BREAKER` | 处理多轮 AIGC 下降变慢 | 原文、历史稿、多轮 AIGC 报告 |
-| `ORANGE_ZONE_REWRITE_STRATEGY` | 突破橙色中风险平台期 | 中风险成片、枚举/模板结构保留的段落 |
-| `DISCIPLINE_AIGC_BOTTLENECK_RULES` | 判断学科瓶颈 | 计算机、管理、商科等不同论文类型 |
-| `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | 社科/管理类模板瓶颈处理 | 人力资源、工商管理、营销、教育管理、行政管理等论文 |
-| `SIMILARITY_ONLY` | 只处理查重相似风险 | 理论基础、综述、报告片段 |
-| `DUAL_OPTIMIZATION` | 同时处理 AIGC 与相似风险 | 高风险段落、章节 |
-| `NO_REPORT_FALLBACK_WORKFLOW` | 无报告保底双降 | 无检测报告的正文 |
-| `TARGETED_MULTIPASS_ENGINE` | 目标驱动多轮闭环 | 原文、当前稿、历史稿、报告、目标阈值 |
-| `AIGC_FOCUSED_LENGTH_CONTROLLED` | AIGC 专项控长修复 | 查重已够用但 AIGC 仍高、字数扩写过多 |
-| `CHARACTER_DELTA_GUARD` | 控制全文字符变动 | 完整论文、多章节改写 |
-| `FILE_INPUT_COPY_WORKFLOW` | 文件副本处理 | DOCX、Markdown、纯文本、LaTeX 等论文文件 |
-| `LENGTH_BUDGET_CONTROLLER` | 全文字数预算控制 | 完整论文、多章节改写稿 |
-| `SENTENCE_LEVEL_AIGC_LOCALIZER` | 句子级 AIGC 定位 | 高风险段落 |
-| `BURSTINESS_RHYTHM_CONTROL` | 节奏和突发性控制 | 过度平滑、过度均匀段落 |
-| `REPEATED_EXPRESSION_COMPRESSOR` | 重复 AI 腔压缩 | 全文重复表达扫描 |
-| `HUMAN_EVIDENCE_REQUEST` | 作者证据补充清单 | 信息不足但 AIGC 风险高 |
-| `CONSERVATIVE_AIGC_REPAIR` | 保守 AIGC 修复 | 信息不足且需要控字数 |
-| `REPORT_FEEDBACK_LOOP` | 新报告反馈分析 | 多轮查重/AIGC 报告 |
-| `AIGC_REGRESSION_GUARD` | AIGC 反升诊断 | 查重下降但 AIGC 上升的稿件 |
-| `CONTENT_SUBSTANCE_INJECTION` | 真实内容增量 | 信息密度不足的段落 |
-| `SIMILARITY_BELOW_10_STRATEGY` | 相似度目标专项策略 | 用户目标为相似度 <10% |
-| `AIGC_BELOW_20_STRATEGY` | AIGC 目标专项策略 | 用户目标为 AIGC <20% |
-| `PARAGRAPH_TYPE_STRATEGIES` | 段落类型分流 | 摘要、绪论、技术概述、测试、结论等 |
-| `AUTO_DIAGNOSIS` | 自动诊断并推荐模式 | 未指定模式的正文 |
-| `ENGINEERING_SCIENCE_MODE` | 保护技术实体 | 工科、理科、计算机论文 |
-| `SCORING_DIAGNOSIS_MODE` | 只评分和定位 | 章节、长段落 |
-| `SENTENCE_LEVEL_DIAGNOSIS_MODE` | 句子级风险定位 | 单段或多段文本 |
-| `BEFORE_AFTER_SCORE_COMPARISON` | 改写前后启发式评分对比 | 原文与改写稿 |
-| `RISK_HEATMAP_TABLE` | 风险热区排序 | 长文、多章节 |
-| `REPORT_DRIVEN_MODE` | 报告驱动总流程 | 查重/AIGC 报告 |
-| `DOCX_COLOR_REPORT_EXTRACTION` | Word 颜色报告解析 | 颜色标记 AIGC/查重报告 DOCX |
-| `REPORT_AIGC_ONLY` | AIGC 报告定点处理 | AIGC 报告片段 |
-| `REPORT_SIMILARITY_ONLY` | 查重报告定点处理 | 标红片段、相似源说明 |
-| `REPORT_DUAL_OPTIMIZATION` | 双报告或重叠风险处理 | 查重 + AIGC 报告 |
-| `REPORT_DRIVEN_MULTI_PASS_WORKFLOW` | 有报告多轮双降 | 报告片段 + 原文 |
-| `REPORT_TO_SOURCE_MAPPING` | 报告片段映射原文 | 报告片段 + 原文 |
-| `FULL_THESIS_PROJECT_MODE` | 完整论文项目管理 | 完整论文、多章节论文 |
-| `CHAPTER_TASK_MODE` | 单章任务拆分 | 指定章节 |
-| `PROGRESS_TRACKING_MODE` | 查看和维护进度 | 项目总览、章节任务 |
-| `REVISION_LOG_MODE` | 记录修改历史 | 已修改章节或段落 |
-| `ITERATIVE_REVISION_MODE` | 二轮/三轮定点优化 | 新报告、残留风险 |
-| `PROJECT_HANDOFF_MODE` | 项目交接与恢复 | 总览、进度表、任务表 |
+| 不知道怎么开始 | `INTAKE_WIZARD_PRECHECK` | 按模板补充必填项 |
+| 只降 AIGC | `AIGC_ONLY` / `REPORT_AIGC_ONLY` | 原文，最好有 AIGC 报告 |
+| 只降查重 | `SIMILARITY_ONLY` / `REPORT_SIMILARITY_ONLY` | 原文，最好有查重报告 |
+| 双降 | `THREE_MODE_COLOR_BAND_WORKFLOW` / `DUAL_OPTIMIZATION` | 原文，最好有两类报告 |
+| Word 颜色报告 | `DOCX_COLOR_REPORT_EXTRACTION` | DOCX 报告和颜色规则 |
+| 原版 + 原版 AIGC 报告 | `FIRST_PASS_RED_ORANGE_ENGINE` | 原文和原版报告 |
+| 多轮后 AIGC 卡住 | `AIGC_PLATEAU_BREAKER` | 历史稿和多轮报告 |
+| 查重够用，只降 AIGC | `AIGC_FOCUSED_LENGTH_CONTROLLED` | 原文、当前稿、AIGC 报告 |
+| 人力资源/管理类论文效果差 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | 原文、报告、问卷/访谈/流程证据 |
+| 文件交付 | `FILE_INPUT_COPY_WORKFLOW` | 原文件路径和输出要求 |
+| 完整论文长期任务 | `FULL_THESIS_PROJECT_MODE` | 完整论文或章节目录 |
+
+完整模式路由见 [SKILL.md](SKILL.md)。维护人员检查项见 [tests/](tests)。
 
 ## 推荐工作流
 
-1. 先引导：如果用户不清楚该提供什么，进入 `INTAKE_WIZARD` 收集目标、输入、报告、范围、输出和保护项。
+1. 先预检：任何匹配本 Skill 的任务先进入 `INTAKE_WIZARD_PRECHECK`；如果信息不足，再用 `workflow/intake_request_template.md` 收集目标、输入、报告、范围、输出和保护项。
 2. 先诊断：识别章节结构、风险类型和输入材料。
 3. 建立保护清单：保护引用、术语、公式、代码、接口、字段和实验数据。
 4. 生成风险热区：按风险、报告贡献率和可安全改写程度排序。
@@ -161,41 +133,6 @@
 8. 平台期处理：如果多轮 AIGC 下降变慢，先判断红色、橙色、紫色风险带变化，冻结白色段落，再处理橙色平台期。
 9. 首轮红橙处理：如果一开始就有原版 AIGC 报告，红色和橙色同时进入主处理区，并用 `±10%` 字符变动守卫约束全文。
 10. 文件处理：如果输入是文件，先创建副本，不直接修改原文件；从副本提取要改的文本，改完回写副本并交付副本文件。
-
-## 推荐使用方式（经验参考，非结果承诺）
-
-### 报告反馈递进法（推荐）
-
-1. **第1轮：读取原文和原版报告**
-   - 如果报告是 Word 颜色标记文件，先提取 DOCX 颜色元数据。
-   - 红色和橙色进入主处理区，黑色、灰色、学校声明、参考文献和低风险区域冻结。
-2. **第2轮：按失败原因分流**
-   - 句长过均匀：做节奏修复。
-   - 模板骨架保留：做结构重组。
-   - 管理/社科论文红橙成片：做证据前置和模板骨架修复。
-   - 证据不足：输出作者补充清单，不编造。
-3. **第3轮：复测后只处理残留红橙**
-   - 根据新报告定位残留片段。
-   - 不反复改已变黑、变灰或低风险的段落。
-4. **关键原则：每轮只处理报告命中的高风险区域，所有百分比目标都只是用户目标，不是项目承诺。**
-
-### 通用流程
-
-1. 先基于原版查重一次。
-2. 针对检测报告，哪个高先降哪个。
-3. 使用查重/AIGC 检测报告中风险更高的一项作为优先输入；双风险段落可以进入双优化流程。
-4. 再查重一次，针对不满意的再降低。
-5. 不同模型和不同论文的结果差异较大；如果某个模型在你的报告中导致 AIGC 上升，应回退到上一版并更换策略或模型。
-6. **如果改写后 AIGC 率反而上升**：先检查是否丢失报告颜色、是否把文本改得更正式、更抽象、更顺滑，或是否保留了社科/管理类模板骨架。不要继续盲目强化同一种改法。
-
-## 实测
-原版：
-<img width="857" height="89" alt="截屏2026-05-14 12 06 40" src="https://github.com/user-attachments/assets/c00f01a5-b603-4d46-b843-9fa94e738324" />
-两次降重后：
-<img width="857" height="89" alt="截屏2026-05-14 12 06 48" src="https://github.com/user-attachments/assets/765538b5-778e-4bc9-802b-b933e55cbd27" />
-mimo-v2.5-pro 示例：
-<img width="857" height="89" alt="截屏2026-05-14 12 15 02" src="https://github.com/user-attachments/assets/f8806792-1fc5-4e99-87ad-4169e2d10689" />
-以上截图仅是项目维护过程中的个案记录，不代表任何模型或检测平台的稳定结论。
 
 ## 不适用场景
 
@@ -212,7 +149,7 @@ mimo-v2.5-pro 示例：
 - [SKILL.md](SKILL.md)：Skill 总纲和模式路由。
 - [references/](references)：详细规则与领域说明。
 - [prompts/](prompts)：具体模式提示词。
-- [workflow/](workflow)：全文项目管理模板。
+- [workflow/](workflow)：入口引导、文件处理和全文项目管理模板。
 - [examples/](examples)：模式示例。
 - [tests/](tests)：人工验收清单。
 - [CHANGELOG.md](CHANGELOG.md)：版本历史。

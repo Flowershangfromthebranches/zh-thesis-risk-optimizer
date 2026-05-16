@@ -1,8 +1,8 @@
-# Intake Wizard
+# Intake Wizard And Precheck
 
-The intake wizard is the startup guide for this Skill. It is used when the user wants to use the Skill but has not yet provided enough information to choose a safe mode, input workflow, report workflow, or output format.
+The intake wizard is the startup precheck for this Skill. It runs whenever a task is routed to `zh-thesis-risk-optimizer`, not only when the user explicitly says "use this Skill".
 
-It is not a separate detection or rewriting engine. It only collects the minimum missing context needed to route the task correctly.
+It is not a separate detection or rewriting engine. It only confirms whether the required inputs are present, asks for missing context, and routes the task safely.
 
 ## Purpose
 
@@ -10,19 +10,34 @@ It is not a separate detection or rewriting engine. It only collects the minimum
 - Reduce weak results caused by missing reports, unclear goals, unknown color legends, or missing protection rules.
 - Avoid starting full-thesis rewriting when the task only needs diagnosis, report mapping, or file-copy processing.
 - Preserve academic integrity by asking for evidence instead of inventing facts.
+- Make the Skill easier to use by providing a copyable request template.
+
+## Precheck Rule
+
+Every task that matches this Skill must start with `INTAKE_WIZARD_PRECHECK`.
+
+The precheck has three outcomes:
+
+| outcome | action |
+|---|---|
+| `ENOUGH_CONTEXT` | Output an intake confirmation block and proceed to the selected mode. |
+| `MISSING_REQUIRED_FIELDS` | Show the required part of `workflow/intake_request_template.md` and ask only for missing fields. |
+| `CONFLICTING_INPUTS` | Point out the conflict and ask only the conflict-resolution question. |
+
+Do not force a long questionnaire when the user already provided enough information.
 
 ## Use Cases
 
-Use `INTAKE_WIZARD` when:
+Use `INTAKE_WIZARD` after precheck when:
 
-- The user says they want to use this Skill but provides no paper text, report, file, or goal.
+- The task matches this Skill but provides no paper text, report, file, or goal.
 - The requested mode is unclear: AIGC-only, similarity-only, dual revision, diagnosis-only, report mapping, or file-copy processing.
 - The user provides a file but does not say whether to edit a copy, return text, or produce a task table.
 - The user provides a report but the report type, color legend, or original-source mapping is unclear.
 - The user provides a social-science or management thesis but does not provide organization, survey, interview, process, indicator, or case evidence.
 - The user asks for full-thesis work but does not provide character budget, protected items, or desired output.
 
-Do not use the wizard when the user has already provided enough information to route the task. In that case, proceed directly and state the selected mode.
+Do not ask the full wizard when the user has already provided enough information to route the task. In that case, output the intake confirmation block and proceed directly.
 
 ## Intake Principles
 
@@ -30,11 +45,44 @@ Do not use the wizard when the user has already provided enough information to r
 - Prefer 4 to 7 compact fields, not a long questionnaire.
 - Always include selectable options and a free-form supplement.
 - Allow the user to answer "不确定，自动判断".
+- Separate required, strongly recommended, and optional materials.
 - Do not ask for private or unnecessary information.
 - Never pressure the user to provide fabricated evidence.
 - If a required report, citation, data point, or technical fact is absent, mark it as missing instead of inventing it.
 
-## Recommended Intake Fields
+## Required Fields
+
+These fields are required before revision or report mapping:
+
+1. Task goal.
+2. Thesis input.
+3. Processing scope.
+4. Output format.
+5. Character constraint.
+6. Protection items.
+
+If one of these is absent, ask for it before rewriting.
+
+## Strongly Recommended Fields
+
+These fields strongly improve results:
+
+1. AIGC report, if AIGC reduction is requested.
+2. Similarity report, if similarity revision is requested.
+3. Report color legend, if reports use color bands.
+4. Thesis major and title.
+5. Current state, such as original draft, first rewrite, AIGC regression, or plateau.
+
+If these are missing, proceed only when the user accepts heuristic processing.
+
+## Optional Fields
+
+- Historical drafts and historical reports.
+- User targets such as AIGC `<20%` or similarity `<10%`, treated as goals only.
+- Available evidence such as modules, parameters, survey data, interviews, company process nodes, or test results.
+- Special school format requirements.
+
+## Intake Fields
 
 ### 1. Task Goal
 
@@ -149,7 +197,7 @@ Use the collected answers to route:
 
 ## Minimal Dialog Template
 
-Use this template when the user has not provided enough context:
+Use this template when the user has not provided enough context. The canonical template lives in `workflow/intake_request_template.md`.
 
 ```text
 为了正确选择模式，请先补充下面几项。可以直接选项作答，也可以写“自动判断”。

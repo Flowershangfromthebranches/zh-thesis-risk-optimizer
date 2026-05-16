@@ -152,7 +152,8 @@
 
 ## v0.8.5 Intake Wizard Rules
 
-- Use `INTAKE_WIZARD` when the user wants to use the Skill but goal, input type, report availability, scope, output format, or protection rules are unclear.
+- Run `INTAKE_WIZARD_PRECHECK` whenever a task is routed to this Skill.
+- Use `INTAKE_WIZARD` when the precheck finds that goal, input type, report availability, scope, output format, or protection rules are unclear.
 - Do not run the wizard when enough context is already present; route directly and state the chosen mode.
 - Ask only for missing information, preferably 4 to 7 compact fields.
 - Provide selectable options plus "自动判断 / 其他补充".
@@ -168,6 +169,17 @@
 - For HR and management theses, do not convert paragraphs into slogan-like short sentences just to vary rhythm.
 - Diagnose failures from upstream-inspired workflows as workflow limitations, such as color metadata loss, formalization regression, template skeleton retention, or evidence underuse.
 - Preserve respectful attribution to upstream projects; do not claim that an upstream project is defective based on one thesis.
+
+## v0.9.2 Intake Precheck Template Rules
+
+- Any task that matches this Skill starts with `INTAKE_WIZARD_PRECHECK`, even if the user does not explicitly say "use this Skill".
+- If enough context is present, output an `Intake Confirmation` block and continue; do not force the user through the full template.
+- If required fields are missing, show or reference `workflow/intake_request_template.md` and ask only for the missing fields.
+- Keep intake fields grouped as required, strongly recommended, and optional so users know what is mandatory.
+- Required fields are task goal, thesis input, processing scope, output form, character constraint, and protection items.
+- Strongly recommended fields are AIGC report, similarity report, report color legend, thesis major/title, and current state.
+- README and QUICKSTART should point users to the template instead of asking them to memorize the full mode router.
+- All new mode routes, templates, and tests must preserve the rule that citations, facts, reports, and protected technical content are not fabricated or damaged.
 
 ## Validation Checklist
 

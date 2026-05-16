@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v0.9.2-intake-precheck-template
+
+- Changed the startup guide from "only when the user asks to use the Skill" to `INTAKE_WIZARD_PRECHECK` for every task routed to this Skill.
+- Added `workflow/intake_request_template.md` as the canonical copyable user template.
+- Updated `SKILL.md`, README, QUICKSTART, intake prompt, intake reference, examples, and tests so enough-context tasks continue immediately after `Intake Confirmation`.
+- Clarified required, strongly recommended, and optional intake fields.
+- Simplified README by removing maintenance-era result screenshots and keeping public usage guidance focused on the intake template.
+- Kept detailed mode rules in `references/` and `prompts/`; `SKILL.md` remains a router.
+
 ## v0.9.1-social-science-docx-report-fix
 
 - Added `references/docx_color_report_extraction.md` so Word reports are parsed by color metadata before plain-text processing.

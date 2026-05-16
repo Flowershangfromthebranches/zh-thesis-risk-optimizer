@@ -27,20 +27,25 @@ When integrity or technical correctness conflicts with risk reduction, integrity
 
 ## 3. Core Workflow
 
+0. Run `INTAKE_WIZARD_PRECHECK` whenever this Skill is selected for a task.
 1. Identify input type: thesis text, chapter, full thesis, report fragment, full report, historical draft, or project handoff.
-2. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, parameters, experiment data, and no-edit zones.
-3. Choose the smallest applicable mode family below.
-4. Output diagnosis, mapping, task table, or project overview before revision.
-5. Run `BURSTINESS_INJECTION` as an early rhythm audit for AIGC-related revision; apply rhythm repair only when the paragraph actually lacks variation.
-6. Revise only confirmed and safe paragraphs or sentences.
-7. Run self-audit for AIGC style, similarity risk, citation integrity, technical facts, and character change.
-8. Update project artifacts when working at full-thesis or multi-round scope.
+2. If required fields are missing, show the copyable intake template in `workflow/intake_request_template.md` and ask only for missing fields.
+3. If enough information is present, output an intake confirmation block and continue without interrupting the task.
+4. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, parameters, experiment data, and no-edit zones.
+5. Choose the smallest applicable mode family below.
+6. Output diagnosis, mapping, task table, or project overview before revision.
+7. Run `BURSTINESS_INJECTION` as an early rhythm audit for AIGC-related revision; apply rhythm repair only when the paragraph actually lacks variation.
+8. Revise only confirmed and safe paragraphs or sentences.
+9. Run self-audit for AIGC style, similarity risk, citation integrity, technical facts, and character change.
+10. Update project artifacts when working at full-thesis or multi-round scope.
 
 **Critical principle**: AIGC detectors often react to **how** text is written, not only **what** is written. A rewrite that produces smoother, more balanced, more formal prose can increase AIGC risk. Rhythm matters, but it is not sufficient for management and social-science theses; these also need report-color parsing, template-skeleton repair, and evidence-first reconstruction.
 
 Special routing:
 
-- If the user wants to use the Skill but has not provided enough input to choose a mode, use `INTAKE_WIZARD` first.
+- Any task that matches this Skill must start with `INTAKE_WIZARD_PRECHECK`.
+- If required information is missing, use `INTAKE_WIZARD` and show `workflow/intake_request_template.md`.
+- If required information is already present, do not ask the full wizard; output an `Intake Confirmation` block and proceed.
 - Default user-facing workflow: use `THREE_MODE_COLOR_BAND_WORKFLOW` to choose similarity-only, AIGC-only, or dual revision.
 - File input: use `FILE_INPUT_COPY_WORKFLOW`; create a copy, edit the copy, and keep the original untouched.
 - Color-marked DOCX report input: use `DOCX_COLOR_REPORT_EXTRACTION` before plain-text extraction or report-driven rewriting.
@@ -137,7 +142,8 @@ Mode aliases: `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`, `DOCX_COLOR_REPORT_EXTRACTION
 
 | Mode | Use When | Load |
 |---|---|---|
-| `INTAKE_WIZARD` | User wants to start but goal, input, report, scope, or output is unclear. | `prompts/mode_intake_wizard.md`, `references/intake_wizard.md` |
+| `INTAKE_WIZARD_PRECHECK` | Any task selects this Skill; confirm whether required intake fields are present. | `prompts/mode_intake_wizard.md`, `references/intake_wizard.md`, `workflow/intake_request_template.md` |
+| `INTAKE_WIZARD` | Required fields are missing or contradictory. | `prompts/mode_intake_wizard.md`, `references/intake_wizard.md`, `workflow/intake_request_template.md` |
 | `AUTO_DIAGNOSIS` | User provides text without a mode. | `references/scoring_framework.md`, `references/chapter_strategies.md` |
 | `SCORING_DIAGNOSIS_MODE` | User wants diagnosis before rewriting. | `prompts/mode_scoring_diagnosis.md` |
 | `SENTENCE_LEVEL_DIAGNOSIS_MODE` | User wants sentence-level risk localization. | `prompts/mode_sentence_level_revision.md`, `references/sentence_level_diagnosis.md` |
@@ -213,8 +219,14 @@ Use only the blocks needed for the task.
 | item | selected_or_default | notes |
 |---|---|---|
 
+### Intake Confirmation
+
+| field | value | status |
+|---|---|---|
+
 ### Project Templates
 
+- Intake request template: `workflow/intake_request_template.md`
 - Thesis overview: `workflow/thesis_master_overview_template.md`
 - Chapter task: `workflow/chapter_task_template.md`
 - Progress tracker: `workflow/progress_tracker_template.md`
@@ -226,7 +238,7 @@ Use only the blocks needed for the task.
 
 - `references/`: detailed rules and domain guidance.
 - `prompts/`: executable mode prompts.
-- `workflow/`: full-thesis project templates.
+- `workflow/`: intake, file-handling, and full-thesis project templates.
 - `examples/`: format and behavior examples.
 - `tests/`: manual validation checklists.
 - `NOTICE` and `THIRD_PARTY_NOTICES.md`: upstream attribution and license notes.
