@@ -64,9 +64,13 @@ When the paper is human resource management, business administration, marketing,
 |---|---|---|
 | synonym-only rewrite found |  |  |
 | more formal / smoother / more AI-like |  |  |
+| abstract management jargon increased |  |  |
+| A/B/C/D action missing |  |  |
 | protected content damaged |  |  |
 | fabricated evidence found |  |  |
 | character delta status |  |  |
+
+If any red/orange paragraph only replaces words, preserves the same template skeleton, or becomes more formal without local evidence, final status is not `COMPLETED`.
 
 ## 6. First-Pass Failure Branch
 

@@ -2,282 +2,144 @@
 
 ## 1. Who This Skill Is For
 
-Use this Skill if you are revising a Chinese thesis and need help with:
+Use `zh-thesis-risk-optimizer` when you need a Chinese thesis revision workflow for:
 
-- AIGC-style writing risk.
-- Similarity-risk and repeated expression.
-- Report fragment mapping.
-- Citation and source-boundary protection.
-- Engineering, science, or computer-science technical entities.
-- Full-thesis project planning and progress tracking.
+- AIGC color-report targeting.
+- Red/orange paragraph coverage.
+- DOCX/file-copy handling without editing the original file.
+- Character-change control.
+- Social-science and management-template bottleneck repair.
+- Final acceptance auditing before delivery.
 
-## 2. Using It With Coding Agents
+The Skill does not promise any external detection-platform result. It does not crack, simulate, reverse engineer, or forge detection systems or reports.
 
-For Codex, Claude Code, Copilot, or similar agents:
+## 2. Start With Intake
 
-1. Put this repository where the agent can read it.
-2. Ask the agent to load `SKILL.md`.
-3. Start with `INTAKE_WIZARD_PRECHECK`.
-4. Fill in the required, strongly recommended, and optional fields from `workflow/intake_request_template.md`.
-5. Provide the thesis text, chapter, report fragment, file path, or project state.
-6. Ask the agent to preserve citations, data, conclusions, formulas, code, and technical identifiers.
+Every matching task starts with `INTAKE_WIZARD_PRECHECK`.
 
-Every use of this Skill should start with intake precheck. The agent should show the full template first unless the same message already contains a completed intake reply. Strongly recommended and optional fields should also be shown; write `无`, `跳过`, or `请自动判断` when you do not want to provide them.
+Copy this instruction when you want to use the Skill:
 
 ```text
-当前任务需要使用 zh-thesis-risk-optimizer。请先执行 INTAKE_WIZARD_PRECHECK。
-请先展示 workflow/intake_request_template.md 的完整模板，等我填写后再继续。
+请使用 zh-thesis-risk-optimizer。先执行 INTAKE_WIZARD_PRECHECK。
+请展示 workflow/intake_request_template.md 的完整模板，等我填写后再继续。
 ```
 
-## 3. Common Commands
+If you already know the inputs, fill the template directly:
 
 ```text
-请使用 zh-thesis-risk-optimizer。下面是我的 intake 模板：
 【任务目标】只降 AIGC
 【论文输入】原文 DOCX：/path/to/original.docx
-【处理范围】全文，只处理报告红橙片段
-【输出形式】创建副本并回写，同时输出诊断表
+【处理范围】全文；只处理报告红橙片段
+【输出形式】创建副本并回写；同时输出诊断表和验收表
 【字数约束】全文 ±10%
-【保护项】引用、数据、图表编号、参考文献、学校声明
+【保护项】引用、数据、图表编号、参考文献、学校声明、代码、路径、参数
 【AIGC 报告】/path/to/aigc_report.docx
 【论文专业和题目】人力资源管理，《……》
 【查重报告】无
-【报告颜色规则】默认
+【报告颜色规则】红色>70%；橙色60%-70%；紫色50%-60%；黑色<50%
 【当前状态】原文未改
 【历史版本】无
-【用户目标】请自动判断
-【可用证据】无
+【用户目标】红橙一起处理；不全文大改；不承诺检测结果
+【可用证据】问卷、访谈、流程、岗位、指标等材料；没有则写无
 【特殊要求】跳过
 ```
 
-```text
-请对我的完整论文建立全文双降项目总览，不要先改写。
-```
+## 3. The 10 Entry Modes
+
+The current slim router exposes only these entry modes:
+
+| mode | use when |
+|---|---|
+| `INTAKE_WIZARD_PRECHECK` | Start every matching task and collect required, recommended, and optional fields. |
+| `FILE_INPUT_COPY_WORKFLOW` | The user provides DOCX/TXT/Markdown/LaTeX files; create a copy before editing. |
+| `DOCX_COLOR_REPORT_EXTRACTION` | The user provides a Word/DOCX color-marked AIGC report. |
+| `THREE_MODE_COLOR_BAND_WORKFLOW` | A task uses red/orange/purple/black color bands for AIGC, similarity, or dual-risk handling. |
+| `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC report before any rewrite. |
+| `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current draft plus its current AIGC report. |
+| `AIGC_PLATEAU_BREAKER` | Multiple rounds slow down, red decreases but orange remains, or user reports a plateau after revision. |
+| `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | Human resource management, business administration, marketing, education management, public administration, or similar template-heavy papers. |
+| `AIGC_REGRESSION_GUARD` | A rewrite becomes smoother, more formal, more abstract, or more AI-like. |
+| `FINAL_ACCEPTANCE_AUDIT` | End every report-driven or file-copy task with coverage, evidence, regression, and character-change checks. |
+
+Other historical rules are internal sub-rules only. Do not invoke them as user-facing entry modes.
+
+## 4. First-Pass AIGC Color Report Workflow
+
+Use this when you have the original paper and original AIGC color report.
 
 ```text
-这是论文原文和查重报告片段，请先映射回原文，再输出报告驱动任务表。
+请使用 zh-thesis-risk-optimizer。我的任务是只降 AIGC。
+输入包括原文 DOCX 和原版 AIGC 颜色报告 DOCX。
+颜色规则：红色>70%，橙色60%-70%，紫色50%-60%，黑色<50%。
+请同时处理红色和橙色，黑色/低风险/封面/目录/承诺书/参考文献/附录冻结。
+全文字符数控制在 ±10%。
+请按强制链路执行，并在最后输出 FINAL_ACCEPTANCE_AUDIT。
 ```
+
+Required chain:
 
 ```text
-请用 AIGC_ONLY 处理下面段落，不要改变术语和引用。
+FILE_INPUT_COPY_WORKFLOW
+-> DOCX_COLOR_REPORT_EXTRACTION
+-> THREE_MODE_COLOR_BAND_WORKFLOW
+-> FIRST_PASS_RED_ORANGE_ENGINE
+-> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
+-> AIGC_REGRESSION_GUARD
+-> FINAL_ACCEPTANCE_AUDIT
 ```
+
+If any required step is skipped, the task is not complete.
+
+## 5. Current-Report Workflow
+
+Use this when the paper has already been revised once or more and you provide the current draft plus current AIGC report.
 
 ```text
-请用 SIMILARITY_ONLY 处理这段理论基础，保留必要引用。
+请使用 zh-thesis-risk-optimizer。这里是当前稿和当前 AIGC 颜色报告。
+请进入 CURRENT_REPORT_RED_ORANGE_ENGINE：
+当前报告红色全部处理，橙色全部处理；
+紫色只在与红橙同段或必要衔接时处理；
+黑色、低风险、封面、目录、承诺书、参考文献、附录冻结。
+完成时必须输出红橙覆盖率验收表和 FINAL_ACCEPTANCE_AUDIT。
 ```
+
+Required chain:
 
 ```text
-请用 DUAL_OPTIMIZATION 处理这一节，先处理相似风险，再检查 AI 味。
+FILE_INPUT_COPY_WORKFLOW
+-> DOCX_COLOR_REPORT_EXTRACTION
+-> THREE_MODE_COLOR_BAND_WORKFLOW
+-> CURRENT_REPORT_RED_ORANGE_ENGINE
+-> AIGC_PLATEAU_BREAKER when orange accumulation or multi-round slowdown exists
+-> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
+-> AIGC_REGRESSION_GUARD
+-> FINAL_ACCEPTANCE_AUDIT
 ```
+
+## 6. Social-Science Evidence Pack
+
+For human resource management and similar management papers, red/orange paragraphs must not be repaired by polished management jargon alone.
+
+If the paragraph lacks company, questionnaire, interview, process, post, form, indicator, owner, review-cycle, or boundary evidence, ask the user to fill:
 
 ```text
-请用 AIGC_DEEP_REWRITE_ENGINE 深度改写下面段落，先列出保留事实和禁止改动项。
+workflow/author_evidence_pack_template.md
 ```
 
-```text
-我的目标是查重相似度 <10%、AIGC <20%。请读取原文、当前稿、历史报告和新报告，先做报告差异诊断，再生成 TARGETED_MULTIPASS_ENGINE 下一轮任务表。
-```
+Do not fabricate missing interviews, questionnaire results, company systems, indicators, forms, or operational facts.
 
-```text
-查重已经基本达标，当前稿比原文扩写太多。请进入 AIGC_FOCUSED_LENGTH_CONTROLLED，把全文增幅控制在 0-2000 中文字内，先输出 AIGC 热点句表和长度预算表。
-```
+## 7. Final Acceptance
 
-```text
-我有原文、三轮改写稿和对应 AIGC 报告。AIGC 下降到 54% 后变慢，请进入 AIGC_PLATEAU_BREAKER，先分析红色/橙色/紫色风险带趋势，再输出橙色平台期任务表。
-```
+Every delivery should include:
 
-```text
-这是原版论文和原版 AIGC 报告。请进入 FIRST_PASS_RED_ORANGE_ENGINE，首轮同时处理红色和橙色片段，黑色/低风险段落冻结，整篇论文总字符变动控制在 ±10% 内。
-```
+- Whether DOCX color metadata was read.
+- Red total / processed.
+- Orange total / processed.
+- Whether social-science bottleneck handling was enabled when applicable.
+- Whether synonym-only rewriting appeared.
+- Whether the rewrite became more formal, smoother, or more AI-like.
+- Character-change result.
+- Unprocessed red/orange paragraphs.
+- Author evidence still needed.
 
-```text
-这是第一次降后的论文和第一次降后的 AIGC 颜色报告。请进入 CURRENT_REPORT_RED_ORANGE_ENGINE，当前报告红色和橙色全部进入任务表，紫色只做必要衔接，黑色、封面、目录、承诺书、参考文献和附录冻结；完成时输出红橙覆盖率验收表。
-```
-
-```text
-这是原文 DOCX 和 Word 颜色标记 AIGC 报告 DOCX。请先进入 DOCX_COLOR_REPORT_EXTRACTION，提取红/橙/紫/黑颜色片段，再进入 REPORT_AIGC_ONLY 或 FIRST_PASS_RED_ORANGE_ENGINE。
-```
-
-```text
-请进入 THREE_MODE_COLOR_BAND_WORKFLOW。模式：双降。输入是论文 DOCX 文件、查重报告和 AIGC 报告。请先创建原文件副本，不改原文件；按红色>70%、橙色60%-70%、紫色50%-60%、黑色<50%处理，红橙为主处理区，全文字符变动控制在±10%。
-```
-
-```text
-改写后 AIGC 率反而上升了，请进入 AIGC_REGRESSION_GUARD，分析哪些段落改写后变得更精致/更平衡/更抽象，然后用 BURSTINESS_INJECTION 做节奏审计，只对确实过度均整的段落做自然节奏修复。
-```
-
-## 4. Intake Template
-
-The full copyable template is in [workflow/intake_request_template.md](workflow/intake_request_template.md).
-
-Required fields:
-
-- Task goal.
-- Thesis input.
-- Processing scope.
-- Output format.
-- Character constraint.
-- Protected items.
-
-Strongly recommended fields:
-
-- AIGC report if reducing AIGC risk.
-- Similarity report if revising similarity risk.
-- Report color legend if color-marked reports are used.
-- Thesis major and title.
-- Current state, such as original draft, rewritten draft, AIGC regression, or plateau.
-
-Optional fields are also shown in the template. Fill them in or explicitly write `无`, `跳过`, or `请自动判断`.
-
-## 5. Full Thesis Workflow
-
-1. Provide the full thesis or chaptered text.
-2. Ask for `FULL_THESIS_PROJECT_MODE`.
-3. Generate `THESIS_MASTER_OVERVIEW`.
-4. Split chapters into `CHAPTER_TASK_MODE` tasks.
-5. Build protected term and citation lists.
-6. Process high-priority chapters first.
-7. Update progress and revision logs after each pass.
-8. Use `PROJECT_HANDOFF_MODE` before pausing.
-
-## 6. No-Report Dual Fallback Workflow
-
-When no report is available, do not ask the Skill to promise actual detection changes.
-
-1. Use `NO_REPORT_FALLBACK_WORKFLOW`.
-2. Build chapter structure and protected-item lists.
-3. Score AIGC and similarity risk heuristically by paragraph.
-4. Select only high-editability paragraphs first.
-5. Run pass one for structure rebuilding and similarity-expression cleanup.
-6. Run pass two for AIGC deep rewrite and self-audit.
-7. Mark remaining uncertainty as needing report-based localization.
-
-## 7. Targeted Multipass Workflow
-
-Use this when the user provides targets and multi-round reports.
-
-1. Use `TARGETED_MULTIPASS_ENGINE`.
-2. Record only user-provided metrics.
-3. Compare original, current, and historical drafts.
-4. If AIGC rises after similarity revision, run `AIGC_REGRESSION_GUARD`.
-5. Increase evidence density using existing thesis facts.
-6. Output next-pass task table.
-7. Treat targets as goals, not guaranteed results.
-
-## 8. AIGC-Focused Length-Control Workflow
-
-Use this when similarity reduction is already enough but AIGC risk remains high.
-
-1. Use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
-2. Downgrade similarity handling to stability check.
-3. Run sentence-level AIGC localization.
-4. Compress repeated AI-like expressions.
-5. Use replacement-based repair instead of appending explanations.
-6. Keep the total growth within the user's budget, default 0-2000 Chinese characters.
-7. If the draft exceeds budget, run `LENGTH_COMPRESSION_PASS`.
-8. If evidence is missing, output `HUMAN_EVIDENCE_REQUEST` or use conservative repair.
-
-## 9. AIGC Plateau Breaker Workflow
-
-Use this when several AIGC rounds improve slowly or report colors show red text falling while orange text remains high.
-
-1. Use `AIGC_PLATEAU_BREAKER`.
-2. Compare the original and each rewrite report by risk band.
-3. If red risk decreased but orange stayed high, enter `ORANGE_PLATEAU_PASS`.
-4. Freeze white/low-risk paragraphs.
-5. Identify whether the plateau is technical-protected, management-template, evidence-limited, or likely a report-model floor.
-6. For orange management-style paragraphs, break enumeration, start from local evidence, and compress repeated value claims.
-7. For computer-science plateaus, protect code, APIs, parameters, paths, formulas, table names, fields, and data.
-8. If a paragraph has been rewritten repeatedly without report improvement, mark `NO_PROGRESS_REWRITE_LOOP` and request missing evidence or human review.
-
-## 10. First-Pass Red-Orange Workflow
-
-Use this when the user provides the original thesis and original AIGC report before any rewrite.
-
-1. Use `FIRST_PASS_RED_ORANGE_ENGINE`.
-2. Parse report color or risk-band meaning.
-3. Put red/high-risk and orange/medium-risk paragraphs into the primary task table.
-4. Use sentence-level localization inside each red/orange paragraph.
-5. Run a finite internal self-audit loop, default at most two internal passes.
-6. Use a different repair move on retry.
-7. Freeze black/white/low-risk paragraphs.
-8. Apply `CHARACTER_DELTA_GUARD`; default whole-thesis character change is `±10%`.
-9. If safe revision cannot reach the heuristic purple/black target, mark protected, evidence-limited, character-delta, or no-progress status.
-
-## 11. Current Report Red-Orange Workflow
-
-Use this when the user provides a revised/current draft and its current AIGC report.
-
-1. Use `CURRENT_REPORT_RED_ORANGE_ENGINE` inside `THREE_MODE_COLOR_BAND_WORKFLOW`.
-2. Include every current-report red paragraph.
-3. Include every current-report orange paragraph.
-4. Process purple only when it shares context with red/orange.
-5. Freeze black, low-risk, cover, table of contents, declaration, references, and appendices.
-6. Output a paragraph processing record for each red/orange paragraph.
-7. Output the red-orange coverage acceptance table.
-8. Do not mark completion when any red/orange paragraph lacks a passing record.
-
-## 12. Three-Mode Color-Band Workflow
-
-Use this as the default work mode for similarity-only, AIGC-only, or dual revision.
-
-1. Choose one mode: `SIMILARITY_ONLY`, `AIGC_ONLY`, or `DUAL_OPTIMIZATION`.
-2. If the matching report exists, use report-driven processing.
-3. If no report exists, use heuristic diagnosis and state that report-based localization is better.
-4. Use the default color legend: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
-5. Treat red and orange as primary targets.
-6. Treat purple as light cleanup only.
-7. Freeze black, gray, and white unless needed for context.
-8. Apply whole-thesis character delta guard, default `±10%`.
-9. For file input, create a copy and write revisions back to the copy only.
-
-## 13. Similarity Report Workflow
-
-1. Provide thesis source text and report fragments.
-2. Use `REPORT_SIMILARITY_ONLY`.
-3. Map fragments back to source paragraphs.
-4. Assign mapping confidence.
-5. Classify source type.
-6. Preserve or supplement citations.
-7. Revise only confirmed and safe mappings.
-8. In dual-risk cases, run `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`.
-9. After similarity revision, run AIGC deep rewrite and safety review before rechecking.
-
-## 14. AIGC Report Workflow
-
-1. Provide thesis source text and AIGC report fragments.
-2. Use `REPORT_AIGC_ONLY`.
-3. Map high-risk fragments back to the thesis.
-4. Diagnose AI writing patterns.
-5. Protect terms, data, citations, and technical entities.
-6. Revise locally and compare heuristic writing-risk scores.
-7. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
-
-## 15. Engineering / Science / CS Notes
-
-Always protect:
-
-- Formulas and variables.
-- Code and commands.
-- API paths.
-- Database table names and fields.
-- Function names, class names, and parameters.
-- Experiment data, metrics, and chart numbers.
-- Model, algorithm, dataset, and protocol names.
-
-## 16. Common Misuse
-
-Do not use this Skill to:
-
-- Fabricate data, experiments, citations, reports, or sources.
-- Remove necessary citations.
-- Promise external detection outcomes.
-- Attack or reverse engineer detection systems.
-- Rewrite formulas, code, identifiers, or experiment values for style.
-- Repeatedly rewrite already completed low-risk chapters.
-- Expand every paragraph to reduce AIGC risk.
-- Edit the original file directly when the user provided a file.
-
-## 17. Academic Integrity Reminder
-
-If a sentence depends on a source, keep the citation boundary visible. If a report fragment cannot be mapped confidently, ask for more context before revising. If technical facts are unclear, flag them for human review instead of inventing a fix.
+If red/orange unprocessed count is not zero, or a required chain step is missing, the task must not be marked complete.

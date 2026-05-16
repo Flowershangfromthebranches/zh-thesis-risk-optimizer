@@ -111,6 +111,8 @@ For HR/recruitment-management theses, use `workflow/author_evidence_pack_templat
 
 ## Repair Strategy
 
+This file absorbs the social-science parts of the older evidence-injection, structure-rebuilding, anti-shallow-rewrite, and post-rewrite self-audit rules. Those rules are internal checks here, not separate runtime entry modes.
+
 ### 0. First Diagnostic Step: Report Color And Rhythm Gate
 
 Before content-level repair, run two checks:
@@ -257,6 +259,20 @@ Do not use the same paragraph structure throughout the chapter. Alternate betwee
 - **Contrast→Evidence→Conclusion**: Present two sides or scenarios, show the evidence, draw a conclusion
 
 Do NOT use "问题→原因→对策" for more than 2 consecutive paragraphs.
+
+### 8. Required Self-Audit For Red/Orange Management Paragraphs
+
+After every red/orange social-science paragraph revision, check:
+
+- Was the change more than synonym replacement?
+- Did it break or replace the "definition -> meaning -> countermeasure" skeleton when that skeleton existed?
+- Did it reduce mechanical "一是、二是、三是、四是" or "首先、其次、最后" enumeration?
+- Did it avoid abstract noun inflation such as 机制, 体系, 能力, 保障, 路径, 价值?
+- Did it use available company, questionnaire, interview, process, post, indicator, owner, time, form, or boundary evidence?
+- If evidence was missing, did it request `workflow/author_evidence_pack_template.md` instead of inventing facts?
+- Did the revision avoid becoming smoother, more formal, or more AI-like?
+
+If any red/orange paragraph fails this audit, it cannot be marked as completed. Retry once with a different action type, or output `D_AUTHOR_MATERIAL_REQUEST`.
 
 ## Hard Evidence Rule For HR And Management Papers
 

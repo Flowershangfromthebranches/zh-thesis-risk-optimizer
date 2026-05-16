@@ -81,6 +81,8 @@ Use heuristic similarity revision:
 
 ## Mode 2: AIGC-Only
 
+This is an internal color-band branch, not a separate entry mode. The old standalone AIGC-only and report-AIGC behavior is consolidated here and then handed to `FIRST_PASS_RED_ORANGE_ENGINE` or `CURRENT_REPORT_RED_ORANGE_ENGINE` when red/orange report bands exist.
+
 ### With AIGC Report
 
 Use report-driven AIGC revision:
@@ -130,6 +132,13 @@ If the user provides only one report:
 - State that the missing report limits localization.
 
 ## Internal Iteration
+
+Deep AIGC rewriting is no longer a standalone entry mode. Its usable parts are embedded in this internal iteration:
+
+- diagnose why a red/orange fragment has its color;
+- avoid synonym-only replacement;
+- rebuild the fragment by changing information order, local evidence placement, sentence relationships, or template skeleton;
+- run a finite self-audit before accepting the paragraph.
 
 For each red/orange fragment:
 
@@ -186,4 +195,4 @@ Completion is forbidden when current-report red/orange fragments exist without p
 
 ## Relation To SKILL.md
 
-Use this workflow as the high-level operating model before selecting specific prompts such as `SIMILARITY_ONLY`, `AIGC_ONLY`, `REPORT_AIGC_ONLY`, `REPORT_SIMILARITY_ONLY`, or `DUAL_OPTIMIZATION`.
+Use this workflow as the high-level operating model for color-band tasks. Historical standalone similarity, AIGC, report-AIGC, report-similarity, dual, and deep-rewrite modes are internal branches only; they are not user-facing entry modes in the slim router.

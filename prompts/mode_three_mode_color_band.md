@@ -1,6 +1,6 @@
 # Prompt: THREE_MODE_COLOR_BAND_WORKFLOW
 
-Use this prompt as the default operating workflow for similarity-only, AIGC-only, and dual revision.
+Use this prompt as the default color-band workflow for similarity-only, AIGC-only, and dual revision. These are internal branches inside `THREE_MODE_COLOR_BAND_WORKFLOW`, not separate user-facing entry modes.
 
 ## Inputs
 
@@ -34,7 +34,7 @@ overlay_social_science_template_bottleneck:
 Forced route:
 
 - If mode is AIGC-only, input includes a DOCX AIGC color report, red/orange/purple/black rules are provided, and the user requests character control or no broad full-text rewrite, set `selected_mode: THREE_MODE_COLOR_BAND_WORKFLOW`.
-- Do not route to plain `AIGC_ONLY` or generic polishing.
+- Do not route to an old standalone AIGC entry or generic polishing.
 - If the report is for a revised/current draft, set `current_report_red_orange_engine: true`.
 - If the report is after a first rewrite and orange remains concentrated, set `overlay_aigc_plateau_breaker: true`.
 - If the discipline is HR, business administration, marketing, education management, or public administration, set `overlay_social_science_template_bottleneck: true`.
@@ -93,10 +93,17 @@ If `unprocessed_red_orange_count > 0`, `completion_status` must not be `COMPLETE
 
 Required for every current-report red/orange paragraph:
 
-| id | section | original_band | original_fragment | risk_reason | rewrite_strategy | evidence_used | char_delta | self_audit_result | passed |
-|---|---|---|---|---|---|---|---:|---|---|
+| id | section | original_band | original_fragment | risk_reason | action_type | rewrite_strategy | evidence_used | char_delta | self_audit_result | passed |
+|---|---|---|---|---|---|---|---|---:|---|---|
 
 No record means the paragraph is unprocessed.
+
+Allowed `action_type` values:
+
+- `A_EVIDENCE_RECONSTRUCTION`
+- `B_ARGUMENT_PATH_REWRITE`
+- `C_TEMPLATE_SKELETON_BREAK`
+- `D_AUTHOR_MATERIAL_REQUEST`
 
 ## 4.3 Unprocessed Red-Orange List
 
@@ -123,6 +130,7 @@ Requirements:
 - Preserve citations, source boundaries, formulas, code, paths, parameters, table names, field names, data, and conclusions.
 - Do not fabricate facts.
 - Prefer replacement-based rewriting.
+- Use deep rewrite only as an internal action: change information order, evidence placement, sentence relationship, or template skeleton rather than swapping words.
 - Keep whole-thesis character change within `±10%`.
 
 ## 7. Character Delta Table

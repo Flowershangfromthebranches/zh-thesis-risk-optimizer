@@ -1,86 +1,133 @@
 # Validate Skill Structure
 
-Use this manual checklist before publishing.
+Use this check before publishing or syncing the Skill.
 
-## Required Files
+## Required Outcome
 
-- [ ] `README.md`
-- [ ] `SKILL.md`
-- [ ] `LICENSE`
-- [ ] `NOTICE`
-- [ ] `AGENTS.md`
-- [ ] `workflow/intake_request_template.md`
-- [ ] `workflow/author_evidence_pack_template.md`
-- [ ] `prompts/mode_intake_wizard.md`
-- [ ] `prompts/mode_three_mode_color_band.md`
-- [ ] `prompts/mode_first_pass_red_orange.md`
-- [ ] `prompts/mode_current_report_red_orange.md`
-- [ ] `prompts/mode_aigc_plateau_breaker.md`
-- [ ] `prompts/mode_social_science_aigc_bottleneck.md`
-- [ ] `prompts/mode_final_acceptance_audit.md`
-- [ ] `prompts/quality_checklist.md`
-- [ ] `references/file_input_copy_workflow.md`
-- [ ] `references/docx_color_report_extraction.md`
-- [ ] `references/three_mode_color_band_workflow.md`
-- [ ] `references/first_pass_red_orange_engine.md`
-- [ ] `references/current_report_red_orange_engine.md`
-- [ ] `references/aigc_plateau_breaker.md`
-- [ ] `references/social_science_template_bottleneck.md`
-- [ ] `references/aigc_regression_guard.md`
-- [ ] `references/final_acceptance_audit.md`
-- [ ] `tests/validate_skill_structure.md`
-- [ ] `tests/safety_checklist.md`
+- Every `prompts/*.md` path declared by `SKILL.md` exists.
+- Every `references/*.md` path declared by `SKILL.md` exists.
+- Every `workflow/*.md` path declared by `SKILL.md` exists.
+- `QUICKSTART.md` recommends only the 10 slim-router entry modes.
+- Retired historical modes are not recommended as QUICKSTART entry modes.
+- Path references inside `tests/*.md` resolve to real files.
+- Failure on any missing path blocks release.
 
-## SKILL.md Frontmatter
+## Expected Entry Modes
 
-Expected:
+- `INTAKE_WIZARD_PRECHECK`
+- `FILE_INPUT_COPY_WORKFLOW`
+- `DOCX_COLOR_REPORT_EXTRACTION`
+- `THREE_MODE_COLOR_BAND_WORKFLOW`
+- `FIRST_PASS_RED_ORANGE_ENGINE`
+- `CURRENT_REPORT_RED_ORANGE_ENGINE`
+- `AIGC_PLATEAU_BREAKER`
+- `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`
+- `AIGC_REGRESSION_GUARD`
+- `FINAL_ACCEPTANCE_AUDIT`
 
-```yaml
----
-name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, and final acceptance audit.
-license: MIT
----
+## Retired Modes Must Not Be QUICKSTART Entries
+
+These names may appear in historical tests or references, but `QUICKSTART.md` must not recommend them as user-facing entry modes:
+
+- `AIGC_ONLY`
+- `REPORT_AIGC_ONLY`
+- `DUAL_OPTIMIZATION`
+- `AIGC_DEEP_REWRITE_ENGINE`
+- `TARGETED_MULTIPASS_ENGINE`
+- `AIGC_FOCUSED_LENGTH_CONTROLLED`
+
+## Executable Check
+
+Run from the repository root:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+import re
+import sys
+
+root = Path('.')
+skill = (root / 'SKILL.md').read_text(encoding='utf-8')
+quickstart = (root / 'QUICKSTART.md').read_text(encoding='utf-8')
+
+expected_modes = [
+    'INTAKE_WIZARD_PRECHECK',
+    'FILE_INPUT_COPY_WORKFLOW',
+    'DOCX_COLOR_REPORT_EXTRACTION',
+    'THREE_MODE_COLOR_BAND_WORKFLOW',
+    'FIRST_PASS_RED_ORANGE_ENGINE',
+    'CURRENT_REPORT_RED_ORANGE_ENGINE',
+    'AIGC_PLATEAU_BREAKER',
+    'SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK',
+    'AIGC_REGRESSION_GUARD',
+    'FINAL_ACCEPTANCE_AUDIT',
+]
+
+retired_quickstart_entries = [
+    'AIGC_ONLY',
+    'REPORT_AIGC_ONLY',
+    'DUAL_OPTIMIZATION',
+    'AIGC_DEEP_REWRITE_ENGINE',
+    'TARGETED_MULTIPASS_ENGINE',
+    'AIGC_FOCUSED_LENGTH_CONTROLLED',
+]
+
+errors = []
+
+declared_paths = sorted(set(re.findall(
+    r'((?:prompts|references|workflow)/[A-Za-z0-9_./-]+\\.md)',
+    skill,
+)))
+
+for rel in declared_paths:
+    if not (root / rel).exists():
+        errors.append(f'SKILL.md declares missing path: {rel}')
+
+router_modes = re.findall(r'^\\| `([^`]+)` \\|', skill, flags=re.MULTILINE)
+if router_modes != expected_modes:
+    errors.append(
+        'Minimal Mode Router mismatch: '
+        + ', '.join(router_modes)
+    )
+
+for mode in expected_modes:
+    if f'`{mode}`' not in quickstart:
+        errors.append(f'QUICKSTART.md does not list entry mode: {mode}')
+
+for mode in retired_quickstart_entries:
+    if mode in quickstart:
+        errors.append(f'QUICKSTART.md still recommends retired entry mode: {mode}')
+
+test_paths = []
+for test_file in sorted((root / 'tests').glob('*.md')):
+    text = test_file.read_text(encoding='utf-8')
+    for rel in re.findall(
+        r'((?:prompts|references|workflow|tests|examples)/[A-Za-z0-9_./-]+\\.md)',
+        text,
+    ):
+        test_paths.append((test_file, rel))
+
+for test_file, rel in test_paths:
+    if not (root / rel).exists():
+        errors.append(f'{test_file} references missing path: {rel}')
+
+if errors:
+    print('FAIL')
+    for error in errors:
+        print('-', error)
+    sys.exit(1)
+
+print('PASS')
+print(f'SKILL declared paths: {len(declared_paths)}')
+print(f'Test path references: {len(test_paths)}')
+print(f'Entry modes: {len(router_modes)}')
+PY
 ```
 
-## Required SKILL.md Sections
+## Manual Checks
 
-- [ ] 1. Role
-- [ ] 2. Safety Boundaries
-- [ ] 3. Core Workflow
-- [ ] 4. Hard Routing Rules
-- [ ] 5. Minimal Mode Router
-- [ ] 6. Standard Output Blocks
-- [ ] 7. File Layout
-- [ ] No long supporting-reference index.
-- [ ] No long mode alias list.
-- [ ] Entry modes are kept to roughly 8-10.
-- [ ] Detailed rules remain in `references/`, `prompts/`, and `workflow/`.
-
-## Entry Mode Coverage
-
-- [ ] `INTAKE_WIZARD_PRECHECK`
-- [ ] `FILE_INPUT_COPY_WORKFLOW`
-- [ ] `DOCX_COLOR_REPORT_EXTRACTION`
-- [ ] `THREE_MODE_COLOR_BAND_WORKFLOW`
-- [ ] `FIRST_PASS_RED_ORANGE_ENGINE`
-- [ ] `CURRENT_REPORT_RED_ORANGE_ENGINE`
-- [ ] `AIGC_PLATEAU_BREAKER`
-- [ ] `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`
-- [ ] `AIGC_REGRESSION_GUARD`
-- [ ] `FINAL_ACCEPTANCE_AUDIT`
-
-## Sub-Rules Not Entry Modes
-
-- [ ] `AIGC_ONLY` is not an entry mode in `SKILL.md`.
-- [ ] `REPORT_AIGC_ONLY` is not an entry mode in `SKILL.md`.
-- [ ] `SECOND_PASS_REWRITE_REQUIREMENT` is not an entry mode in `SKILL.md`.
-- [ ] `ORANGE_ZONE_REWRITE_STRATEGY` is not an entry mode in `SKILL.md`.
-- [ ] `DISCIPLINE_AIGC_BOTTLENECK_RULES` is not an entry mode in `SKILL.md`.
-- [ ] `CONSERVATIVE_AIGC_REPAIR` is not an entry mode in `SKILL.md`.
-- [ ] `CONTENT_SUBSTANCE_INJECTION` is not an entry mode in `SKILL.md`.
-- [ ] `EVIDENCE_TRACE_INJECTION` is not an entry mode in `SKILL.md`.
-- [ ] `STRUCTURE_REBUILDING_RULES` is not an entry mode in `SKILL.md`.
-- [ ] `PARAGRAPH_TYPE_STRATEGIES` is not an entry mode in `SKILL.md`.
-- [ ] `EFFECTIVENESS_EVALUATION` is not an entry mode in `SKILL.md`.
-- [ ] `BURSTINESS_RHYTHM_CONTROL` is not an entry mode in `SKILL.md`.
+- [ ] `SKILL.md` has legal YAML frontmatter.
+- [ ] `SKILL.md` stays slim and does not reintroduce a long reference index.
+- [ ] Historical mode files may remain for archive/compatibility, but they are not routed as entry modes.
+- [ ] `skill_slimming_rules.md` remains a maintenance rule only.
+- [ ] Missing author evidence routes to `workflow/author_evidence_pack_template.md`.

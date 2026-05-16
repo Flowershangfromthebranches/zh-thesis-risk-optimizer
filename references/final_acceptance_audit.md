@@ -20,6 +20,8 @@ The final output must report:
 8. Unprocessed paragraphs.
 9. Author evidence still needed.
 
+This audit absorbs the older post-rewrite self-audit, anti-shallow-rewrite, and effectiveness-evaluation gates. These checks are no longer separate entry modes; completion depends on this final gate.
+
 ## Completion Rule
 
 The task can be marked `COMPLETED` only when:
@@ -36,6 +38,14 @@ The task can be marked `COMPLETED` only when:
 - social-science hard rule was enabled when applicable;
 - no protected content was damaged;
 - no fabricated data, interviews, citations, company facts, forms, systems, indicators, or report facts were introduced.
+
+The task must not be marked `COMPLETED` when:
+
+- the rewrite is only synonym replacement;
+- the rewrite mainly makes the paragraph more formal, smoother, longer, or more abstract;
+- red/orange paragraphs lack an A/B/C/D action record;
+- social-science red/orange paragraphs still use generic "体系、机制、能力、价值、保障" prose without local evidence;
+- missing author evidence was silently invented or ignored.
 
 If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, but the paragraph should be marked as needing author input rather than rewritten as complete.
 
