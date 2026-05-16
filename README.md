@@ -10,12 +10,15 @@
 
 ## 核心能力
 
+- **节奏与突发度审计**：检查句长过均匀、连接词过密和枚举结构过强的问题；仅在确有必要时做节奏修复，避免把论文改成口号式短句。
 - AIGC 风险诊断：识别模板化表达、机械结构、泛化结尾、模糊归因等问题。
 - AIGC 深度改写：重构段落逻辑、句间关系、具体对象和表达节奏，避免只换词。
+- **反形式化防线**：识别并阻止改写后文本变得更精致、更平衡、更抽象的回归问题。
 - 查重相似风险诊断：处理定义重复、教材式表述、背景套话、相似源表述过近等问题。
 - 评分诊断：输出启发式写作风险评分，用于定位风险和安排优先级。
 - 句子级定位：按句标注风险标签、保护标签和处理建议。
 - 报告驱动映射：把用户提供的查重/AIGC 报告片段映射回论文原文。
+- DOCX 颜色报告解析：对 Word 颜色标记报告先提取颜色元数据，避免普通文本抽取丢失红橙紫黑风险带。
 - 目标驱动多轮优化：支持用户设置相似度和 AIGC 目标阈值，并用报告趋势安排下一轮任务。
 - AIGC 反升防线：识别正式化润色、抽象名词膨胀、证据稀释等回归问题。
 - AIGC 专项控长修复：在查重已基本满足要求后，定点降低 AIGC 风险并控制全文增幅。
@@ -28,8 +31,15 @@
 - 工科/理科/计算机论文保护：保护公式、代码、接口、表名、字段名、参数和实验数据。
 - 全文项目管理：生成论文总览、章节任务、进度追踪、修改日志和项目交接摘要。
 - 迭代优化：根据新报告进行第二轮、第三轮定点处理，不反复大改低风险章节。
+- 启动引导：在目标、输入、报告或输出不清楚时，先用选项式问题收集必要信息，再选择模式。
 
 ## 快速开始
+
+### 0. 不确定怎么开始
+
+```text
+我要使用这个 Skill 处理论文，但还不确定应该选哪种模式。请先进入 INTAKE_WIZARD，用选项式问题引导我提供材料。
+```
 
 ### 1. 完整论文自分析
 
@@ -91,6 +101,7 @@
 
 | 模式 | 用途 | 适用输入 |
 |---|---|---|
+| `INTAKE_WIZARD` | 启动引导和材料收集 | 用户不确定模式、输入、报告、范围或输出格式 |
 | `AIGC_ONLY` | 只处理 AIGC 风险 | 论文段落、章节 |
 | `AIGC_DEEP_REWRITE_ENGINE` | 深度处理高 AIGC 风险 | AIGC 味重、浅层改写无效的段落 |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | 三模式颜色分级工作流 | 纯文本、论文文件、查重/AIGC 报告 |
@@ -125,6 +136,7 @@
 | `BEFORE_AFTER_SCORE_COMPARISON` | 改写前后启发式评分对比 | 原文与改写稿 |
 | `RISK_HEATMAP_TABLE` | 风险热区排序 | 长文、多章节 |
 | `REPORT_DRIVEN_MODE` | 报告驱动总流程 | 查重/AIGC 报告 |
+| `DOCX_COLOR_REPORT_EXTRACTION` | Word 颜色报告解析 | 颜色标记 AIGC/查重报告 DOCX |
 | `REPORT_AIGC_ONLY` | AIGC 报告定点处理 | AIGC 报告片段 |
 | `REPORT_SIMILARITY_ONLY` | 查重报告定点处理 | 标红片段、相似源说明 |
 | `REPORT_DUAL_OPTIMIZATION` | 双报告或重叠风险处理 | 查重 + AIGC 报告 |
@@ -139,23 +151,42 @@
 
 ## 推荐工作流
 
-1. 先诊断：识别章节结构、风险类型和输入材料。
-2. 建立保护清单：保护引用、术语、公式、代码、接口、字段和实验数据。
-3. 生成风险热区：按风险、报告贡献率和可安全改写程度排序。
-4. 分章处理：完整论文先建总览，再拆分章节任务，不一次性重写全文。
-5. 人工核对：引用密集、低置信度映射、实验数据密集段落进入人工核对。
-6. 根据新报告迭代：只处理残留高风险片段，不反复大改已完成章节。
-7. 平台期处理：如果多轮 AIGC 下降变慢，先判断红色、橙色、紫色风险带变化，冻结白色段落，再处理橙色平台期。
-8. 首轮红橙处理：如果一开始就有原版 AIGC 报告，红色和橙色同时进入主处理区，并用 `±10%` 字符变动守卫约束全文。
-9. 文件处理：如果输入是文件，先创建副本，不直接修改原文件；从副本提取要改的文本，改完回写副本并交付副本文件。
+1. 先引导：如果用户不清楚该提供什么，进入 `INTAKE_WIZARD` 收集目标、输入、报告、范围、输出和保护项。
+2. 先诊断：识别章节结构、风险类型和输入材料。
+3. 建立保护清单：保护引用、术语、公式、代码、接口、字段和实验数据。
+4. 生成风险热区：按风险、报告贡献率和可安全改写程度排序。
+5. 分章处理：完整论文先建总览，再拆分章节任务，不一次性重写全文。
+6. 人工核对：引用密集、低置信度映射、实验数据密集段落进入人工核对。
+7. 根据新报告迭代：只处理残留高风险片段，不反复大改已完成章节。
+8. 平台期处理：如果多轮 AIGC 下降变慢，先判断红色、橙色、紫色风险带变化，冻结白色段落，再处理橙色平台期。
+9. 首轮红橙处理：如果一开始就有原版 AIGC 报告，红色和橙色同时进入主处理区，并用 `±10%` 字符变动守卫约束全文。
+10. 文件处理：如果输入是文件，先创建副本，不直接修改原文件；从副本提取要改的文本，改完回写副本并交付副本文件。
 
 ## 推荐使用方式（经验参考，非结果承诺）
+
+### 报告反馈递进法（推荐）
+
+1. **第1轮：读取原文和原版报告**
+   - 如果报告是 Word 颜色标记文件，先提取 DOCX 颜色元数据。
+   - 红色和橙色进入主处理区，黑色、灰色、学校声明、参考文献和低风险区域冻结。
+2. **第2轮：按失败原因分流**
+   - 句长过均匀：做节奏修复。
+   - 模板骨架保留：做结构重组。
+   - 管理/社科论文红橙成片：做证据前置和模板骨架修复。
+   - 证据不足：输出作者补充清单，不编造。
+3. **第3轮：复测后只处理残留红橙**
+   - 根据新报告定位残留片段。
+   - 不反复改已变黑、变灰或低风险的段落。
+4. **关键原则：每轮只处理报告命中的高风险区域，所有百分比目标都只是用户目标，不是项目承诺。**
+
+### 通用流程
 
 1. 先基于原版查重一次。
 2. 针对检测报告，哪个高先降哪个。
 3. 使用查重/AIGC 检测报告中风险更高的一项作为优先输入；双风险段落可以进入双优化流程。
 4. 再查重一次，针对不满意的再降低。
 5. 不同模型和不同论文的结果差异较大；如果某个模型在你的报告中导致 AIGC 上升，应回退到上一版并更换策略或模型。
+6. **如果改写后 AIGC 率反而上升**：先检查是否丢失报告颜色、是否把文本改得更正式、更抽象、更顺滑，或是否保留了社科/管理类模板骨架。不要继续盲目强化同一种改法。
 
 ## 实测
 原版：
@@ -191,13 +222,13 @@ mimo-v2.5-pro 示例：
 
 本项目受到以下项目启发，并对原作者和贡献者表示感谢：
 
-- [houlaisan/deai-academic-zh](https://github.com/houlaisan/deai-academic-zh)
-- [Yezery/aigc-down-skill](https://github.com/Yezery/aigc-down-skill)
-- [zczjyq/de-AIGC-skill](https://github.com/zczjyq/de-AIGC-skill)
-- [openclaw/humanize-chinese](https://github.com/openclaw/skills/tree/main/skills/swaylq/humanize-chinese)
-- [lengsukq/ParaphrasingToolClient](https://github.com/lengsukq/ParaphrasingToolClient)
-- [Abnerla/AI_paper](https://github.com/Abnerla/AI_paper)
-- [Haimbeau1o/thesis-optimizer](https://github.com/Haimbeau1o/thesis-optimizer)
+- [houlaisan/deai-academic-zh](https://github.com/houlaisan/deai-academic-zh) — 启发点包括扫描诊断、分轮迭代、报告优先和文本节奏相关分析思路。本项目在尊重原作者的前提下重新组织，不复制其代码或长文本。
+- [Yezery/aigc-down-skill](https://github.com/Yezery/aigc-down-skill) — AI写作模式识别（16种模式），保量润色原则，会话记忆库
+- [zczjyq/de-AIGC-skill](https://github.com/zczjyq/de-AIGC-skill) — 长度保持编辑，术语一致性，滚动段落摘要
+- [openclaw/humanize-chinese](https://github.com/openclaw/skills/tree/main/skills/swaylq/humanize-chinese) — 困惑度、突发度、段落熵作为分析信号
+- [lengsukq/ParaphrasingToolClient](https://github.com/lengsukq/ParaphrasingToolClient) — 报告解析工作流
+- [Abnerla/AI_paper](https://github.com/Abnerla/AI_paper) — AI痕迹自检，报告导入，标记片段映射
+- [Haimbeau1o/thesis-optimizer](https://github.com/Haimbeau1o/thesis-optimizer) — 两层文档架构，迭代优化闭环
 
 详细第三方说明见 [NOTICE](NOTICE) 和 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 

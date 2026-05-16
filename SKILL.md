@@ -31,20 +31,27 @@ When integrity or technical correctness conflicts with risk reduction, integrity
 2. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, parameters, experiment data, and no-edit zones.
 3. Choose the smallest applicable mode family below.
 4. Output diagnosis, mapping, task table, or project overview before revision.
-5. Revise only confirmed and safe paragraphs or sentences.
-6. Run self-audit for AIGC style, similarity risk, citation integrity, technical facts, and character change.
-7. Update project artifacts when working at full-thesis or multi-round scope.
+5. Run `BURSTINESS_INJECTION` as an early rhythm audit for AIGC-related revision; apply rhythm repair only when the paragraph actually lacks variation.
+6. Revise only confirmed and safe paragraphs or sentences.
+7. Run self-audit for AIGC style, similarity risk, citation integrity, technical facts, and character change.
+8. Update project artifacts when working at full-thesis or multi-round scope.
+
+**Critical principle**: AIGC detectors often react to **how** text is written, not only **what** is written. A rewrite that produces smoother, more balanced, more formal prose can increase AIGC risk. Rhythm matters, but it is not sufficient for management and social-science theses; these also need report-color parsing, template-skeleton repair, and evidence-first reconstruction.
 
 Special routing:
 
+- If the user wants to use the Skill but has not provided enough input to choose a mode, use `INTAKE_WIZARD` first.
 - Default user-facing workflow: use `THREE_MODE_COLOR_BAND_WORKFLOW` to choose similarity-only, AIGC-only, or dual revision.
 - File input: use `FILE_INPUT_COPY_WORKFLOW`; create a copy, edit the copy, and keep the original untouched.
-- Management, business, education, public administration, or applied social-science thesis with repeated "status -> problem -> countermeasure" structure: use `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`.
+- Color-marked DOCX report input: use `DOCX_COLOR_REPORT_EXTRACTION` before plain-text extraction or report-driven rewriting.
+- **Any AIGC revision**: run `BURSTINESS_INJECTION` as an early rhythm audit. If rhythm is already varied but red/orange risk remains, switch to template-skeleton repair and evidence-first reconstruction instead of adding more short sentences.
+- Management, business, education, public administration, or applied social-science thesis with repeated "status -> problem -> countermeasure" structure: use `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`. These theses are especially vulnerable to AIGC detection because their template structure is inherently AI-like; report-color parsing, evidence placement, and template breaking are critical.
 - Original thesis plus original AIGC report: use `FIRST_PASS_RED_ORANGE_ENGINE`; red and orange bands both enter the first-pass primary task table.
 - Multi-round AIGC reports with red down but orange still high: use `AIGC_PLATEAU_BREAKER`.
 - Similarity already acceptable but AIGC still high: use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
 - Whole-thesis revision: apply `CHARACTER_DELTA_GUARD`; default total character change stays within `±10%` unless the user specifies another range.
 - User targets such as similarity `<10%` and AIGC `<20%`: treat them as goals, not guarantees; use `TARGETED_MULTIPASS_ENGINE`.
+- **AIGC rate increased after revision**: the rewrite likely produced more formal/balanced text, lost report color targeting, or preserved a social-science template skeleton. Apply `AIGC_REGRESSION_GUARD` before another rewrite.
 
 ## 4. Mode Router
 
@@ -54,12 +61,14 @@ Special routing:
 |---|---|---|
 | `AIGC_ONLY` | User asks only to reduce AIGC style risk. | `prompts/mode_aigc_only.md`, `references/aigc_pattern_library.md` |
 | `AIGC_DEEP_REWRITE_ENGINE` | Shallow wording changes are not enough. | `prompts/mode_aigc_deep_rewrite.md`, `references/aigc_deep_rewrite_engine.md` |
+| `BURSTINESS_INJECTION` | Any AIGC revision needs rhythm audit; apply rhythm repair only when uniformity is a real risk. | `references/burstiness_injection_rules.md` |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original AIGC report is available before first revision. | `prompts/mode_first_pass_red_orange.md`, `references/first_pass_red_orange_engine.md` |
 | `AIGC_PLATEAU_BREAKER` | Multiple rounds plateau, especially red down but orange remains high. | `prompts/mode_aigc_plateau_breaker.md`, `references/aigc_plateau_breaker.md` |
 | `AIGC_FOCUSED_LENGTH_CONTROLLED` | Similarity is acceptable and AIGC remains the main issue. | `prompts/mode_aigc_focused_length_controlled.md`, `references/aigc_focused_length_controlled_engine.md` |
 
 Supporting AIGC references:
 
+- `references/burstiness_injection_rules.md` — rhythm audit and controlled burstiness repair for AIGC modes
 - `references/orange_zone_rewrite_strategy.md`
 - `references/discipline_aigc_bottleneck_rules.md`
 - `references/aigc_focused_rewrite_strategy.md`
@@ -76,7 +85,7 @@ Supporting AIGC references:
 - `prompts/mode_second_pass_rewrite.md`
 - `prompts/mode_social_science_aigc_bottleneck.md`
 
-Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`, `SENTENCE_LEVEL_AIGC_LOCALIZER`, `BURSTINESS_RHYTHM_CONTROL`, `REPEATED_EXPRESSION_COMPRESSOR`, `HUMAN_EVIDENCE_REQUEST`, `CONSERVATIVE_AIGC_REPAIR`, `AIGC_REGRESSION_GUARD`, `AIGC_BELOW_20_STRATEGY`, `POST_REWRITE_AIGC_SELF_AUDIT`, `SECOND_PASS_REWRITE_REQUIREMENT`.
+Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`, `SENTENCE_LEVEL_AIGC_LOCALIZER`, `BURSTINESS_RHYTHM_CONTROL`, `BURSTINESS_INJECTION`, `REPEATED_EXPRESSION_COMPRESSOR`, `HUMAN_EVIDENCE_REQUEST`, `CONSERVATIVE_AIGC_REPAIR`, `AIGC_REGRESSION_GUARD`, `AIGC_BELOW_20_STRATEGY`, `POST_REWRITE_AIGC_SELF_AUDIT`, `SECOND_PASS_REWRITE_REQUIREMENT`.
 
 ### Similarity And Dual Optimization Family
 
@@ -115,18 +124,20 @@ Mode aliases: `FILE_INPUT_COPY_WORKFLOW`, `OPTIMIZATION_TARGETS`, `REPORT_FEEDBA
 
 Supporting references:
 
+- `references/docx_color_report_extraction.md`
 - `references/report_input_types.md`
 - `references/similarity_source_handling.md`
 - `references/report_safety_and_integrity.md`
 - `references/report_driven_multi_pass_workflow.md`
 - `prompts/mode_report_driven_multi_pass.md`
 
-Mode aliases: `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`, `SIMILARITY_SOURCE_HANDLING`, `REPORT_PRIORITY_QUEUE`, `MAPPING_CONFIDENCE_LEVEL`.
+Mode aliases: `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`, `DOCX_COLOR_REPORT_EXTRACTION`, `SIMILARITY_SOURCE_HANDLING`, `REPORT_PRIORITY_QUEUE`, `MAPPING_CONFIDENCE_LEVEL`.
 
 ### Diagnosis And Guard Family
 
 | Mode | Use When | Load |
 |---|---|---|
+| `INTAKE_WIZARD` | User wants to start but goal, input, report, scope, or output is unclear. | `prompts/mode_intake_wizard.md`, `references/intake_wizard.md` |
 | `AUTO_DIAGNOSIS` | User provides text without a mode. | `references/scoring_framework.md`, `references/chapter_strategies.md` |
 | `SCORING_DIAGNOSIS_MODE` | User wants diagnosis before rewriting. | `prompts/mode_scoring_diagnosis.md` |
 | `SENTENCE_LEVEL_DIAGNOSIS_MODE` | User wants sentence-level risk localization. | `prompts/mode_sentence_level_revision.md`, `references/sentence_level_diagnosis.md` |
@@ -196,6 +207,11 @@ Use only the blocks needed for the task.
 
 | id | source_location | original_text | revised_text | mapping_confidence | writeback_status |
 |---|---|---|---|---|---|
+
+### Intake Decision
+
+| item | selected_or_default | notes |
+|---|---|---|
 
 ### Project Templates
 

@@ -38,6 +38,20 @@ When the input is a file, load `references/file_input_copy_workflow.md`.
 - Write safe revisions back to the copy.
 - Deliver the copied file.
 
+## Word Color-Marked Report Rule
+
+When a Word / DOCX report uses font colors to mark AIGC or similarity risk, also load `references/docx_color_report_extraction.md`.
+
+Do not flatten the report directly into plain text before extracting color metadata. Plain-text conversion can lose the red/orange/purple/black markers and make report-driven processing fail.
+
+Required steps:
+
+1. Inspect DOCX run-level or style-level color metadata.
+2. Record raw color hex values.
+3. Map each color to the user's report legend when available.
+4. Build the red/orange task table from colored runs, not from uncolored plain text.
+5. If color metadata cannot be extracted, ask the user for copied red/orange fragments or a report export with explicit labels.
+
 ## Required Boundaries
 
 - Do not fabricate report conclusions, percentages, source names, or risk levels.

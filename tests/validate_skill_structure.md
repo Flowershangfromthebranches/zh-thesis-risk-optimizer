@@ -14,6 +14,7 @@ Use this manual checklist before publishing.
 - [ ] `prompts/mode_dual_optimization.md`
 - [ ] `prompts/mode_engineering_science.md`
 - [ ] `prompts/mode_general_academic.md`
+- [ ] `prompts/mode_intake_wizard.md`
 - [ ] `prompts/quality_checklist.md`
 - [ ] `references/aigc_pattern_library.md`
 - [ ] `references/similarity_reduction_strategy.md`
@@ -21,6 +22,8 @@ Use this manual checklist before publishing.
 - [ ] `references/protected_terms_rules.md`
 - [ ] `references/long_context_consistency.md`
 - [ ] `references/chapter_strategies.md`
+- [ ] `references/intake_wizard.md`
+- [ ] `references/docx_color_report_extraction.md`
 - [ ] `examples/01-aigc-only-before-after.md`
 - [ ] `examples/02-similarity-only-before-after.md`
 - [ ] `examples/03-dual-optimization-before-after.md`
@@ -57,6 +60,7 @@ license: MIT
 ## Mode Coverage
 
 - [ ] AIGC_ONLY exists.
+- [ ] INTAKE_WIZARD exists.
 - [ ] AIGC_DEEP_REWRITE_ENGINE exists.
 - [ ] THREE_MODE_COLOR_BAND_WORKFLOW exists.
 - [ ] FILE_INPUT_COPY_WORKFLOW exists.
@@ -82,6 +86,7 @@ license: MIT
 - [ ] AUTO_DIAGNOSIS exists.
 - [ ] ENGINEERING_SCIENCE_MODE exists.
 - [ ] REPORT_DRIVEN_MODE exists.
+- [ ] DOCX_COLOR_REPORT_EXTRACTION exists.
 - [ ] REPORT_DRIVEN_MULTI_PASS_WORKFLOW exists.
 - [ ] FULL_THESIS_PROJECT_MODE exists.
 - [ ] CHAPTER_TASK_MODE exists.

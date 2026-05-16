@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## v0.9.1-social-science-docx-report-fix
+
+- Added `references/docx_color_report_extraction.md` so Word reports are parsed by color metadata before plain-text processing.
+- Corrected the over-strong burstiness priority: rhythm repair is now an audit and targeted repair, not a universal cure.
+- Strengthened social-science and HR thesis handling for broad red/orange coverage, template skeleton retention, and evidence-first reconstruction.
+- Added tests for color-marked DOCX reports, HR red/orange coverage, rhythm-already-varied failures, and slogan-like burstiness.
+
+## v0.9.0-burstiness-injection
+
+- Added `references/burstiness_injection_rules.md` as a rhythm audit and controlled repair technique for AIGC-risk revision.
+- Updated `references/aigc_deep_rewrite_engine.md`: reframed from "quality improvement" toward anti-formalization, rhythm audit, specificity, and controlled reconstruction.
+- Updated `references/social_science_template_bottleneck.md`: added rhythm audit, anti-formalization rule, evidence anchoring examples, paragraph structure alternation, and social-science stop conditions/labels.
+- Updated `references/aigc_focused_rewrite_strategy.md`: added rhythm audit, connector deletion targets, anti-formalization guard with pass/fail checks.
+- Updated `references/post_rewrite_aigc_self_audit.md`: added burstiness/rhythm checks and anti-regression checks.
+- Updated `references/anti_shallow_rewrite_rules.md`: added burstiness injection, connector deletion, enumeration breaking, and anti-formalization as valid rewrite requirements. Added 5 new invalid rewrite patterns.
+- Updated `references/burstiness_rhythm_control.md`: cross-referenced to new burstiness_injection_rules.md as primary document.
+- Updated `SKILL.md`: added `BURSTINESS_INJECTION` mode to AIGC revision family, added critical principle about statistical fingerprints, added AIGC regression routing.
+- Updated `README.md`: added burstiness injection and anti-formalization as core capabilities, added three-round progressive AI reduction method, expanded upstream acknowledgements with key technique attribution.
+
+Root cause of AIGC rate increase: the previous rewrite approach produced smoother, more balanced, more formal text. The fix is to audit rhythm, break template structures, preserve report color targeting, and prevent formalization regression.
+
+## v0.8.5-intake-wizard
+
+- Added `INTAKE_WIZARD` startup guide for users who do not know which mode, input type, report type, scope, or output format to choose.
+- Added intake reference rules with compact option sets, defaults, routing decisions, and safety boundaries.
+- Added executable intake prompt and examples for enough-context, file-input, no-report, and social-science cases.
+- Added validation cases to ensure the wizard asks only for missing details and does not block when routing is already clear.
+
 ## v0.8.4-social-science-template-bottleneck
 
 - Added social-science template bottleneck rules for HR, business, marketing, education management, public administration, accounting, tourism, logistics, and similar applied theses.

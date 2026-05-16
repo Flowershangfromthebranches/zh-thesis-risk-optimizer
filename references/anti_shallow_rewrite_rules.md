@@ -25,11 +25,18 @@ The following are invalid when used alone:
 15. Lowering similarity risk without checking AIGC regression.
 16. Deleting concrete technical objects.
 17. Replacing implementation details with vague words such as "机制", "体系", "能力", or "价值".
+18. Making all sentences equally complete and balanced (reduces burstiness).
+19. Adding connectors where none existed (increases AI fingerprint).
+20. Replacing short punchy sentences with longer "more academic" versions.
+21. Preserving enumeration structure ("第一、第二、第三") without breaking it.
+22. Making the text sound more polished or formal than the original.
 
 ## Effective Rewrite Requirements
 
 A valid rewrite must satisfy at least two:
 
+- **Inject burstiness**: sentence-length σ > 10, at least one sentence < 15 chars, no 3+ consecutive sentences in 25-35 char range.
+- **Delete connectors**: remove mechanical connectors (首先/其次/此外/因此/综上所述), reduce to < 3 per paragraph.
 - Change information order.
 - Add concrete objects already present in the source.
 - Delete empty significance sentences.
@@ -40,6 +47,8 @@ A valid rewrite must satisfy at least two:
 - Replace generic conclusion with a concrete transition or boundary.
 - Increase evidence density without fabricating facts.
 - Preserve concrete technical objects rather than abstracting them away.
+- **Break enumeration**: convert "第一/第二/第三" to flowing prose or process-stage grouping.
+- **Anti-formalization**: do not replace common words with more formal alternatives.
 
 ## Relation To SKILL.md
 

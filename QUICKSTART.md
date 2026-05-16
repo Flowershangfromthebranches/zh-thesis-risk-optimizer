@@ -21,7 +21,17 @@ For Codex, Claude Code, Copilot, or similar agents:
 4. Specify a mode when you know what you want.
 5. Ask the agent to preserve citations, data, conclusions, formulas, code, and technical identifiers.
 
+If you do not know which mode to use, ask for the startup wizard first:
+
+```text
+我要使用这个 Skill，但还不确定该提供哪些材料。请进入 INTAKE_WIZARD，先用选项式问题引导我。
+```
+
 ## 3. Common Commands
+
+```text
+请进入 INTAKE_WIZARD。我不确定该选只降 AIGC、只降查重、双降、报告映射还是文件副本处理，请先问我必要信息。
+```
 
 ```text
 请对我的完整论文建立全文双降项目总览，不要先改写。
@@ -64,7 +74,15 @@ For Codex, Claude Code, Copilot, or similar agents:
 ```
 
 ```text
+这是原文 DOCX 和 Word 颜色标记 AIGC 报告 DOCX。请先进入 DOCX_COLOR_REPORT_EXTRACTION，提取红/橙/紫/黑颜色片段，再进入 REPORT_AIGC_ONLY 或 FIRST_PASS_RED_ORANGE_ENGINE。
+```
+
+```text
 请进入 THREE_MODE_COLOR_BAND_WORKFLOW。模式：双降。输入是论文 DOCX 文件、查重报告和 AIGC 报告。请先创建原文件副本，不改原文件；按红色>70%、橙色60%-70%、紫色50%-60%、黑色<50%处理，红橙为主处理区，全文字符变动控制在±10%。
+```
+
+```text
+改写后 AIGC 率反而上升了，请进入 AIGC_REGRESSION_GUARD，分析哪些段落改写后变得更精致/更平衡/更抽象，然后用 BURSTINESS_INJECTION 重新改写，重点制造句长波动和删除连接词。
 ```
 
 ## 4. Full Thesis Workflow

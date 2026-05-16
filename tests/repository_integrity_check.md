@@ -26,6 +26,8 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] v0.8.2 slimming keeps detailed rules outside `SKILL.md`.
 - [ ] v0.8.3 three-mode file workflow routes point to existing files.
 - [ ] v0.8.4 social-science template bottleneck routes point to existing files.
+- [ ] v0.8.5 intake wizard routes point to existing files.
+- [ ] DOCX color report extraction routes point to existing files.
 
 ## Repository Docs
 
@@ -50,3 +52,5 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] Whole-thesis character change defaults to `±10%` unless the user specifies another range.
 - [ ] File input workflows do not modify the original file directly.
 - [ ] Social-science bottleneck workflows request missing evidence instead of fabricating case facts.
+- [ ] Intake wizard workflows ask only for missing context and do not start rewriting before route and safety constraints are clear.
+- [ ] Color-marked Word reports are not processed through plain-text extraction alone.

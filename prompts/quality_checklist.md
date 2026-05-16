@@ -119,6 +119,26 @@ Use this checklist before final output.
 - [ ] Missing evidence triggers author questions instead of invented details.
 - [ ] Policy, theory, citation, questionnaire, and data boundaries are preserved.
 
+## v0.8.5 Intake Wizard Checks
+
+- [ ] `INTAKE_WIZARD` is used when goal, input type, report availability, scope, output format, or protection rules are unclear.
+- [ ] The wizard is skipped when enough context is already present.
+- [ ] The wizard asks only for missing information.
+- [ ] Options include "自动判断 / 其他补充".
+- [ ] Defaults are visible: whole-thesis `±10%` character delta, default color legend, file-copy handling, and protected items.
+- [ ] No rewrite starts before the required route and safety constraints are clear.
+- [ ] No fabricated report facts, data, experiments, citations, interviews, case facts, or risk percentages are requested or invented.
+
+## v0.8.6 DOCX Color Report And Social-Science Failure Checks
+
+- [ ] Color-marked DOCX reports are parsed for color metadata before plain-text extraction.
+- [ ] Raw DOCX color values are recorded and mapped only to the user's report legend or a clearly marked default.
+- [ ] Red/orange task tables come from colored report spans, not from flattened plain text.
+- [ ] If rhythm is already varied but AIGC risk remains high, the output switches to template-skeleton repair instead of adding more short sentences.
+- [ ] HR, management, education, business, and public-administration theses are checked for document-level "现状 -> 问题 -> 原因 -> 对策 -> 保障" skeletons.
+- [ ] Short-sentence burstiness does not become slogan-like or conversational.
+- [ ] The output diagnoses upstream-style failures without blaming or misrepresenting upstream projects.
+
 ## Similarity-Risk Checks
 
 - [ ] High-repeat definitions were converted into thesis-specific explanations.

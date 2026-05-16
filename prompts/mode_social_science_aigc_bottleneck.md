@@ -18,6 +18,7 @@ thesis_type:
 likely_template_bottleneck:
 template_skeleton:
 report_colors_available:
+docx_color_metadata_extracted:
 red_orange_primary_targets:
 character_delta_guard: enabled
 ```
@@ -51,12 +52,15 @@ Common high-risk sections:
 
 For each red/orange paragraph:
 
+0. If the report is a color-marked DOCX, extract color metadata first with `references/docx_color_report_extraction.md`.
 1. Identify the repeated template skeleton.
 2. Identify available local evidence.
-3. Move evidence before generic evaluation.
-4. Tie the claim to a concrete organization, department, post, process, data point, or respondent group.
-5. Delete broad value claims that do not add evidence.
-6. Keep citations and data intact.
+3. Check rhythm, but do not add short sentences if rhythm is already varied.
+4. Move evidence before generic evaluation.
+5. Tie the claim to a concrete organization, department, post, process, data point, or respondent group.
+6. Delete broad value claims that do not add evidence.
+7. Keep citations and data intact.
+8. If red/orange coverage is broad across the chapter, repair the section skeleton rather than only individual sentences.
 
 ## 4. Human Evidence Request
 
@@ -81,6 +85,7 @@ Requirements:
 
 - Do not use generic "完善机制、优化流程、提升能力、强化保障" as the main sentence skeleton.
 - Do not keep long "第一、第二、第三" chains unless necessary.
+- Do not overuse short, slogan-like sentences merely to increase burstiness.
 - Do not invent company facts, survey data, interview content,制度, or指标.
 - Keep whole-thesis character delta within the allowed range.
 
@@ -88,6 +93,8 @@ Requirements:
 
 - template_skeleton_reduced:
 - local_evidence_used:
+- docx_color_metadata_used:
+- rhythm_repair_needed:
 - abstract_noun_density_reduced:
 - enumeration_chain_broken:
 - citations_preserved:

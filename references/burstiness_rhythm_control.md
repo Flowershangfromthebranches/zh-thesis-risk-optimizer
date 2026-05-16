@@ -2,9 +2,11 @@
 
 ## Purpose
 
-Use this file to reduce overly smooth, overly uniform AIGC-like rhythm.
+Use this file to audit and reduce overly smooth, overly uniform AIGC-like rhythm.
 
 AIGC-high text is often not wrong at the sentence level. The problem is that the paragraph is too even, too complete, and too connector-driven.
+
+**Primary reference**: `references/burstiness_injection_rules.md` contains the core injection techniques. This file focuses on audit and verification.
 
 ## 1. Sentence Length Variation
 

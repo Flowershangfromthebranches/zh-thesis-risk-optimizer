@@ -150,6 +150,25 @@
 - If evidence is missing, output `HUMAN_EVIDENCE_REQUEST`; do not invent company facts, survey data, interview feedback,制度, or指标.
 - Preserve policy, theory, citation, and data boundaries.
 
+## v0.8.5 Intake Wizard Rules
+
+- Use `INTAKE_WIZARD` when the user wants to use the Skill but goal, input type, report availability, scope, output format, or protection rules are unclear.
+- Do not run the wizard when enough context is already present; route directly and state the chosen mode.
+- Ask only for missing information, preferably 4 to 7 compact fields.
+- Provide selectable options plus "自动判断 / 其他补充".
+- Default to whole-thesis character change `±10%`, default AIGC color legend red above 70%, orange 60%-70%, purple 50%-60%, black below 50%, and file-copy handling for file input.
+- Keep protection defaults visible: citations, formulas, code, APIs, paths, table names, field names, parameters, experiment data, and reference entries.
+- Never ask the user to invent reports, data, experiments, citations, interviews, case facts, or risk percentages.
+
+## v0.8.6 DOCX Color Report And Social-Science Failure Rules
+
+- For Word / DOCX reports with color-marked AIGC or similarity risk, parse color metadata before plain-text extraction.
+- If a DOCX report looks like another copy of the thesis after text extraction, assume color metadata may have been lost and stop report-driven rewriting until colors are recovered or supplied.
+- Do not treat burstiness as a universal cure. If rhythm is already varied and red/orange risk remains, use template-skeleton repair and evidence-first reconstruction.
+- For HR and management theses, do not convert paragraphs into slogan-like short sentences just to vary rhythm.
+- Diagnose failures from upstream-inspired workflows as workflow limitations, such as color metadata loss, formalization regression, template skeleton retention, or evidence underuse.
+- Preserve respectful attribution to upstream projects; do not claim that an upstream project is defective based on one thesis.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.
