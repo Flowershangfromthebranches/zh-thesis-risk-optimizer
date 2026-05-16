@@ -15,7 +15,9 @@ Use this checklist before publishing documentation cleanup releases.
 
 - [ ] `SKILL.md` frontmatter is valid YAML.
 - [ ] `SKILL.md` remains a concise routing document.
-- [ ] `SKILL.md` uses family-based router groups instead of a long duplicate reference index.
+- [ ] `SKILL.md` uses a minimal mode router instead of family-based long router groups.
+- [ ] `SKILL.md` keeps entry modes to roughly 8-10.
+- [ ] `SKILL.md` has no long supporting-reference list or mode alias list.
 - [ ] Files referenced from `SKILL.md` under `references/` exist.
 - [ ] Files referenced from `SKILL.md` under `prompts/` exist.
 - [ ] Files referenced from `SKILL.md` under `workflow/` exist.
@@ -31,6 +33,8 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] `workflow/intake_request_template.md` exists and is referenced by `SKILL.md`.
 - [ ] Current-report red-orange routes point to existing files.
 - [ ] AIGC acceptance self-audit routes point to existing files.
+- [ ] Final acceptance audit routes point to existing files.
+- [ ] Author evidence pack template exists.
 - [ ] DOCX color report extraction routes point to existing files.
 
 ## Repository Docs
@@ -67,3 +71,6 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] AIGC-only DOCX color-report tasks with color rules and character control do not fall back to plain `AIGC_ONLY`.
 - [ ] Current/revised reports use `CURRENT_REPORT_RED_ORANGE_ENGINE`, not `FIRST_PASS_RED_ORANGE_ENGINE`.
 - [ ] Current-report red/orange coverage acceptance is required before completion.
+- [ ] Mandatory first-pass chain is enforced before completion.
+- [ ] Missing HR/management evidence triggers author evidence pack instead of generic management prose.
+- [ ] Original first-pass AIGC non-improvement is marked `FIRST_PASS_FAILURE`, not plateau.

@@ -1,6 +1,6 @@
 ---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with modes for AIGC-focused length-controlled revision, targeted multi-pass revision, report-feedback loops, AIGC-regression guarding, sentence-level diagnosis, full-thesis project management, and engineering/science thesis protection.
+description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, and final acceptance audit.
 license: MIT
 ---
 
@@ -8,9 +8,9 @@ license: MIT
 
 ## 1. Role
 
-This Skill helps revise Chinese thesis text for writing quality, AIGC writing-risk signals, similarity-risk expression, citation-boundary integrity, report-to-source mapping, and full-thesis workflow management.
+This Skill helps revise Chinese thesis text for writing quality, AIGC writing-risk signals, similarity-risk expression, report-color mapping, citation-boundary integrity, file-copy handling, and final acceptance auditing.
 
-It is not a detection-result promise tool. Scores are heuristic writing-risk references only. Report-driven workflows only process report content legally obtained and provided by the user.
+It is not a detection-result promise tool. Scores and color targets are heuristic writing-risk references only. Report-driven workflows only process report content legally obtained and provided by the user.
 
 ## 2. Safety Boundaries
 
@@ -18,200 +18,152 @@ Do not:
 
 - Promise external detection outcomes or fixed percentage changes.
 - Crack, reverse engineer, simulate, or forge any detection system or report.
-- Fabricate data, experiments, citations, report percentages, similarity sources, interviews, logs, code, interfaces, screenshots, or risk levels.
+- Fabricate data, experiments, citations, report percentages, similarity sources, interviews, logs, code, interfaces, screenshots, companies, forms, indicators, or risk levels.
 - Delete necessary citations or disguise sourced content as uncited original writing.
 - Alter conclusions beyond provided evidence.
-- Rewrite formulas, code, API paths, table names, field names, parameters, experiment data, or reference entries for style.
+- Rewrite formulas, code, API paths, table names, field names, parameters, experiment data, reference entries, school declarations, or appendices for style.
 
 When integrity or technical correctness conflicts with risk reduction, integrity wins.
 
 ## 3. Core Workflow
 
-0. Run `INTAKE_WIZARD_PRECHECK` whenever this Skill is selected for a task.
-1. Identify input type: thesis text, chapter, full thesis, report fragment, full report, historical draft, or project handoff.
-2. On the first message of a new task, show the complete copyable intake template in `workflow/intake_request_template.md`; required, strongly recommended, and optional fields must all be visible.
-3. Do not start diagnosis, report parsing, file reading, or rewriting until the user submits an intake reply.
-4. Required fields must be filled. Strongly recommended and optional fields must be either filled or explicitly marked as `无`, `跳过`, or `请自动判断`.
-5. After the intake reply is complete, output an intake confirmation block and continue.
-6. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, parameters, experiment data, and no-edit zones.
-7. Choose the smallest applicable mode family below.
-8. Output diagnosis, mapping, task table, or project overview before revision.
-9. Run `BURSTINESS_INJECTION` as an early rhythm audit for AIGC-related revision; apply rhythm repair only when the paragraph actually lacks variation.
-10. Revise only confirmed and safe paragraphs or sentences.
-11. Run self-audit for AIGC style, similarity risk, citation integrity, technical facts, and character change.
-12. Update project artifacts when working at full-thesis or multi-round scope.
+1. Run `INTAKE_WIZARD_PRECHECK`.
+2. On first contact for a new task, show `workflow/intake_request_template.md` and wait for the user's completed intake reply.
+3. Do not diagnose, parse reports, read files, or rewrite before intake is complete.
+4. Create a file copy for file input; never edit the original file directly.
+5. If a DOCX color report is present, extract color metadata before plain text.
+6. Select the minimal hard route from the mode router.
+7. Build protected items and frozen zones before revision.
+8. Process red/orange report targets with paragraph records and acceptance checks.
+9. Run `FINAL_ACCEPTANCE_AUDIT`.
+10. Do not mark completion if any required chain step or red/orange acceptance item is missing.
 
-**Critical principle**: AIGC detectors often react to **how** text is written, not only **what** is written. A rewrite that produces smoother, more balanced, more formal prose can increase AIGC risk. Rhythm matters, but it is not sufficient for management and social-science theses; these also need report-color parsing, template-skeleton repair, and evidence-first reconstruction.
+## 4. Hard Routing Rules
 
-Special routing:
+### 4.1 Intake Gate
 
-- Any task that matches this Skill must start with `INTAKE_WIZARD_PRECHECK`.
-- First contact must stop at `INTAKE_WIZARD` and show `workflow/intake_request_template.md`; do not proceed merely because the user said "使用 zh-thesis-risk-optimizer 给论文降 AIGC".
-- Required fields decide whether processing is possible. Strongly recommended and optional fields still must be displayed, and the user must fill them or explicitly mark them as `无`, `跳过`, or `请自动判断`.
-- If the user already submitted a completed intake template in the same request, do not show the full wizard again; output an `Intake Confirmation` block and proceed.
-- If the user submitted only required fields, show the strongly recommended and optional sections and wait before processing.
-- Forced routing priority: if the completed intake says `只降 AIGC`, includes a DOCX AIGC color report, gives red/orange/purple/black color rules, and asks for character control or no broad full-text rewrite, route to `THREE_MODE_COLOR_BAND_WORKFLOW`. Do not fall back to plain `AIGC_ONLY` or generic polishing.
-- If that same task uses a report from a revised/current draft rather than the original report, apply `CURRENT_REPORT_RED_ORANGE_ENGINE` inside `THREE_MODE_COLOR_BAND_WORKFLOW`; `FIRST_PASS_RED_ORANGE_ENGINE` is only for original thesis plus original report.
-- If the task also includes first/second/third-round report feedback or orange accumulation after a prior revision, overlay `AIGC_PLATEAU_BREAKER` inside the three-mode workflow.
-- If the thesis discipline is human resource management, business administration, marketing, education management, or public administration, overlay `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` as a hard rule.
-- Default user-facing workflow: use `THREE_MODE_COLOR_BAND_WORKFLOW` to choose similarity-only, AIGC-only, or dual revision.
-- File input: use `FILE_INPUT_COPY_WORKFLOW`; create a copy, edit the copy, and keep the original untouched.
-- Color-marked DOCX report input: use `DOCX_COLOR_REPORT_EXTRACTION` before plain-text extraction or report-driven rewriting.
-- **Any AIGC revision**: run `BURSTINESS_INJECTION` as an early rhythm audit. If rhythm is already varied but red/orange risk remains, switch to template-skeleton repair and evidence-first reconstruction instead of adding more short sentences.
-- Management, business, education, public administration, or applied social-science thesis with repeated "status -> problem -> countermeasure" structure: use `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`. These theses are especially vulnerable to AIGC detection because their template structure is inherently AI-like; report-color parsing, evidence placement, and template breaking are critical.
-- Original thesis plus original AIGC report: use `FIRST_PASS_RED_ORANGE_ENGINE`; red and orange bands both enter the first-pass primary task table.
-- Multi-round AIGC reports with red down but orange still high: use `AIGC_PLATEAU_BREAKER`.
-- Similarity already acceptable but AIGC still high: use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
-- Whole-thesis revision: apply `CHARACTER_DELTA_GUARD`; default total character change stays within `±10%` unless the user specifies another range.
-- User targets such as similarity `<10%` and AIGC `<20%`: treat them as goals, not guarantees; use `TARGETED_MULTIPASS_ENGINE`.
-- **AIGC rate increased after revision**: the rewrite likely produced more formal/balanced text, lost report color targeting, or preserved a social-science template skeleton. Apply `AIGC_REGRESSION_GUARD` before another rewrite.
+- Any task matching this Skill starts with `INTAKE_WIZARD_PRECHECK`.
+- First contact stops at the intake template.
+- Required fields must be filled.
+- Strongly recommended and optional fields must be filled or explicitly marked `无`, `跳过`, or `请自动判断`.
+- If a completed intake template is already present, output `Intake Confirmation` and continue.
 
-## 4. Mode Router
+### 4.2 Mandatory First-Pass Chain
 
-### AIGC Revision Family
+When the intake says:
 
-| Mode | Use When | Load |
-|---|---|---|
-| `AIGC_ONLY` | User asks only to reduce AIGC style risk. | `prompts/mode_aigc_only.md`, `references/aigc_pattern_library.md` |
-| `AIGC_DEEP_REWRITE_ENGINE` | Shallow wording changes are not enough. | `prompts/mode_aigc_deep_rewrite.md`, `references/aigc_deep_rewrite_engine.md` |
-| `BURSTINESS_INJECTION` | Any AIGC revision needs rhythm audit; apply rhythm repair only when uniformity is a real risk. | `references/burstiness_injection_rules.md` |
-| `FIRST_PASS_RED_ORANGE_ENGINE` | Original AIGC report is available before first revision. | `prompts/mode_first_pass_red_orange.md`, `references/first_pass_red_orange_engine.md` |
-| `CURRENT_REPORT_RED_ORANGE_ENGINE` | A revised/current draft and its current AIGC report are available. | `prompts/mode_current_report_red_orange.md`, `references/current_report_red_orange_engine.md` |
-| `AIGC_PLATEAU_BREAKER` | Multiple rounds plateau, especially red down but orange remains high. | `prompts/mode_aigc_plateau_breaker.md`, `references/aigc_plateau_breaker.md` |
-| `AIGC_FOCUSED_LENGTH_CONTROLLED` | Similarity is acceptable and AIGC remains the main issue. | `prompts/mode_aigc_focused_length_controlled.md`, `references/aigc_focused_length_controlled_engine.md` |
+- original thesis plus original AIGC color report;
+- mode is AIGC-only;
+- user gives red/orange/purple/black color rules;
+- user asks to process red and orange together;
+- user asks for character control or no broad full-text rewrite;
 
-Supporting AIGC references:
+the mandatory chain is:
 
-- `references/burstiness_injection_rules.md` — rhythm audit and controlled burstiness repair for AIGC modes
-- `references/orange_zone_rewrite_strategy.md`
-- `references/discipline_aigc_bottleneck_rules.md`
-- `references/aigc_focused_rewrite_strategy.md`
-- `references/sentence_level_aigc_localizer.md`
-- `references/burstiness_rhythm_control.md`
-- `references/repeated_expression_compressor.md`
-- `references/human_evidence_request.md`
-- `references/conservative_aigc_repair.md`
-- `references/aigc_regression_guard.md`
-- `references/aigc_below_20_strategy.md`
-- `references/anti_shallow_rewrite_rules.md`
-- `references/post_rewrite_aigc_self_audit.md`
-- `references/aigc_acceptance_self_audit.md`
-- `references/social_science_template_bottleneck.md`
-- `prompts/mode_second_pass_rewrite.md`
-- `prompts/mode_social_science_aigc_bottleneck.md`
+```text
+FILE_INPUT_COPY_WORKFLOW
+-> DOCX_COLOR_REPORT_EXTRACTION
+-> THREE_MODE_COLOR_BAND_WORKFLOW
+-> FIRST_PASS_RED_ORANGE_ENGINE
+-> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
+-> AIGC_REGRESSION_GUARD
+-> FINAL_ACCEPTANCE_AUDIT
+```
 
-Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`, `SENTENCE_LEVEL_AIGC_LOCALIZER`, `BURSTINESS_RHYTHM_CONTROL`, `BURSTINESS_INJECTION`, `REPEATED_EXPRESSION_COMPRESSOR`, `HUMAN_EVIDENCE_REQUEST`, `CONSERVATIVE_AIGC_REPAIR`, `AIGC_REGRESSION_GUARD`, `AIGC_BELOW_20_STRATEGY`, `AIGC_ACCEPTANCE_SELF_AUDIT`, `POST_REWRITE_AIGC_SELF_AUDIT`, `SECOND_PASS_REWRITE_REQUIREMENT`.
+If any step is missing, the task cannot be marked complete.
 
-### Similarity And Dual Optimization Family
+### 4.3 Current-Report Chain
 
-| Mode | Use When | Load |
-|---|---|---|
-| `THREE_MODE_COLOR_BAND_WORKFLOW` | Default workflow for similarity-only, AIGC-only, and dual revision. | `prompts/mode_three_mode_color_band.md`, `references/three_mode_color_band_workflow.md` |
-| `SIMILARITY_ONLY` | User asks only to revise similarity-risk expression. | `prompts/mode_similarity_only.md`, `references/similarity_reduction_strategy.md` |
-| `DUAL_OPTIMIZATION` | AIGC and similarity risks both matter. | `prompts/mode_dual_optimization.md`, `references/dual_optimization_arbitration.md` |
-| `NO_REPORT_FALLBACK_WORKFLOW` | User has no report and needs heuristic fallback. | `prompts/mode_no_report_dual_fallback.md`, `references/no_report_fallback_workflow.md` |
-| `TARGETED_MULTIPASS_ENGINE` | User provides goals, reports, or historical drafts. | `prompts/mode_targeted_multipass.md`, `references/targeted_multipass_engine.md` |
+When the intake says the report is from a revised/current draft, use:
 
-Supporting references:
+```text
+FILE_INPUT_COPY_WORKFLOW
+-> DOCX_COLOR_REPORT_EXTRACTION
+-> THREE_MODE_COLOR_BAND_WORKFLOW
+-> CURRENT_REPORT_RED_ORANGE_ENGINE
+-> AIGC_PLATEAU_BREAKER when orange accumulation or multi-round slowdown exists
+-> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
+-> AIGC_REGRESSION_GUARD
+-> FINAL_ACCEPTANCE_AUDIT
+```
 
-- `references/file_input_copy_workflow.md`
-- `references/optimization_targets.md`
-- `references/report_feedback_loop.md`
-- `references/content_substance_injection.md`
-- `references/similarity_below_10_strategy.md`
-- `references/paragraph_type_strategies.md`
-- `references/effectiveness_evaluation.md`
-- `references/structure_rebuilding_rules.md`
-- `references/evidence_trace_injection.md`
-- `references/rewrite_intensity_l5.md`
+Do not use `FIRST_PASS_RED_ORANGE_ENGINE` for revised/current reports.
 
-Mode aliases: `FILE_INPUT_COPY_WORKFLOW`, `OPTIMIZATION_TARGETS`, `REPORT_FEEDBACK_LOOP`, `CONTENT_SUBSTANCE_INJECTION`, `SIMILARITY_BELOW_10_STRATEGY`, `PARAGRAPH_TYPE_STRATEGIES`.
+### 4.4 Social-Science Hard Rule
 
-### Report-Driven Family
+For human resource management, business administration, marketing, education management, and public administration, `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` is a hard rule during red/orange AIGC work.
+
+If red/orange paragraphs lack company, questionnaire, interview, process, post, form, indicator, responsibility, review-cycle, or boundary evidence, request `workflow/author_evidence_pack_template.md`. Do not invent missing materials.
+
+### 4.5 First-Pass Failure
+
+If the user says the original-thesis test produced almost no AIGC improvement, mark `FIRST_PASS_FAILURE`, not plateau.
+
+Check:
+
+- DOCX color report was actually parsed.
+- Red/orange coverage was 100%.
+- The rewrite was not only synonym replacement.
+- `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` was enabled when applicable.
+- Author evidence was available or requested.
+- The output had paragraph records and final acceptance audit.
+
+Then output a failure-cause table and next repair plan.
+
+## 5. Minimal Mode Router
 
 | Mode | Use When | Load |
 |---|---|---|
-| `REPORT_DRIVEN_MODE` | User provides any AIGC or similarity report. | `references/report_parsing_workflow.md`, `references/report_to_source_mapping.md` |
-| `REPORT_AIGC_ONLY` | User provides AIGC report fragments. | `prompts/mode_report_driven_aigc.md` |
-| `REPORT_SIMILARITY_ONLY` | User provides similarity report fragments. | `prompts/mode_report_driven_similarity.md` |
-| `REPORT_DUAL_OPTIMIZATION` | Reports show overlapping AIGC and similarity risk. | `prompts/mode_report_driven_dual.md`, `references/report_driven_priority_rules.md` |
-| `REPORT_TO_SOURCE_MAPPING` | User only wants report-to-source alignment. | `prompts/mode_report_mapping_only.md`, `references/mapping_confidence_rules.md` |
+| `INTAKE_WIZARD_PRECHECK` | Start of every matching task. | prompts/mode_intake_wizard.md, workflow/intake_request_template.md |
+| `FILE_INPUT_COPY_WORKFLOW` | User provides DOCX/TXT/Markdown/LaTeX file input. | references/file_input_copy_workflow.md |
+| `DOCX_COLOR_REPORT_EXTRACTION` | User provides Word/DOCX color report. | references/docx_color_report_extraction.md |
+| `THREE_MODE_COLOR_BAND_WORKFLOW` | Any AIGC/similarity/dual task with color bands. | prompts/mode_three_mode_color_band.md, references/three_mode_color_band_workflow.md |
+| `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC color report. | prompts/mode_first_pass_red_orange.md, references/first_pass_red_orange_engine.md |
+| `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current thesis plus current AIGC color report. | prompts/mode_current_report_red_orange.md, references/current_report_red_orange_engine.md |
+| `AIGC_PLATEAU_BREAKER` | Multi-round slowdown or orange accumulation. | prompts/mode_aigc_plateau_breaker.md, references/aigc_plateau_breaker.md |
+| `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | HR/management/social-science red-orange template risk. | prompts/mode_social_science_aigc_bottleneck.md, references/social_science_template_bottleneck.md, workflow/author_evidence_pack_template.md |
+| `AIGC_REGRESSION_GUARD` | Rewrite becomes smoother, more formal, or more AI-like. | references/aigc_regression_guard.md |
+| `FINAL_ACCEPTANCE_AUDIT` | End of every report-driven or file-copy task. | prompts/mode_final_acceptance_audit.md, references/final_acceptance_audit.md |
 
-Supporting references:
+Internal sub-rules such as burstiness audit, orange-zone repair, conservative repair, structure rebuilding, evidence injection, paragraph strategies, second-pass rewrite, and effectiveness evaluation are not entry modes. Load them only through the main modes above when needed.
 
-- `references/docx_color_report_extraction.md`
-- `references/report_input_types.md`
-- `references/similarity_source_handling.md`
-- `references/report_safety_and_integrity.md`
-- `references/report_driven_multi_pass_workflow.md`
-- `prompts/mode_report_driven_multi_pass.md`
+## 6. Standard Output Blocks
 
-Mode aliases: `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`, `DOCX_COLOR_REPORT_EXTRACTION`, `SIMILARITY_SOURCE_HANDLING`, `REPORT_PRIORITY_QUEUE`, `MAPPING_CONFIDENCE_LEVEL`.
+### Intake Confirmation
 
-### Diagnosis And Guard Family
-
-| Mode | Use When | Load |
+| field | value | status |
 |---|---|---|
-| `INTAKE_WIZARD_PRECHECK` | Any task selects this Skill; confirm whether required intake fields are present. | `prompts/mode_intake_wizard.md`, `references/intake_wizard.md`, `workflow/intake_request_template.md` |
-| `INTAKE_WIZARD` | Required fields are missing or contradictory. | `prompts/mode_intake_wizard.md`, `references/intake_wizard.md`, `workflow/intake_request_template.md` |
-| `AUTO_DIAGNOSIS` | User provides text without a mode. | `references/scoring_framework.md`, `references/chapter_strategies.md` |
-| `SCORING_DIAGNOSIS_MODE` | User wants diagnosis before rewriting. | `prompts/mode_scoring_diagnosis.md` |
-| `SENTENCE_LEVEL_DIAGNOSIS_MODE` | User wants sentence-level risk localization. | `prompts/mode_sentence_level_revision.md`, `references/sentence_level_diagnosis.md` |
-| `BEFORE_AFTER_SCORE_COMPARISON` | User wants before/after heuristic score comparison. | `references/scoring_framework.md` |
-| `RISK_HEATMAP_TABLE` | User wants risk hot-zone ranking. | `prompts/mode_risk_heatmap.md` |
-| `CHARACTER_DELTA_GUARD` | Whole-thesis character change must be controlled. | `references/character_delta_guard.md`, `references/length_budget_controller.md` |
-| `LENGTH_BUDGET_CONTROLLER` | User needs expansion/compression control. | `prompts/mode_length_compression_pass.md`, `references/length_budget_controller.md` |
 
-Supporting references:
+### Mandatory Chain Trace
 
-- `references/risk_labels.md`
-- `references/no_edit_zone_rules.md`
-- `references/protected_terms_rules.md`
-- `references/citation_integrity_rules.md`
-- `references/long_context_consistency.md`
-- `prompts/quality_checklist.md`
+| step | required | executed | evidence |
+|---|---|---|---|
 
-Mode aliases: `SAFE_NO_EDIT_ZONE`, `PROTECTED_TERMS_RULES`.
+### Color Extraction Summary
 
-### Engineering And Full-Thesis Family
+| source | red_count | orange_count | purple_count | black_count | extraction_status |
+|---|---:|---:|---:|---:|---|
 
-| Mode | Use When | Load |
-|---|---|---|
-| `ENGINEERING_SCIENCE_MODE` | Thesis contains formulas, code, APIs, tables, fields, or experiment data. | `prompts/mode_engineering_science.md`, `references/protected_terms_rules.md` |
-| `FULL_THESIS_PROJECT_MODE` | User provides a complete thesis or long-running task. | `references/full_thesis_project_management.md`, `workflow/thesis_master_overview_template.md` |
-| `CHAPTER_TASK_MODE` | Work should be split by chapter. | `references/chapter_task_rules.md`, `workflow/chapter_task_template.md` |
-| `PROGRESS_TRACKING_MODE` | User asks for status or multi-round tracking. | `references/progress_tracking_rules.md`, `workflow/progress_tracker_template.md` |
-| `REVISION_LOG_MODE` | User asks to record revision history. | `references/revision_log_rules.md`, `workflow/revision_log_template.md` |
-| `ITERATIVE_REVISION_MODE` | New reports trigger second/third pass tasks. | `references/iterative_optimization_rules.md`, `workflow/iteration_plan_template.md` |
-| `PROJECT_HANDOFF_MODE` | The project needs to pause or switch context. | `references/project_handoff_rules.md`, `workflow/project_handoff_template.md` |
-| `SKILL_SLIM_MODE` | Maintainers need to keep Skill docs concise. | `references/skill_slimming_rules.md`, `prompts/mode_skill_slimming.md` |
+### Red-Orange Task Table
 
-Supporting files:
+| id | section | paragraph_id | report_band | mapped_confidence | original_fragment | risk_reason | required_action |
+|---|---|---|---|---|---|---|---|
 
-- `prompts/mode_general_academic.md`
+### Red-Orange Paragraph Processing Record
 
-## 5. Standard Output Blocks
+| id | section | original_band | original_fragment | action_type | evidence_used | char_delta | self_audit_result | passed |
+|---|---|---|---|---|---|---:|---|---|
 
-Use only the blocks needed for the task.
+Allowed `action_type` values:
 
-### Diagnosis Table
-
-| 位置 | 风险类型 | 建议模式 | 强度 | 保护项 | 处理理由 |
-|---|---|---|---|---|---|
-
-### Report-Driven Task Table
-
-| 编号 | 原文章节 | 原文段落 | 报告片段 | 风险类型 | 贡献率/等级 | 映射置信度 | 建议模式 | 改写强度 | 是否保护 | 处理建议 |
-|---|---|---|---|---|---|---|---|---|---|---|
-
-### Red-Orange First-Pass Table
-
-| 编号 | 原文章节 | 原文段落 | 风险带 | 是否首轮主处理 | 目标风险带 | 保护项 | 内部重试上限 | 字符变动策略 |
-|---|---|---|---|---|---|---|---:|---|
+- `A_EVIDENCE_RECONSTRUCTION`
+- `B_ARGUMENT_PATH_REWRITE`
+- `C_TEMPLATE_SKELETON_BREAK`
+- `D_AUTHOR_MATERIAL_REQUEST`
 
 ### Red-Orange Coverage Acceptance Table
 
-| current_report_red_total | current_report_orange_total | processed_red_count | processed_orange_count | unprocessed_red_orange_count | completion_status |
+| red_total | orange_total | processed_red | processed_orange | unprocessed_red_orange | completion_status |
 |---:|---:|---:|---:|---:|---|
 
 ### Unprocessed Red-Orange List
@@ -219,65 +171,30 @@ Use only the blocks needed for the task.
 | id | section | paragraph_id | original_band | reason_not_processed | required_next_action |
 |---|---|---|---|---|---|
 
-### Red-Orange Paragraph Processing Record
+### First-Pass Failure Table
 
-| id | section | original_band | original_fragment | risk_reason | rewrite_strategy | evidence_used | char_delta | self_audit_result | passed |
-|---|---|---|---|---|---|---|---:|---|---|
+| check_item | result | evidence | next_fix |
+|---|---|---|---|
 
-### Color Reason Analysis Table
+### Final Acceptance Audit
 
-| 编号 | 模式 | 位置 | 报告颜色 | 疑似度区间 | 被标记原因 | 处理策略 | 是否保护 |
-|---|---|---|---|---|---|---|---|
-
-### Character Delta Table
-
-| scope | original_chars | revised_chars | delta_chars | delta_ratio | allowed_range | status |
-|---|---:|---:|---:|---:|---|---|
-
-### File Writeback Table
-
-| id | source_location | original_text | revised_text | mapping_confidence | writeback_status |
-|---|---|---|---|---|---|
-
-### Intake Decision
-
-| item | selected_or_default | notes |
+| item | result | evidence |
 |---|---|---|
+| DOCX color read |  |  |
+| red total / processed |  |  |
+| orange total / processed |  |  |
+| social-science bottleneck enabled |  |  |
+| synonym-only rewrite found |  |  |
+| formalization regression found |  |  |
+| character change |  |  |
+| unprocessed paragraphs |  |  |
+| author evidence needed |  |  |
 
-### Intake Confirmation
+## 7. File Layout
 
-| field | value | status |
-|---|---|---|
-
-### Project Templates
-
-- Intake request template: `workflow/intake_request_template.md`
-- Thesis overview: `workflow/thesis_master_overview_template.md`
-- Chapter task: `workflow/chapter_task_template.md`
-- Progress tracker: `workflow/progress_tracker_template.md`
-- Revision log: `workflow/revision_log_template.md`
-- Iteration plan: `workflow/iteration_plan_template.md`
-- Project handoff: `workflow/project_handoff_template.md`
-
-## 6. File Layout
-
-- `references/`: detailed rules and domain guidance.
-- `prompts/`: executable mode prompts.
-- `workflow/`: intake, file-handling, and full-thesis project templates.
-- `examples/`: format and behavior examples.
-- `tests/`: manual validation checklists.
-- `NOTICE` and `THIRD_PARTY_NOTICES.md`: upstream attribution and license notes.
-
-## 7. Upstream Acknowledgements
-
-This project is inspired by and respectfully acknowledges:
-
-- `houlaisan/deai-academic-zh`
-- `Yezery/aigc-down-skill`
-- `zczjyq/de-AIGC-skill`
-- `openclaw/humanize-chinese`
-- `lengsukq/ParaphrasingToolClient`
-- `Abnerla/AI_paper`
-- `Haimbeau1o/thesis-optimizer`
-
-Detailed attribution and license observations are maintained in `NOTICE` and `THIRD_PARTY_NOTICES.md`. This project reorganizes public workflow ideas for academic-integrity-first Chinese thesis optimization and does not copy upstream code, templates, or long-form text where licensing is unclear.
+- `SKILL.md`: slim routing and hard chain only.
+- `prompts/`: executable prompts for the 10 entry modes.
+- `references/`: detailed rules used by entry modes.
+- `workflow/`: intake, author evidence pack, file-copy, and project templates.
+- `tests/`: acceptance and regression checklists.
+- `NOTICE` and `THIRD_PARTY_NOTICES.md`: attribution and license notes.

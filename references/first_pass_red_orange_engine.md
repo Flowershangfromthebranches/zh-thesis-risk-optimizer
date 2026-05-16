@@ -36,11 +36,27 @@ Red and orange paragraphs must both enter the first-pass task table. Orange is n
 3. Build a protected list before any rewrite.
 4. Create a red-orange task table.
 5. Run sentence-level localization inside each red/orange paragraph.
-6. Select only the 1-3 highest-impact sentences per paragraph unless the whole paragraph skeleton is the risk.
+6. For each red/orange paragraph, choose one required action type:
+   - `A_EVIDENCE_RECONSTRUCTION`
+   - `B_ARGUMENT_PATH_REWRITE`
+   - `C_TEMPLATE_SKELETON_BREAK`
+   - `D_AUTHOR_MATERIAL_REQUEST`
 7. Apply replacement-based reconstruction, not append-based expansion.
-8. Run band-target self-audit.
-9. If red/orange risk remains in the heuristic self-audit, run one limited internal retry with a different repair move.
-10. Stop when the paragraph is heuristically reduced to purple/black, protected, evidence-limited, or no-progress.
+8. Record the action type in the paragraph processing record.
+9. Run band-target self-audit.
+10. If red/orange risk remains in the heuristic self-audit, run one limited internal retry with a different repair move.
+11. Stop when the paragraph is heuristically reduced to purple/black, protected, evidence-limited, author-material-needed, or no-progress.
+
+If a red/orange paragraph does not have one of the four action types, it is unprocessed.
+
+## Required First-Pass Action Types
+
+| action_type | use when | required behavior |
+|---|---|---|
+| `A_EVIDENCE_RECONSTRUCTION` | The source has usable company, questionnaire, interview, process, post, indicator, time, or owner evidence. | Move evidence before evaluation and rebuild the paragraph around it. |
+| `B_ARGUMENT_PATH_REWRITE` | The paragraph follows "definition -> meaning -> countermeasure". | Rebuild as "survey/field phenomenon -> reason judgment -> limited solution". |
+| `C_TEMPLATE_SKELETON_BREAK` | The paragraph uses "一是、二是、三是、四是", "首先、其次、最后", or repeated countermeasure chains. | Break enumeration, group by process stage, merge empty items, and delete generic value endings. |
+| `D_AUTHOR_MATERIAL_REQUEST` | Evidence is missing and safe rewriting would require invention. | Stop and request `workflow/author_evidence_pack_template.md`; do not fabricate. |
 
 ## Internal Recursive Loop
 
@@ -69,14 +85,7 @@ Default:
 
 ## Allowed Repair Moves
 
-Use moves from:
-
-- `references/aigc_focused_rewrite_strategy.md`.
-- `references/orange_zone_rewrite_strategy.md`.
-- `references/burstiness_rhythm_control.md`.
-- `references/content_substance_injection.md`.
-
-At least two of the following must change:
+At least one required action type above must be selected. Within that action, at least two of the following should change unless `D_AUTHOR_MATERIAL_REQUEST` is used:
 
 - paragraph opening angle,
 - information order,
@@ -108,8 +117,27 @@ If red/orange repair would exceed this range:
 - `PURPLE_BLACK_HEURISTIC_TARGET_REACHED`: the paragraph is heuristically reduced to light/low risk.
 - `PROTECTED_STOP`: risk remains but protected content prevents deeper rewriting.
 - `EVIDENCE_LIMITED_STOP`: risk remains because the paragraph lacks author-provided evidence.
+- `AUTHOR_MATERIAL_REQUIRED`: risk remains because the paragraph needs `workflow/author_evidence_pack_template.md`.
 - `CHARACTER_DELTA_FAIL`: revision exceeds the allowed whole-thesis character-change range.
 - `NO_PROGRESS_INTERNAL_LOOP`: internal retries did not materially change the risk pattern.
+- `FIRST_PASS_FAILURE`: original-thesis first-pass testing barely changed AIGC risk.
+
+## First-Pass Failure Handling
+
+If the user says "original test barely changed AIGC" or similar, do not label it plateau. Label it `FIRST_PASS_FAILURE`.
+
+Check:
+
+| check_item | failure signal |
+|---|---|
+| DOCX color parsing | report was flattened to plain text or colors were not counted |
+| red/orange coverage | red/orange coverage was below 100% |
+| action type | red/orange paragraphs lack A/B/C/D action records |
+| shallow rewrite | many paragraphs are synonym replacement or smoother formal prose |
+| social-science overlay | HR/management paper did not enable social-science bottleneck rules |
+| evidence pack | missing company/questionnaire/interview/process evidence was not requested |
+
+Output the failure-cause table and next repair plan. Do not pretend the first pass was complete.
 
 ## Safety
 

@@ -45,7 +45,7 @@ If the user provides another allowed range, use the user's range.
 
 ## 3. Red-Orange Task Table
 
-| id | section | paragraph_id | report_band | mapped_confidence | risk_pattern | protected_items | target_band | rewrite_strategy | max_internal_passes |
+| id | section | paragraph_id | report_band | mapped_confidence | risk_pattern | protected_items | target_band | action_type | max_internal_passes |
 |---|---|---|---|---|---|---|---|---|---:|
 
 Rules:
@@ -53,6 +53,12 @@ Rules:
 - Include both red and orange paragraphs.
 - Do not include black/white paragraphs unless they are directly connected to a red/orange fragment.
 - Purple paragraphs are optional low-intensity cleanup.
+- Every red/orange paragraph must use one action type:
+  - `A_EVIDENCE_RECONSTRUCTION`
+  - `B_ARGUMENT_PATH_REWRITE`
+  - `C_TEMPLATE_SKELETON_BREAK`
+  - `D_AUTHOR_MATERIAL_REQUEST`
+- A red/orange paragraph without one of these action types is unprocessed.
 
 ## 4. Sentence-Level Localization
 
@@ -95,6 +101,8 @@ Requirements:
 - Preserve citations, data, technical terms, code, formulas, paths, parameters, table names, and field names.
 - Do not fabricate evidence.
 
+If evidence is missing, output an author material request using `workflow/author_evidence_pack_template.md` instead of generating generic management prose.
+
 ## 7. Character Delta Table
 
 | scope | original_chars | revised_chars | delta_chars | delta_ratio | allowed_range | status |
@@ -104,13 +112,32 @@ Requirements:
 
 - red_band_handled:
 - orange_band_handled:
+- all_red_orange_have_action_type:
 - purple_black_heuristic_target:
 - white_freeze_respected:
 - repeated_strategy_avoided:
+- synonym_only_rewrite_found:
+- social_science_bottleneck_enabled:
+- author_evidence_pack_needed:
 - character_delta_status:
 - integrity_check:
 - human_evidence_needed:
 - external_detection_promise: false
+
+## 9. First-Pass Failure Branch
+
+If the user reports that original-thesis first-pass testing barely changed AIGC risk, output:
+
+| check_item | result | evidence | next_fix |
+|---|---|---|---|
+| DOCX color extraction performed |  |  |  |
+| red-orange coverage 100% |  |  |  |
+| A/B/C/D action recorded |  |  |  |
+| synonym-only rewrite avoided |  |  |  |
+| social-science bottleneck enabled |  |  |  |
+| author evidence pack requested when needed |  |  |  |
+
+Status: `FIRST_PASS_FAILURE` unless all checks pass.
 
 ## Safety
 

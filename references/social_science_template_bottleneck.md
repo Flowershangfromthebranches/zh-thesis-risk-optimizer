@@ -107,6 +107,8 @@ Use only evidence from the thesis, user, or report:
 
 If the text lacks such evidence, output `HUMAN_EVIDENCE_REQUEST` rather than inventing details.
 
+For HR/recruitment-management theses, use `workflow/author_evidence_pack_template.md` as the default request form.
+
 ## Repair Strategy
 
 ### 0. First Diagnostic Step: Report Color And Rhythm Gate
@@ -281,6 +283,7 @@ Accepted rewrites must, when source evidence exists, connect the statement to at
 - what the implementation boundary is.
 
 If the source does not provide enough evidence, output `HUMAN_EVIDENCE_REQUEST`. Do not invent company facts, questionnaire results, interviews, forms, systems, owners, indicators, review cycles, or boundaries.
+Use `workflow/author_evidence_pack_template.md` for the request.
 
 ## Social-Science Acceptance Gate
 

@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.9.5-slim-forced-chain
+
+- Slimmed `SKILL.md` to Role, Safety Boundaries, Core Workflow, Hard Routing Rules, Minimal Mode Router, Standard Output Blocks, and File Layout.
+- Reduced entry modes to 10 hard-chain modes and demoted broad tactics such as AIGC-only, orange-zone repair, structure rebuilding, evidence injection, burstiness rhythm, and effectiveness evaluation to internal sub-rules.
+- Added mandatory first-pass chain from file copy through DOCX color extraction, three-mode routing, first-pass red-orange, social-science bottleneck, regression guard, and final acceptance audit.
+- Added `workflow/author_evidence_pack_template.md` for HR/management theses when red/orange paragraphs lack evidence.
+- Added `FINAL_ACCEPTANCE_AUDIT` reference and prompt.
+- Reworked first-pass red-orange handling so each red/orange paragraph must use one of A/B/C/D action types.
+- Added `FIRST_PASS_FAILURE` handling for original-thesis tests where AIGC barely changes.
+
 ## v0.9.4-current-report-red-orange-acceptance
 
 - Added forced routing priority for AIGC-only DOCX color-report workflows with character control.

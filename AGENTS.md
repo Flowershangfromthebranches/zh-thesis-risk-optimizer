@@ -197,6 +197,17 @@
 - HR, business administration, marketing, education management, and public administration papers use `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` as a hard rule during report-driven red/orange work.
 - Do not accept generic management prose such as 构建体系, 提升效率, 优化流程, 强化能力, 丰富渠道, 数据驱动, 智能高效, or 提供参考 unless it is anchored to concrete company/process/evidence details.
 
+## v0.9.5 Slim Forced Chain Rules
+
+- Keep `SKILL.md` slim: Role, Safety Boundaries, Core Workflow, Hard Routing Rules, Minimal Mode Router, Standard Output Blocks, File Layout.
+- Keep entry modes to the 10 hard-chain modes only.
+- Do not re-add large supporting-reference lists or mode alias lists to `SKILL.md`.
+- Treat `AIGC_ONLY`, `REPORT_AIGC_ONLY`, `SECOND_PASS_REWRITE_REQUIREMENT`, `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `CONSERVATIVE_AIGC_REPAIR`, `CONTENT_SUBSTANCE_INJECTION`, `EVIDENCE_TRACE_INJECTION`, `STRUCTURE_REBUILDING_RULES`, `PARAGRAPH_TYPE_STRATEGIES`, `EFFECTIVENESS_EVALUATION`, and `BURSTINESS_RHYTHM_CONTROL` as internal sub-rules, not entry modes.
+- Original thesis plus original AIGC color report plus AIGC-only plus red/orange together plus character control must run the mandatory chain through `FINAL_ACCEPTANCE_AUDIT`.
+- Red/orange first pass must use A/B/C/D action types. If none is recorded, the paragraph is unprocessed.
+- If HR/management evidence is missing, request `workflow/author_evidence_pack_template.md` instead of generating generic management language.
+- If original first-pass testing barely changes AIGC, mark `FIRST_PASS_FAILURE`, not plateau.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.

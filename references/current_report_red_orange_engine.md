@@ -71,6 +71,15 @@ Each red/orange paragraph must have one record:
 
 No record means the paragraph is unprocessed.
 
+Each record must also use one action type:
+
+- `A_EVIDENCE_RECONSTRUCTION`
+- `B_ARGUMENT_PATH_REWRITE`
+- `C_TEMPLATE_SKELETON_BREAK`
+- `D_AUTHOR_MATERIAL_REQUEST`
+
+If action type is missing, the paragraph is unprocessed.
+
 ## Current-Report Workflow
 
 1. Confirm the report is for the current/revised draft.
@@ -80,7 +89,7 @@ No record means the paragraph is unprocessed.
 5. Build the red-orange task table.
 6. For every red/orange paragraph, run `AIGC_ACCEPTANCE_SELF_AUDIT`.
 7. If any audit item fails, run a second-pass rewrite with a different strategy.
-8. If second pass still fails, output a human evidence request; do not mark the paragraph complete.
+8. If second pass still fails, output a human evidence request using `workflow/author_evidence_pack_template.md`; do not mark the paragraph complete.
 9. Output the coverage acceptance table and unprocessed list.
 
 ## Completion Rule
@@ -89,6 +98,7 @@ Completion requires:
 
 - Every red paragraph has a processing record.
 - Every orange paragraph has a processing record.
+- Every red/orange record uses one of the four action types.
 - All records either pass or are explicitly marked protected/unmapped/evidence-limited with human next action.
 - The unprocessed red/orange count is zero.
 - Character delta guard passes.

@@ -63,8 +63,17 @@ Rules:
 
 Every red/orange paragraph must produce one record:
 
-| id | section | original_band | original_fragment | risk_reason | rewrite_strategy | evidence_used | char_delta | self_audit_result | passed |
+| id | section | original_band | original_fragment | risk_reason | action_type | evidence_used | char_delta | self_audit_result | passed |
 |---|---|---|---|---|---|---|---:|---|---|
+
+Allowed action types:
+
+- `A_EVIDENCE_RECONSTRUCTION`
+- `B_ARGUMENT_PATH_REWRITE`
+- `C_TEMPLATE_SKELETON_BREAK`
+- `D_AUTHOR_MATERIAL_REQUEST`
+
+If a red/orange paragraph has no action type, it is unprocessed.
 
 For management and HR papers, `evidence_used` must state whether the rewrite used company, questionnaire, interview, process, post, form, responsibility, review-cycle, or indicator evidence.
 
@@ -79,7 +88,7 @@ If any item fails:
 
 1. Run a second-pass rewrite with a different strategy.
 2. Audit again.
-3. If still failing, output an author evidence request and mark the paragraph not complete.
+3. If still failing, output `workflow/author_evidence_pack_template.md` and mark the paragraph not complete.
 
 ## 6. Candidate Revision
 
@@ -92,6 +101,7 @@ Requirements:
 - Avoid smoother generic management prose.
 - Preserve citations, facts, data, formulas, code, APIs, paths, table names, fields, parameters, references, and conclusions.
 - Do not fabricate questionnaire, interview, company, process, or indicator evidence.
+- If evidence is missing, use `D_AUTHOR_MATERIAL_REQUEST` rather than generic management prose.
 
 ## 7. Red-Orange Coverage Acceptance Table
 
@@ -126,6 +136,7 @@ The task can be marked complete only if:
 - all red current-report paragraphs are represented;
 - all orange current-report paragraphs are represented;
 - every represented paragraph has a processing record;
+- every red/orange record has one of the four allowed action types;
 - unprocessed red/orange count is zero;
 - character delta guard passes;
 - integrity checks pass.
