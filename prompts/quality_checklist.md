@@ -95,6 +95,21 @@ Use this checklist before final output.
 - [ ] `CHARACTER_DELTA_FAIL` triggers compression before completion.
 - [ ] Protected or evidence-limited paragraphs stop with a reason instead of being recursively rewritten.
 
+## v0.8.3 Three-Mode File Workflow Checks
+
+- [ ] The task is routed to similarity-only, AIGC-only, or dual revision.
+- [ ] If a relevant report is provided, report-driven processing is used.
+- [ ] If no report is provided, the output states that report-based localization would be better.
+- [ ] Color legend is applied correctly: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%, unless the report says otherwise.
+- [ ] Red and orange are primary targets.
+- [ ] Purple is only light cleanup.
+- [ ] Black, gray, and white text are frozen unless needed for context.
+- [ ] Every red/orange fragment includes a reason analysis for its color.
+- [ ] Whole-thesis character delta stays within `±10%` unless the user specified another range.
+- [ ] File input creates a copy and keeps the original untouched.
+- [ ] Revisions are written back only to HIGH or safe MEDIUM confidence mappings.
+- [ ] LOW or UNMAPPED file fragments are not written back automatically.
+
 ## Similarity-Risk Checks
 
 - [ ] High-repeat definitions were converted into thesis-specific explanations.

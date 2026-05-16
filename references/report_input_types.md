@@ -11,6 +11,32 @@ This Skill is not a report parser program by itself. It provides an AI-agent wor
 5. Fragment lists from detection reports.
 6. High-risk paragraphs without a complete report.
 7. Structured manual input: original text + report fragment + source/risk note.
+8. Plain thesis text without a file.
+9. Thesis files such as DOCX, Markdown, plain text, or LaTeX.
+
+## Default Color Legend
+
+When the user provides the following legend, use it exactly:
+
+| color | suspicion range |
+|---|---|
+| red | above 70%, high suspicion |
+| orange | 60%-70%, medium suspicion |
+| purple | 50%-60%, light suspicion |
+| black | below 50% |
+
+If the report uses colors but does not explain them, do not invent meanings. Ask the user or mark the color meaning as uncertain.
+
+## File Input Rule
+
+When the input is a file, load `references/file_input_copy_workflow.md`.
+
+- Do not modify the original file directly.
+- Create a copy.
+- Extract target text from the copy.
+- Rewrite mapped fragments.
+- Write safe revisions back to the copy.
+- Deliver the copied file.
 
 ## Required Boundaries
 

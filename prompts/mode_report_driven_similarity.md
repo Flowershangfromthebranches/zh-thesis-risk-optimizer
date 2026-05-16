@@ -10,13 +10,19 @@ Do not invent report percentages, source titles, authors, URLs, or risk levels. 
 
 1. Identify report type.
 2. Extract marked fragments, repeated fragments, source notes, and contribution rates.
-3. Map each report fragment back to the thesis source text.
-4. Assign mapping confidence.
-5. Classify similarity source type.
-6. Determine whether similarity is caused by necessary citation.
-7. Determine whether citations should be kept or supplemented.
-8. Determine whether the fragment is a no-edit zone.
-9. Revise by priority, only where mapping is safe enough.
+3. If the report uses color bands, apply the default legend unless the report states otherwise: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
+4. Treat red and orange fragments as primary targets.
+5. Analyze why each red/orange fragment has its color before rewriting.
+6. Map each report fragment back to the thesis source text.
+7. Assign mapping confidence.
+8. Classify similarity source type.
+9. Determine whether similarity is caused by necessary citation.
+10. Determine whether citations should be kept or supplemented.
+11. Determine whether the fragment is a no-edit zone.
+12. Revise by priority, only where mapping is safe enough.
+13. Apply whole-thesis character delta guard, default `±10%`.
+
+If file input is provided, create a copy and write safe revisions back to the copy only.
 
 ## Source Types
 
@@ -34,9 +40,13 @@ Do not invent report percentages, source titles, authors, URLs, or risk levels. 
 ```markdown
 ## 报告驱动任务表
 
+## 颜色原因分析
+
 ## 映射说明
 
 ## 定点修改
+
+## 字符变动表
 
 ## 引用复核
 ```

@@ -24,6 +24,7 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] v0.8 AIGC plateau breaker routes point to existing files.
 - [ ] v0.8.1 red-orange first-pass routes point to existing files.
 - [ ] v0.8.2 slimming keeps detailed rules outside `SKILL.md`.
+- [ ] v0.8.3 three-mode file workflow routes point to existing files.
 
 ## Repository Docs
 
@@ -46,3 +47,4 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] Orange-zone work freezes white/low-risk paragraphs instead of rewriting everything again.
 - [ ] First-pass red-orange work does not defer orange/medium-risk paragraphs to later rounds.
 - [ ] Whole-thesis character change defaults to `±10%` unless the user specifies another range.
+- [ ] File input workflows do not modify the original file directly.

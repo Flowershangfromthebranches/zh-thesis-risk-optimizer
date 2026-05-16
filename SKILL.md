@@ -37,6 +37,8 @@ When integrity or technical correctness conflicts with risk reduction, integrity
 
 Special routing:
 
+- Default user-facing workflow: use `THREE_MODE_COLOR_BAND_WORKFLOW` to choose similarity-only, AIGC-only, or dual revision.
+- File input: use `FILE_INPUT_COPY_WORKFLOW`; create a copy, edit the copy, and keep the original untouched.
 - Original thesis plus original AIGC report: use `FIRST_PASS_RED_ORANGE_ENGINE`; red and orange bands both enter the first-pass primary task table.
 - Multi-round AIGC reports with red down but orange still high: use `AIGC_PLATEAU_BREAKER`.
 - Similarity already acceptable but AIGC still high: use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
@@ -77,6 +79,7 @@ Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`
 
 | Mode | Use When | Load |
 |---|---|---|
+| `THREE_MODE_COLOR_BAND_WORKFLOW` | Default workflow for similarity-only, AIGC-only, and dual revision. | `prompts/mode_three_mode_color_band.md`, `references/three_mode_color_band_workflow.md` |
 | `SIMILARITY_ONLY` | User asks only to revise similarity-risk expression. | `prompts/mode_similarity_only.md`, `references/similarity_reduction_strategy.md` |
 | `DUAL_OPTIMIZATION` | AIGC and similarity risks both matter. | `prompts/mode_dual_optimization.md`, `references/dual_optimization_arbitration.md` |
 | `NO_REPORT_FALLBACK_WORKFLOW` | User has no report and needs heuristic fallback. | `prompts/mode_no_report_dual_fallback.md`, `references/no_report_fallback_workflow.md` |
@@ -84,6 +87,7 @@ Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`
 
 Supporting references:
 
+- `references/file_input_copy_workflow.md`
 - `references/optimization_targets.md`
 - `references/report_feedback_loop.md`
 - `references/content_substance_injection.md`
@@ -94,7 +98,7 @@ Supporting references:
 - `references/evidence_trace_injection.md`
 - `references/rewrite_intensity_l5.md`
 
-Mode aliases: `OPTIMIZATION_TARGETS`, `REPORT_FEEDBACK_LOOP`, `CONTENT_SUBSTANCE_INJECTION`, `SIMILARITY_BELOW_10_STRATEGY`, `PARAGRAPH_TYPE_STRATEGIES`.
+Mode aliases: `FILE_INPUT_COPY_WORKFLOW`, `OPTIMIZATION_TARGETS`, `REPORT_FEEDBACK_LOOP`, `CONTENT_SUBSTANCE_INJECTION`, `SIMILARITY_BELOW_10_STRATEGY`, `PARAGRAPH_TYPE_STRATEGIES`.
 
 ### Report-Driven Family
 
@@ -175,10 +179,20 @@ Use only the blocks needed for the task.
 | 编号 | 原文章节 | 原文段落 | 风险带 | 是否首轮主处理 | 目标风险带 | 保护项 | 内部重试上限 | 字符变动策略 |
 |---|---|---|---|---|---|---|---:|---|
 
+### Color Reason Analysis Table
+
+| 编号 | 模式 | 位置 | 报告颜色 | 疑似度区间 | 被标记原因 | 处理策略 | 是否保护 |
+|---|---|---|---|---|---|---|---|
+
 ### Character Delta Table
 
 | scope | original_chars | revised_chars | delta_chars | delta_ratio | allowed_range | status |
 |---|---:|---:|---:|---:|---|---|
+
+### File Writeback Table
+
+| id | source_location | original_text | revised_text | mapping_confidence | writeback_status |
+|---|---|---|---|---|---|
 
 ### Project Templates
 

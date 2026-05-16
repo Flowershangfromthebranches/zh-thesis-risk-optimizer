@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.8.3-three-mode-file-workflow
+
+- Added three-mode color-band workflow for similarity-only, AIGC-only, and dual revision.
+- Standardized default color meanings: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
+- Added file input copy workflow: never edit the original file, revise a copied file, and preserve formatting where possible.
+- Required all modes to apply whole-thesis character delta guard with default `±10%`.
+- Updated report-driven AIGC, report-driven similarity, and dual prompts to analyze color reasons and prioritize red/orange fragments.
+
 ## v0.8.2-skill-slimming
 
 - Slimmed `SKILL.md` into a concise family-based router.

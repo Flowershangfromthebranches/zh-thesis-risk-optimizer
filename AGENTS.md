@@ -130,6 +130,17 @@
 - When adding new modes, add one concise router row and put implementation detail in a separate file.
 - After slimming, audit all paths referenced from `SKILL.md`.
 
+## v0.8.3 Three-Mode File Workflow Rules
+
+- Default user-facing modes are similarity-only, AIGC-only, and dual revision.
+- Report color legend defaults to red above 70%, orange 60%-70%, purple 50%-60%, and black below 50% unless the report says otherwise.
+- Red and orange are primary targets in both similarity and AIGC reports.
+- Purple is light cleanup only; black, gray, and white are frozen unless needed for context.
+- All modes must apply whole-thesis character delta guard, default `±10%`.
+- If input is a file, never edit the original file directly.
+- File workflows must create a copy, extract target text, write safe revisions back to the copy, and deliver the copy.
+- Low-confidence or unmapped file fragments must not be written back automatically.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.

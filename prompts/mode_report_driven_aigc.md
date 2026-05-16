@@ -10,16 +10,20 @@ This mode only works with report content the user provides. Do not simulate, cra
 
 1. Identify report type.
 2. Extract high AIGC-risk fragments.
-3. If this is the original thesis plus original AIGC report, route to `FIRST_PASS_RED_ORANGE_ENGINE`.
-4. In first-pass mode, extract both red/high-risk and orange/medium-risk fragments as primary targets.
-5. Map each fragment back to the thesis source text.
-6. Assign mapping confidence.
-7. Diagnose AI writing patterns.
-8. Identify protected content.
-9. Choose rewrite intensity.
-10. Apply character delta control for whole-thesis work; default total change is `±10%`.
-11. Perform targeted revision only for confirmed or safe mappings.
-12. Output before/after heuristic score comparison.
+3. If the report uses color bands, apply the default legend unless the report states otherwise: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
+4. If this is the original thesis plus original AIGC report, route to `FIRST_PASS_RED_ORANGE_ENGINE`.
+5. In first-pass mode, extract both red/high-risk and orange/medium-risk fragments as primary targets.
+6. Analyze why each red/orange fragment has its color before rewriting.
+7. Map each fragment back to the thesis source text.
+8. Assign mapping confidence.
+9. Diagnose AI writing patterns.
+10. Identify protected content.
+11. Choose rewrite intensity.
+12. Apply character delta control for whole-thesis work; default total change is `±10%`.
+13. Perform targeted revision only for confirmed or safe mappings.
+14. Output before/after heuristic score comparison.
+
+If file input is provided, create a copy and write safe revisions back to the copy only.
 
 ## Output
 
@@ -32,9 +36,15 @@ This mode only works with report content the user provides. Do not simulate, cra
 | 编号 | 原文章节 | 原文段落 | 风险带 | 是否首轮主处理 | 目标风险带 | 保护项 | 内部重试上限 | 字符变动策略 |
 |---|---|---|---|---|---|---|---:|---|
 
+## 颜色原因分析
+| 编号 | 原文位置 | 报告颜色 | 疑似度区间 | 被标记原因 | 修复动作 | 自评目标 |
+|---|---|---|---|---|---|---|
+
 ## 单段处理
 【定位】
 【判断】
 【修改后】
 【复核】
+
+## 文件回写表
 ```

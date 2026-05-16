@@ -58,6 +58,8 @@ license: MIT
 
 - [ ] AIGC_ONLY exists.
 - [ ] AIGC_DEEP_REWRITE_ENGINE exists.
+- [ ] THREE_MODE_COLOR_BAND_WORKFLOW exists.
+- [ ] FILE_INPUT_COPY_WORKFLOW exists.
 - [ ] FIRST_PASS_RED_ORANGE_ENGINE exists.
 - [ ] AIGC_PLATEAU_BREAKER exists.
 - [ ] ORANGE_ZONE_REWRITE_STRATEGY exists.
