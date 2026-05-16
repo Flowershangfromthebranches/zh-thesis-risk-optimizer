@@ -85,6 +85,33 @@ Strategy:
 - Include real boundary and limitation.
 - Avoid generalized value endings.
 
+## 9. Social-Science / Management Countermeasure Paragraph
+
+Problem: countermeasure paragraphs often sound like standard answers:
+
+```text
+完善机制 -> 优化流程 -> 加强培训 -> 健全保障 -> 提升效果
+```
+
+Strategy:
+
+- Do not keep every measure as "第一、第二、第三".
+- Start from the organization's real process node, survey result, interview feedback,制度,岗位, or indicator.
+- Explain which concrete link is being adjusted.
+- Delete broad value claims unless they are supported by evidence.
+- If evidence is missing, request author input instead of adding theory.
+
+## 10. Social-Science / Management Status And Problem Paragraph
+
+Problem: status/problem paragraphs repeat "现状 -> 问题 -> 影响" without enough local evidence.
+
+Strategy:
+
+- Put survey or case evidence before general evaluation.
+- Name the affected department, group, channel, process, or service object when provided.
+- Preserve data and citation boundaries.
+- Avoid abstract nouns as the main load-bearing content.
+
 ## Relation To SKILL.md
 
 Use this file when assigning chapter and paragraph tasks in target-driven multi-pass work.

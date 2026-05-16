@@ -141,6 +141,15 @@
 - File workflows must create a copy, extract target text, write safe revisions back to the copy, and deliver the copy.
 - Low-confidence or unmapped file fragments must not be written back automatically.
 
+## v0.8.4 Social-Science Template Bottleneck Rules
+
+- HR, business administration, marketing, education management, public administration, accounting/financial management, tourism, logistics, and similar applied theses can plateau even with reports.
+- Do not solve these papers with smoother management language.
+- Detect repeated "status -> problem -> cause -> countermeasure -> guarantee" skeletons.
+- Use organization, survey, interview, process, department, post,制度, indicator, or case evidence to rebuild paragraphs.
+- If evidence is missing, output `HUMAN_EVIDENCE_REQUEST`; do not invent company facts, survey data, interview feedback,制度, or指标.
+- Preserve policy, theory, citation, and data boundaries.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.

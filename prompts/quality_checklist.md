@@ -110,6 +110,15 @@ Use this checklist before final output.
 - [ ] Revisions are written back only to HIGH or safe MEDIUM confidence mappings.
 - [ ] LOW or UNMAPPED file fragments are not written back automatically.
 
+## v0.8.4 Social-Science Template Bottleneck Checks
+
+- [ ] HR, management, marketing, education, public administration, accounting, tourism, logistics, or similar applied-social-science thesis is routed to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` when template plateau appears.
+- [ ] The output identifies repeated "status -> problem -> cause -> countermeasure -> guarantee" skeletons.
+- [ ] Generic countermeasure lists are not only polished into smoother language.
+- [ ] Available organization, survey, interview, process, department, post,制度, indicator, or case evidence is used before evaluation.
+- [ ] Missing evidence triggers author questions instead of invented details.
+- [ ] Policy, theory, citation, questionnaire, and data boundaries are preserved.
+
 ## Similarity-Risk Checks
 
 - [ ] High-repeat definitions were converted into thesis-specific explanations.

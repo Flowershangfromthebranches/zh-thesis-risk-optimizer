@@ -25,6 +25,7 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] v0.8.1 red-orange first-pass routes point to existing files.
 - [ ] v0.8.2 slimming keeps detailed rules outside `SKILL.md`.
 - [ ] v0.8.3 three-mode file workflow routes point to existing files.
+- [ ] v0.8.4 social-science template bottleneck routes point to existing files.
 
 ## Repository Docs
 
@@ -48,3 +49,4 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] First-pass red-orange work does not defer orange/medium-risk paragraphs to later rounds.
 - [ ] Whole-thesis character change defaults to `±10%` unless the user specifies another range.
 - [ ] File input workflows do not modify the original file directly.
+- [ ] Social-science bottleneck workflows request missing evidence instead of fabricating case facts.

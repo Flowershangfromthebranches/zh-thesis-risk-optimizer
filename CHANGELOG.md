@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.8.4-social-science-template-bottleneck
+
+- Added social-science template bottleneck rules for HR, business, marketing, education management, public administration, accounting, tourism, logistics, and similar applied theses.
+- Added prompt for social-science AIGC plateau diagnosis and evidence-first repair.
+- Expanded discipline and paragraph strategies for "status -> problem -> cause -> countermeasure -> guarantee" templates.
+- Added regression tests for HR, education management, marketing, public administration, and financial management cases.
+
 ## v0.8.3-three-mode-file-workflow
 
 - Added three-mode color-band workflow for similarity-only, AIGC-only, and dual revision.

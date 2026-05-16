@@ -39,6 +39,7 @@ Special routing:
 
 - Default user-facing workflow: use `THREE_MODE_COLOR_BAND_WORKFLOW` to choose similarity-only, AIGC-only, or dual revision.
 - File input: use `FILE_INPUT_COPY_WORKFLOW`; create a copy, edit the copy, and keep the original untouched.
+- Management, business, education, public administration, or applied social-science thesis with repeated "status -> problem -> countermeasure" structure: use `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`.
 - Original thesis plus original AIGC report: use `FIRST_PASS_RED_ORANGE_ENGINE`; red and orange bands both enter the first-pass primary task table.
 - Multi-round AIGC reports with red down but orange still high: use `AIGC_PLATEAU_BREAKER`.
 - Similarity already acceptable but AIGC still high: use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
@@ -71,9 +72,11 @@ Supporting AIGC references:
 - `references/aigc_below_20_strategy.md`
 - `references/anti_shallow_rewrite_rules.md`
 - `references/post_rewrite_aigc_self_audit.md`
+- `references/social_science_template_bottleneck.md`
 - `prompts/mode_second_pass_rewrite.md`
+- `prompts/mode_social_science_aigc_bottleneck.md`
 
-Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `SENTENCE_LEVEL_AIGC_LOCALIZER`, `BURSTINESS_RHYTHM_CONTROL`, `REPEATED_EXPRESSION_COMPRESSOR`, `HUMAN_EVIDENCE_REQUEST`, `CONSERVATIVE_AIGC_REPAIR`, `AIGC_REGRESSION_GUARD`, `AIGC_BELOW_20_STRATEGY`, `POST_REWRITE_AIGC_SELF_AUDIT`, `SECOND_PASS_REWRITE_REQUIREMENT`.
+Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`, `SENTENCE_LEVEL_AIGC_LOCALIZER`, `BURSTINESS_RHYTHM_CONTROL`, `REPEATED_EXPRESSION_COMPRESSOR`, `HUMAN_EVIDENCE_REQUEST`, `CONSERVATIVE_AIGC_REPAIR`, `AIGC_REGRESSION_GUARD`, `AIGC_BELOW_20_STRATEGY`, `POST_REWRITE_AIGC_SELF_AUDIT`, `SECOND_PASS_REWRITE_REQUIREMENT`.
 
 ### Similarity And Dual Optimization Family
 
