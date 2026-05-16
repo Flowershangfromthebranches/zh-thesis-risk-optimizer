@@ -45,16 +45,14 @@ license: MIT
 ## Required SKILL.md Sections
 
 - [ ] 1. Role
-- [ ] 2. Scope
-- [ ] 3. Non-goals
-- [ ] 4. Core Principles
-- [ ] 5. Mode Router
-- [ ] 6. Standard Workflow
-- [ ] 7. Full Thesis Project Workflow
-- [ ] 8. Output Formats
-- [ ] 9. Reference Index
-- [ ] 10. Safety and Academic Integrity
-- [ ] 11. Upstream Acknowledgements
+- [ ] 2. Safety Boundaries
+- [ ] 3. Core Workflow
+- [ ] 4. Mode Router
+- [ ] 5. Standard Output Blocks
+- [ ] 6. File Layout
+- [ ] 7. Upstream Acknowledgements
+- [ ] No long duplicate Reference Index.
+- [ ] Detailed rules remain in `references/`, `prompts/`, and `workflow/`.
 
 ## Mode Coverage
 

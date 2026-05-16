@@ -8,146 +8,157 @@ license: MIT
 
 ## 1. Role
 
-This is a Chinese thesis text-quality and risk-optimization Skill. It helps diagnose and improve AIGC writing risk, similarity risk, citation-boundary risk, long-context consistency, report-to-source mapping, and full-thesis project workflow.
+This Skill helps revise Chinese thesis text for writing quality, AIGC writing-risk signals, similarity-risk expression, citation-boundary integrity, report-to-source mapping, and full-thesis workflow management.
 
-It is an academic-integrity assistant, not a detection-result promise tool. Scores are heuristic writing-risk scores only. Report-driven workflows only process report content the user legally obtained and provided.
+It is not a detection-result promise tool. Scores are heuristic writing-risk references only. Report-driven workflows only process report content legally obtained and provided by the user.
 
-## 2. Scope
+## 2. Safety Boundaries
 
-Use this Skill for:
+Do not:
 
-- Chinese undergraduate, master, course-paper, and graduation-design theses.
-- AIGC-risk diagnosis and localized revision.
-- Similarity-risk diagnosis and citation-preserving revision.
-- Report-driven mapping from similarity/AIGC report fragments to thesis source text.
-- Sentence-level risk localization and risk labels.
-- Engineering, science, and computer-science thesis protection.
-- Full-thesis project management, chapter task tracking, progress tracking, revision logs, and iterative optimization.
-- Project handoff when a long thesis task pauses or switches model/context.
-
-## 3. Non-goals
-
-Do not use this Skill to:
-
-- Promise external detection outcomes.
+- Promise external detection outcomes or fixed percentage changes.
 - Crack, reverse engineer, simulate, or forge any detection system or report.
-- Fabricate data, experiments, citations, percentages, similarity sources, or risk levels.
-- Remove necessary citations.
-- Disguise source content as uncited original writing.
-- Replace the author's research work or write unsupported conclusions.
-- Rewrite formulas, code, interfaces, table names, fields, parameters, or experiment data for style.
+- Fabricate data, experiments, citations, report percentages, similarity sources, interviews, logs, code, interfaces, screenshots, or risk levels.
+- Delete necessary citations or disguise sourced content as uncited original writing.
+- Alter conclusions beyond provided evidence.
+- Rewrite formulas, code, API paths, table names, field names, parameters, experiment data, or reference entries for style.
 
-## 4. Core Principles
+When integrity or technical correctness conflicts with risk reduction, integrity wins.
 
-1. Diagnose before revising; never rewrite a full thesis indiscriminately.
-2. Preserve citations, source boundaries, data, conclusions, formulas, code, technical identifiers, and protected terms.
-3. Separate report facts from heuristic diagnosis.
-4. Use mapping confidence for report fragments: `HIGH`, `MEDIUM`, `LOW`, `UNMAPPED`.
-5. Do not directly rewrite `LOW` or `UNMAPPED` report mappings.
-6. For complete theses, create a project overview first, then chapter tasks, then prioritized local revisions.
-7. Track progress and revision logs across rounds.
-8. Iterative optimization should target residual risks, not repeatedly overhaul completed low-risk chapters.
-9. Keep `SKILL.md` as a router; load detailed rules from `references/`, `prompts/`, and `workflow/` as needed.
-10. If integrity or technical correctness conflicts with risk reduction, integrity wins.
+## 3. Core Workflow
 
-## 5. Mode Router
+1. Identify input type: thesis text, chapter, full thesis, report fragment, full report, historical draft, or project handoff.
+2. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, parameters, experiment data, and no-edit zones.
+3. Choose the smallest applicable mode family below.
+4. Output diagnosis, mapping, task table, or project overview before revision.
+5. Revise only confirmed and safe paragraphs or sentences.
+6. Run self-audit for AIGC style, similarity risk, citation integrity, technical facts, and character change.
+7. Update project artifacts when working at full-thesis or multi-round scope.
 
-| User intent | Mode | Main references |
+Special routing:
+
+- Original thesis plus original AIGC report: use `FIRST_PASS_RED_ORANGE_ENGINE`; red and orange bands both enter the first-pass primary task table.
+- Multi-round AIGC reports with red down but orange still high: use `AIGC_PLATEAU_BREAKER`.
+- Similarity already acceptable but AIGC still high: use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
+- Whole-thesis revision: apply `CHARACTER_DELTA_GUARD`; default total character change stays within `±10%` unless the user specifies another range.
+- User targets such as similarity `<10%` and AIGC `<20%`: treat them as goals, not guarantees; use `TARGETED_MULTIPASS_ENGINE`.
+
+## 4. Mode Router
+
+### AIGC Revision Family
+
+| Mode | Use When | Load |
 |---|---|---|
-| 只降 AIGC | `AIGC_ONLY` | `references/aigc_pattern_library.md`, `prompts/mode_aigc_only.md` |
-| AIGC 深度改写 | `AIGC_DEEP_REWRITE_ENGINE` | `references/aigc_deep_rewrite_engine.md`, `prompts/mode_aigc_deep_rewrite.md` |
-| 首轮红橙联合处理 | `FIRST_PASS_RED_ORANGE_ENGINE` | `references/first_pass_red_orange_engine.md`, `prompts/mode_first_pass_red_orange.md` |
-| AIGC 多轮平台期处理 | `AIGC_PLATEAU_BREAKER` | `references/aigc_plateau_breaker.md`, `prompts/mode_aigc_plateau_breaker.md` |
-| 橙色中风险专项处理 | `ORANGE_ZONE_REWRITE_STRATEGY` | `references/orange_zone_rewrite_strategy.md` |
-| 学科瓶颈判断 | `DISCIPLINE_AIGC_BOTTLENECK_RULES` | `references/discipline_aigc_bottleneck_rules.md` |
-| 只降查重 | `SIMILARITY_ONLY` | `references/similarity_reduction_strategy.md`, `prompts/mode_similarity_only.md` |
-| 双降 | `DUAL_OPTIMIZATION` | `references/dual_optimization_arbitration.md`, `prompts/mode_dual_optimization.md` |
-| 无报告保底双降 | `NO_REPORT_FALLBACK_WORKFLOW` | `references/no_report_fallback_workflow.md`, `prompts/mode_no_report_dual_fallback.md` |
-| 目标驱动多轮双降 | `TARGETED_MULTIPASS_ENGINE` | `references/targeted_multipass_engine.md`, `prompts/mode_targeted_multipass.md` |
-| 查重够用后继续降 AIGC | `AIGC_FOCUSED_LENGTH_CONTROLLED` | `references/aigc_focused_length_controlled_engine.md`, `prompts/mode_aigc_focused_length_controlled.md` |
-| 全文字符变动守卫 | `CHARACTER_DELTA_GUARD` | `references/character_delta_guard.md` |
-| 全文字数预算控制 | `LENGTH_BUDGET_CONTROLLER` | `references/length_budget_controller.md`, `prompts/mode_length_compression_pass.md` |
-| 句子级 AIGC 定位 | `SENTENCE_LEVEL_AIGC_LOCALIZER` | `references/sentence_level_aigc_localizer.md` |
-| 节奏和突发性控制 | `BURSTINESS_RHYTHM_CONTROL` | `references/burstiness_rhythm_control.md` |
-| 重复 AI 腔压缩 | `REPEATED_EXPRESSION_COMPRESSOR` | `references/repeated_expression_compressor.md` |
-| 作者证据补充 | `HUMAN_EVIDENCE_REQUEST` | `references/human_evidence_request.md` |
-| 信息不足保守修复 | `CONSERVATIVE_AIGC_REPAIR` | `references/conservative_aigc_repair.md` |
-| 用户目标阈值 | `OPTIMIZATION_TARGETS` | `references/optimization_targets.md` |
-| 新报告反馈闭环 | `REPORT_FEEDBACK_LOOP` | `references/report_feedback_loop.md`, `prompts/mode_targeted_multipass.md` |
-| AIGC 反升防线 | `AIGC_REGRESSION_GUARD` | `references/aigc_regression_guard.md` |
-| 真实内容增量 | `CONTENT_SUBSTANCE_INJECTION` | `references/content_substance_injection.md` |
-| 相似度目标专项 | `SIMILARITY_BELOW_10_STRATEGY` | `references/similarity_below_10_strategy.md` |
-| AIGC 目标专项 | `AIGC_BELOW_20_STRATEGY` | `references/aigc_below_20_strategy.md` |
-| 段落类型分流 | `PARAGRAPH_TYPE_STRATEGIES` | `references/paragraph_type_strategies.md` |
-| 自动诊断 | `AUTO_DIAGNOSIS` | `references/scoring_framework.md`, `references/chapter_strategies.md` |
-| 工科/理科/计算机论文 | `ENGINEERING_SCIENCE_MODE` | `references/protected_terms_rules.md`, `prompts/mode_engineering_science.md` |
-| 先评分诊断 | `SCORING_DIAGNOSIS_MODE` | `references/scoring_framework.md`, `prompts/mode_scoring_diagnosis.md` |
-| 句子级定位 | `SENTENCE_LEVEL_DIAGNOSIS_MODE` | `references/sentence_level_diagnosis.md`, `references/risk_labels.md` |
-| 改写前后评分对比 | `BEFORE_AFTER_SCORE_COMPARISON` | `references/scoring_framework.md` |
-| 风险热区排序 | `RISK_HEATMAP_TABLE` | `prompts/mode_risk_heatmap.md` |
-| 报告驱动总流程 | `REPORT_DRIVEN_MODE` | `references/report_parsing_workflow.md`, `references/report_to_source_mapping.md` |
-| 有查重报告 | `REPORT_SIMILARITY_ONLY` | `references/report_parsing_workflow.md`, `prompts/mode_report_driven_similarity.md` |
-| 有 AIGC 报告 | `REPORT_AIGC_ONLY` | `references/report_parsing_workflow.md`, `prompts/mode_report_driven_aigc.md` |
-| 有双报告或重叠风险 | `REPORT_DUAL_OPTIMIZATION` | `references/report_driven_priority_rules.md`, `prompts/mode_report_driven_dual.md` |
-| 报告驱动多轮双降 | `REPORT_DRIVEN_MULTI_PASS_WORKFLOW` | `references/report_driven_multi_pass_workflow.md`, `prompts/mode_report_driven_multi_pass.md` |
-| 只做报告映射 | `REPORT_TO_SOURCE_MAPPING` | `references/report_to_source_mapping.md`, `prompts/mode_report_mapping_only.md` |
-| 相似源分类处理 | `SIMILARITY_SOURCE_HANDLING` | `references/similarity_source_handling.md` |
-| 报告优先级队列 | `REPORT_PRIORITY_QUEUE` | `references/report_driven_priority_rules.md` |
-| 映射置信度判断 | `MAPPING_CONFIDENCE_LEVEL` | `references/mapping_confidence_rules.md` |
-| 完整论文项目 | `FULL_THESIS_PROJECT_MODE` | `references/full_thesis_project_management.md`, `workflow/thesis_master_overview_template.md` |
-| 论文总览 | `THESIS_MASTER_OVERVIEW` | `workflow/thesis_master_overview_template.md` |
-| 单章任务 | `CHAPTER_TASK_MODE` | `references/chapter_task_rules.md`, `workflow/chapter_task_template.md` |
-| 查看进度 | `PROGRESS_TRACKING_MODE` | `references/progress_tracking_rules.md`, `workflow/progress_tracker_template.md` |
-| 修改日志 | `REVISION_LOG_MODE` | `references/revision_log_rules.md`, `workflow/revision_log_template.md` |
-| 二轮/三轮复改 | `ITERATIVE_REVISION_MODE` | `references/iterative_optimization_rules.md`, `workflow/iteration_plan_template.md` |
-| 改写后 AIGC 自检 | `POST_REWRITE_AIGC_SELF_AUDIT` | `references/post_rewrite_aigc_self_audit.md`, `prompts/mode_effectiveness_audit.md` |
-| 第二轮强制改写 | `SECOND_PASS_REWRITE_REQUIREMENT` | `prompts/mode_second_pass_rewrite.md` |
-| 项目交接 | `PROJECT_HANDOFF_MODE` | `references/project_handoff_rules.md`, `workflow/project_handoff_template.md` |
-| Skill 文档瘦身维护 | `SKILL_SLIM_MODE` | `references/skill_slimming_rules.md`, `prompts/mode_skill_slimming.md` |
+| `AIGC_ONLY` | User asks only to reduce AIGC style risk. | `prompts/mode_aigc_only.md`, `references/aigc_pattern_library.md` |
+| `AIGC_DEEP_REWRITE_ENGINE` | Shallow wording changes are not enough. | `prompts/mode_aigc_deep_rewrite.md`, `references/aigc_deep_rewrite_engine.md` |
+| `FIRST_PASS_RED_ORANGE_ENGINE` | Original AIGC report is available before first revision. | `prompts/mode_first_pass_red_orange.md`, `references/first_pass_red_orange_engine.md` |
+| `AIGC_PLATEAU_BREAKER` | Multiple rounds plateau, especially red down but orange remains high. | `prompts/mode_aigc_plateau_breaker.md`, `references/aigc_plateau_breaker.md` |
+| `AIGC_FOCUSED_LENGTH_CONTROLLED` | Similarity is acceptable and AIGC remains the main issue. | `prompts/mode_aigc_focused_length_controlled.md`, `references/aigc_focused_length_controlled_engine.md` |
 
-## 6. Standard Workflow
+Supporting AIGC references:
 
-1. Identify input type: thesis text, chapter, report fragment, full report, full thesis, or project handoff document.
-2. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, experiment data, and no-edit zones.
-3. If the user provides the original thesis and original AIGC report, use `FIRST_PASS_RED_ORANGE_ENGINE`: red/high and orange/medium bands both enter the first-pass main task table.
-4. Apply `CHARACTER_DELTA_GUARD` to whole-thesis work; default total character change must stay within `±10%` unless the user specifies another range.
-5. If the user gives explicit targets such as similarity `<10%` and AIGC `<20%`, use `TARGETED_MULTIPASS_ENGINE`.
-6. If similarity is already acceptable and the user asks to keep reducing AIGC or control over-expansion, use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
-7. If the revised draft exceeds the length budget or character-delta guard, run `LENGTH_BUDGET_CONTROLLER` and Compression Pass.
-8. If the user provides multiple reports or historical drafts, run report difference analysis before revising.
-9. If the new version has higher AIGC risk than an earlier version, diagnose the failure cause before continuing revision.
-10. If similarity decreases but AIGC increases, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
-11. If two or more AIGC reports show diminishing returns, or red/high-risk text decreases while orange/medium-risk text stays high, use `AIGC_PLATEAU_BREAKER`.
-12. In plateau mode, freeze white/low-risk paragraphs, target orange/medium-risk paragraphs, and avoid repeating the same rewrite prompt.
-13. If deep rewriting lacks enough real evidence, output an author supplementation list or use conservative repair instead of fabricating details.
-14. Choose mode with the router.
-15. Output diagnosis, scoring, mapping, or project overview before revision.
-16. For full theses, generate master overview and chapter tasks before any chapter revision.
-17. Revise locally by paragraph/sentence/task priority.
-18. For AIGC-heavy text, run sentence-level localization and process only the key 1-3 sentences per paragraph when possible.
-19. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
-20. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
-21. Run citation, technical, data, and safety self-checks.
-22. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
+- `references/orange_zone_rewrite_strategy.md`
+- `references/discipline_aigc_bottleneck_rules.md`
+- `references/aigc_focused_rewrite_strategy.md`
+- `references/sentence_level_aigc_localizer.md`
+- `references/burstiness_rhythm_control.md`
+- `references/repeated_expression_compressor.md`
+- `references/human_evidence_request.md`
+- `references/conservative_aigc_repair.md`
+- `references/aigc_regression_guard.md`
+- `references/aigc_below_20_strategy.md`
+- `references/anti_shallow_rewrite_rules.md`
+- `references/post_rewrite_aigc_self_audit.md`
+- `prompts/mode_second_pass_rewrite.md`
 
-## 7. Full Thesis Project Workflow
+Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `SENTENCE_LEVEL_AIGC_LOCALIZER`, `BURSTINESS_RHYTHM_CONTROL`, `REPEATED_EXPRESSION_COMPRESSOR`, `HUMAN_EVIDENCE_REQUEST`, `CONSERVATIVE_AIGC_REPAIR`, `AIGC_REGRESSION_GUARD`, `AIGC_BELOW_20_STRATEGY`, `POST_REWRITE_AIGC_SELF_AUDIT`, `SECOND_PASS_REWRITE_REQUIREMENT`.
 
-Use `FULL_THESIS_PROJECT_MODE` when the user provides a complete thesis or wants long-running thesis optimization.
+### Similarity And Dual Optimization Family
 
-Minimum project artifacts:
+| Mode | Use When | Load |
+|---|---|---|
+| `SIMILARITY_ONLY` | User asks only to revise similarity-risk expression. | `prompts/mode_similarity_only.md`, `references/similarity_reduction_strategy.md` |
+| `DUAL_OPTIMIZATION` | AIGC and similarity risks both matter. | `prompts/mode_dual_optimization.md`, `references/dual_optimization_arbitration.md` |
+| `NO_REPORT_FALLBACK_WORKFLOW` | User has no report and needs heuristic fallback. | `prompts/mode_no_report_dual_fallback.md`, `references/no_report_fallback_workflow.md` |
+| `TARGETED_MULTIPASS_ENGINE` | User provides goals, reports, or historical drafts. | `prompts/mode_targeted_multipass.md`, `references/targeted_multipass_engine.md` |
 
-- `THESIS_MASTER_OVERVIEW`: chapter map, risk distribution, protected terms, report mapping state, priority queue, and progress.
-- `CHAPTER_TASK_MODE`: one task per chapter with diagnosis, protection items, revision plan, state, and acceptance criteria.
-- `PROGRESS_TRACKING_MODE`: chapter status across `PENDING`, `DIAGNOSED`, `TASK_CREATED`, `DRAFT_REVISED`, `NEEDS_HUMAN_REVIEW`, `NEEDS_REPORT_RECHECK`, `NEEDS_SECOND_PASS`, `COMPLETED`, `BLOCKED`.
-- `REVISION_LOG_MODE`: every revision records target, mode, intensity, protected items, citation handling, risk change, and human review items.
-- `ITERATIVE_REVISION_MODE`: new reports trigger targeted second/third-pass work only.
-- `PROJECT_HANDOFF_MODE`: summarize project state so future sessions can resume safely.
+Supporting references:
 
-Templates live in `workflow/`. Detailed rules live in the corresponding `references/` files.
+- `references/optimization_targets.md`
+- `references/report_feedback_loop.md`
+- `references/content_substance_injection.md`
+- `references/similarity_below_10_strategy.md`
+- `references/paragraph_type_strategies.md`
+- `references/effectiveness_evaluation.md`
+- `references/structure_rebuilding_rules.md`
+- `references/evidence_trace_injection.md`
+- `references/rewrite_intensity_l5.md`
 
-## 8. Output Formats
+Mode aliases: `OPTIMIZATION_TARGETS`, `REPORT_FEEDBACK_LOOP`, `CONTENT_SUBSTANCE_INJECTION`, `SIMILARITY_BELOW_10_STRATEGY`, `PARAGRAPH_TYPE_STRATEGIES`.
 
-Use only the relevant output blocks:
+### Report-Driven Family
+
+| Mode | Use When | Load |
+|---|---|---|
+| `REPORT_DRIVEN_MODE` | User provides any AIGC or similarity report. | `references/report_parsing_workflow.md`, `references/report_to_source_mapping.md` |
+| `REPORT_AIGC_ONLY` | User provides AIGC report fragments. | `prompts/mode_report_driven_aigc.md` |
+| `REPORT_SIMILARITY_ONLY` | User provides similarity report fragments. | `prompts/mode_report_driven_similarity.md` |
+| `REPORT_DUAL_OPTIMIZATION` | Reports show overlapping AIGC and similarity risk. | `prompts/mode_report_driven_dual.md`, `references/report_driven_priority_rules.md` |
+| `REPORT_TO_SOURCE_MAPPING` | User only wants report-to-source alignment. | `prompts/mode_report_mapping_only.md`, `references/mapping_confidence_rules.md` |
+
+Supporting references:
+
+- `references/report_input_types.md`
+- `references/similarity_source_handling.md`
+- `references/report_safety_and_integrity.md`
+- `references/report_driven_multi_pass_workflow.md`
+- `prompts/mode_report_driven_multi_pass.md`
+
+Mode aliases: `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`, `SIMILARITY_SOURCE_HANDLING`, `REPORT_PRIORITY_QUEUE`, `MAPPING_CONFIDENCE_LEVEL`.
+
+### Diagnosis And Guard Family
+
+| Mode | Use When | Load |
+|---|---|---|
+| `AUTO_DIAGNOSIS` | User provides text without a mode. | `references/scoring_framework.md`, `references/chapter_strategies.md` |
+| `SCORING_DIAGNOSIS_MODE` | User wants diagnosis before rewriting. | `prompts/mode_scoring_diagnosis.md` |
+| `SENTENCE_LEVEL_DIAGNOSIS_MODE` | User wants sentence-level risk localization. | `prompts/mode_sentence_level_revision.md`, `references/sentence_level_diagnosis.md` |
+| `BEFORE_AFTER_SCORE_COMPARISON` | User wants before/after heuristic score comparison. | `references/scoring_framework.md` |
+| `RISK_HEATMAP_TABLE` | User wants risk hot-zone ranking. | `prompts/mode_risk_heatmap.md` |
+| `CHARACTER_DELTA_GUARD` | Whole-thesis character change must be controlled. | `references/character_delta_guard.md`, `references/length_budget_controller.md` |
+| `LENGTH_BUDGET_CONTROLLER` | User needs expansion/compression control. | `prompts/mode_length_compression_pass.md`, `references/length_budget_controller.md` |
+
+Supporting references:
+
+- `references/risk_labels.md`
+- `references/no_edit_zone_rules.md`
+- `references/protected_terms_rules.md`
+- `references/citation_integrity_rules.md`
+- `references/long_context_consistency.md`
+- `prompts/quality_checklist.md`
+
+Mode aliases: `SAFE_NO_EDIT_ZONE`, `PROTECTED_TERMS_RULES`.
+
+### Engineering And Full-Thesis Family
+
+| Mode | Use When | Load |
+|---|---|---|
+| `ENGINEERING_SCIENCE_MODE` | Thesis contains formulas, code, APIs, tables, fields, or experiment data. | `prompts/mode_engineering_science.md`, `references/protected_terms_rules.md` |
+| `FULL_THESIS_PROJECT_MODE` | User provides a complete thesis or long-running task. | `references/full_thesis_project_management.md`, `workflow/thesis_master_overview_template.md` |
+| `CHAPTER_TASK_MODE` | Work should be split by chapter. | `references/chapter_task_rules.md`, `workflow/chapter_task_template.md` |
+| `PROGRESS_TRACKING_MODE` | User asks for status or multi-round tracking. | `references/progress_tracking_rules.md`, `workflow/progress_tracker_template.md` |
+| `REVISION_LOG_MODE` | User asks to record revision history. | `references/revision_log_rules.md`, `workflow/revision_log_template.md` |
+| `ITERATIVE_REVISION_MODE` | New reports trigger second/third pass tasks. | `references/iterative_optimization_rules.md`, `workflow/iteration_plan_template.md` |
+| `PROJECT_HANDOFF_MODE` | The project needs to pause or switch context. | `references/project_handoff_rules.md`, `workflow/project_handoff_template.md` |
+| `SKILL_SLIM_MODE` | Maintainers need to keep Skill docs concise. | `references/skill_slimming_rules.md`, `prompts/mode_skill_slimming.md` |
+
+Supporting files:
+
+- `prompts/mode_general_academic.md`
+
+## 5. Standard Output Blocks
+
+Use only the blocks needed for the task.
 
 ### Diagnosis Table
 
@@ -156,120 +167,38 @@ Use only the relevant output blocks:
 
 ### Report-Driven Task Table
 
-| 编号 | 原文章节 | 原文段落 | 报告片段 | 风险类型 | 相似源/风险说明 | 贡献率/等级 | 映射置信度 | 建议模式 | 改写强度 | 是否保护 | 处理建议 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
+| 编号 | 原文章节 | 原文段落 | 报告片段 | 风险类型 | 贡献率/等级 | 映射置信度 | 建议模式 | 改写强度 | 是否保护 | 处理建议 |
+|---|---|---|---|---|---|---|---|---|---|---|
 
-### Thesis Overview
+### Red-Orange First-Pass Table
 
-Use `workflow/thesis_master_overview_template.md`.
+| 编号 | 原文章节 | 原文段落 | 风险带 | 是否首轮主处理 | 目标风险带 | 保护项 | 内部重试上限 | 字符变动策略 |
+|---|---|---|---|---|---|---|---:|---|
 
-### Chapter Task
+### Character Delta Table
 
-Use `workflow/chapter_task_template.md`.
+| scope | original_chars | revised_chars | delta_chars | delta_ratio | allowed_range | status |
+|---|---:|---:|---:|---:|---|---|
 
-### Progress Tracker
+### Project Templates
 
-Use `workflow/progress_tracker_template.md`.
+- Thesis overview: `workflow/thesis_master_overview_template.md`
+- Chapter task: `workflow/chapter_task_template.md`
+- Progress tracker: `workflow/progress_tracker_template.md`
+- Revision log: `workflow/revision_log_template.md`
+- Iteration plan: `workflow/iteration_plan_template.md`
+- Project handoff: `workflow/project_handoff_template.md`
 
-### Revision Log
+## 6. File Layout
 
-Use `workflow/revision_log_template.md`.
+- `references/`: detailed rules and domain guidance.
+- `prompts/`: executable mode prompts.
+- `workflow/`: full-thesis project templates.
+- `examples/`: format and behavior examples.
+- `tests/`: manual validation checklists.
+- `NOTICE` and `THIRD_PARTY_NOTICES.md`: upstream attribution and license notes.
 
-### Iteration Plan
-
-Use `workflow/iteration_plan_template.md`.
-
-### Project Handoff
-
-Use `workflow/project_handoff_template.md`.
-
-## 9. Reference Index
-
-Core diagnosis and revision:
-
-- `references/aigc_pattern_library.md`
-- `references/aigc_deep_rewrite_engine.md`
-- `references/first_pass_red_orange_engine.md`
-- `references/aigc_plateau_breaker.md`
-- `references/orange_zone_rewrite_strategy.md`
-- `references/discipline_aigc_bottleneck_rules.md`
-- `references/character_delta_guard.md`
-- `references/aigc_focused_length_controlled_engine.md`
-- `references/length_budget_controller.md`
-- `references/aigc_focused_rewrite_strategy.md`
-- `references/sentence_level_aigc_localizer.md`
-- `references/burstiness_rhythm_control.md`
-- `references/repeated_expression_compressor.md`
-- `references/human_evidence_request.md`
-- `references/conservative_aigc_repair.md`
-- `references/targeted_multipass_engine.md`
-- `references/optimization_targets.md`
-- `references/aigc_regression_guard.md`
-- `references/content_substance_injection.md`
-- `references/paragraph_type_strategies.md`
-- `references/similarity_below_10_strategy.md`
-- `references/aigc_below_20_strategy.md`
-- `references/structure_rebuilding_rules.md`
-- `references/evidence_trace_injection.md`
-- `references/dual_optimization_arbitration.md`
-- `references/no_report_fallback_workflow.md`
-- `references/report_driven_multi_pass_workflow.md`
-- `references/rewrite_intensity_l5.md`
-- `references/anti_shallow_rewrite_rules.md`
-- `references/post_rewrite_aigc_self_audit.md`
-- `references/effectiveness_evaluation.md`
-- `references/similarity_reduction_strategy.md`
-- `references/citation_integrity_rules.md`
-- `references/protected_terms_rules.md`
-- `references/risk_labels.md`
-- `references/scoring_framework.md`
-- `references/sentence_level_diagnosis.md`
-- `references/chapter_strategies.md`
-- `references/long_context_consistency.md`
-
-Report-driven workflow:
-
-- `references/report_input_types.md`
-- `references/report_parsing_workflow.md`
-- `references/report_to_source_mapping.md`
-- `references/mapping_confidence_rules.md`
-- `references/similarity_source_handling.md`
-- `references/report_driven_priority_rules.md`
-- `references/report_safety_and_integrity.md`
-- `references/report_feedback_loop.md`
-
-Full-thesis project workflow:
-
-- `references/full_thesis_project_management.md`
-- `references/chapter_task_rules.md`
-- `references/progress_tracking_rules.md`
-- `references/revision_log_rules.md`
-- `references/iterative_optimization_rules.md`
-- `references/project_handoff_rules.md`
-- `references/skill_slimming_rules.md`
-
-Prompts and templates:
-
-- Load task-specific prompts from `prompts/`.
-- Load project templates from `workflow/`.
-- Use examples from `examples/` only for format guidance.
-
-## 10. Safety and Academic Integrity
-
-Mandatory constraints:
-
-- Do not fabricate data, experiments, citations, reports, report percentages, sources, or risk levels.
-- Do not delete necessary citations.
-- Do not convert source-dependent content into uncited original claims.
-- Do not alter conclusions beyond provided evidence.
-- Do not damage formulas, code, interfaces, table names, fields, parameters, experiment data, or reference entries.
-- Do not promise any external detection result or fixed percentage target.
-- Do not promote detection evasion, cracking, or reverse engineering.
-- Do not repeatedly rewrite completed low-risk chapters in iterative mode.
-
-If required information is missing, mark it as missing and ask for source text, report context, or human confirmation.
-
-## 11. Upstream Acknowledgements
+## 7. Upstream Acknowledgements
 
 This project is inspired by and respectfully acknowledges:
 
@@ -281,4 +210,4 @@ This project is inspired by and respectfully acknowledges:
 - `Abnerla/AI_paper`
 - `Haimbeau1o/thesis-optimizer`
 
-Detailed license observations and attribution are maintained in `NOTICE`. This project reorganizes workflow ideas for academic-integrity-first Chinese thesis optimization and does not copy upstream code, templates, or long-form text where licensing is unclear or where the framing conflicts with this project's safety boundaries.
+Detailed attribution and license observations are maintained in `NOTICE` and `THIRD_PARTY_NOTICES.md`. This project reorganizes public workflow ideas for academic-integrity-first Chinese thesis optimization and does not copy upstream code, templates, or long-form text where licensing is unclear.

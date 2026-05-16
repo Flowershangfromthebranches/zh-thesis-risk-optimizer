@@ -122,6 +122,14 @@
 - If character delta exceeds the allowed range, mark `CHARACTER_DELTA_FAIL` and run compression before completion.
 - Stop rather than continue recursion when facts, citations, technical identifiers, protected text, or evidence limits block safe revision.
 
+## v0.8.2 Skill Slimming Rules
+
+- Keep `SKILL.md` as a concise family-based router.
+- Do not re-add a long reference index that duplicates the mode router.
+- Keep detailed rules in `references/`, executable prompts in `prompts/`, and project templates in `workflow/`.
+- When adding new modes, add one concise router row and put implementation detail in a separate file.
+- After slimming, audit all paths referenced from `SKILL.md`.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.

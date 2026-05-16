@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.8.2-skill-slimming
+
+- Slimmed `SKILL.md` into a concise family-based router.
+- Removed the long duplicate reference index from `SKILL.md`.
+- Grouped AIGC, similarity, report-driven, diagnosis/guard, and full-thesis workflows.
+- Preserved all existing `references/`, `prompts/`, `workflow/`, examples, and tests.
+
 ## v0.8.1-red-orange-first-pass
 
 - Added first-pass red-orange engine for original thesis plus original AIGC report workflows.

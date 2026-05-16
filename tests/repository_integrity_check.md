@@ -15,6 +15,7 @@ Use this checklist before publishing documentation cleanup releases.
 
 - [ ] `SKILL.md` frontmatter is valid YAML.
 - [ ] `SKILL.md` remains a concise routing document.
+- [ ] `SKILL.md` uses family-based router groups instead of a long duplicate reference index.
 - [ ] Files referenced from `SKILL.md` under `references/` exist.
 - [ ] Files referenced from `SKILL.md` under `prompts/` exist.
 - [ ] Files referenced from `SKILL.md` under `workflow/` exist.
@@ -22,6 +23,7 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] v0.7 AIGC-focused length-control routes point to existing files.
 - [ ] v0.8 AIGC plateau breaker routes point to existing files.
 - [ ] v0.8.1 red-orange first-pass routes point to existing files.
+- [ ] v0.8.2 slimming keeps detailed rules outside `SKILL.md`.
 
 ## Repository Docs
 
