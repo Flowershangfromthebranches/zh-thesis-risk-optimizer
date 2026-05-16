@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.9.3-intake-completion-gate
+
+- Changed intake behavior from "ask only when required fields are missing" to a strict intake completion gate.
+- First contact for any task routed to this Skill must show the full intake template and wait.
+- Required fields must be filled; strongly recommended and optional fields must be shown and either filled or explicitly marked `无`, `跳过`, or `请自动判断`.
+- The Skill must not read files, parse reports, diagnose, or rewrite before the intake reply is complete.
+- Added regression cases for completed intake versus partial required-only intake.
+
 ## v0.9.2-intake-precheck-template
 
 - Changed the startup guide from "only when the user asks to use the Skill" to `INTAKE_WIZARD_PRECHECK` for every task routed to this Skill.

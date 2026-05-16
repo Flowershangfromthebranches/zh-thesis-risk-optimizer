@@ -1,6 +1,8 @@
 # Intake Request Template
 
-Copy this template when starting any `zh-thesis-risk-optimizer` task. Replace the example values with your own materials. If a field is unknown, write `不知道` or `请自动判断`.
+Copy this template when starting any `zh-thesis-risk-optimizer` task. Replace the example values with your own materials.
+
+All sections should be returned to the model before processing starts. Required fields must be filled. Strongly recommended and optional fields may be filled, or explicitly marked as `无`, `跳过`, or `请自动判断`.
 
 ## Required
 
@@ -47,6 +49,8 @@ Copy this template when starting any `zh-thesis-risk-optimizer` task. Replace th
 原文未改 / 第一次改写后 / 第二次改写后 / AIGC 反升 / 查重已够用但 AIGC 仍高
 ```
 
+If a strongly recommended item is unavailable, write `无`, `跳过`, or `请自动判断`. Do not leave it implicit.
+
 ## Optional
 
 ```text
@@ -68,6 +72,8 @@ Copy this template when starting any `zh-thesis-risk-optimizer` task. Replace th
 【特殊要求】
 例如：不要改摘要 / 只改第五章 / 保留学校模板 / 不改变图表编号 / 不扩写。
 ```
+
+If an optional item is unavailable, write `无`, `跳过`, or `请自动判断`. Do not leave it implicit.
 
 ## Do Not Provide Or Request
 
@@ -101,9 +107,27 @@ Copy this template when starting any `zh-thesis-risk-optimizer` task. Replace th
 【AIGC 报告】
 /Users/leaf/Desktop/论文/原版查AIGC.docx
 
+【查重报告】
+无
+
 【报告颜色规则】
 红色 >70%，橙色 60%-70%，紫色 50%-60%，黑色 <50%
 
 【论文专业和题目】
 人力资源管理，《数智化时代A电商公司招聘管理优化研究》
+
+【当前状态】
+原文未改
+
+【历史版本】
+无
+
+【用户目标】
+请自动判断
+
+【可用证据】
+无
+
+【特殊要求】
+跳过
 ```

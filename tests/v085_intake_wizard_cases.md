@@ -13,8 +13,9 @@ Input:
 Expected:
 
 - Enter `INTAKE_WIZARD_PRECHECK`, then `INTAKE_WIZARD` because required fields are missing.
-- Ask compact options for goal, input type, report availability, scope, output, character constraint, and protected items.
-- Include "自动判断 / 其他补充".
+- Show the full template from `workflow/intake_request_template.md`.
+- Include required, strongly recommended, and optional sections.
+- Allow `无`, `跳过`, and `请自动判断`.
 - Do not start rewriting.
 
 ## Case 2: Enough Context Is Already Present
@@ -28,10 +29,8 @@ Input:
 Expected:
 
 - Run `INTAKE_WIZARD_PRECHECK`.
-- Output `Intake Confirmation`.
-- Do not ask the full intake wizard.
-- Route to `FIRST_PASS_RED_ORANGE_ENGINE`.
-- State loaded files and default protection constraints.
+- Because the user has not completed the intake template, show strongly recommended and optional fields before routing.
+- Do not start rewriting until the user fills or explicitly skips those fields.
 
 ## Case 3: File Input With Missing Details
 
@@ -44,8 +43,7 @@ Input:
 Expected:
 
 - Run `INTAKE_WIZARD_PRECHECK`.
-- Route to `FILE_INPUT_COPY_WORKFLOW` plus report-driven AIGC mode.
-- Ask only missing fields such as color legend or scope if absent.
+- Show the full intake template or missing intake sections before any file reading.
 - State that the original file is not modified directly.
 
 ## Case 4: No Report
@@ -59,8 +57,8 @@ Input:
 Expected:
 
 - Run `INTAKE_WIZARD_PRECHECK`.
-- Route to `NO_REPORT_FALLBACK_WORKFLOW`.
-- State that diagnosis is heuristic and report-based localization would be stronger.
+- Show the full intake template or missing intake sections.
+- Require the user to explicitly mark report fields as `无`, `跳过`, or `请自动判断` before heuristic fallback.
 - Do not promise external detection changes.
 
 ## Case 5: Unknown Report Color Legend
@@ -77,6 +75,7 @@ Expected:
 - Ask whether to use the default legend or mark the legend uncertain.
 - Do not invent exact thresholds if the user does not confirm.
 - Red/orange can still be treated as higher-priority qualitative bands with uncertainty noted.
+- Continue only after the remaining intake sections are filled or explicitly skipped.
 
 ## Case 6: Social-Science Thesis Plateau
 
@@ -111,9 +110,9 @@ Input:
 Expected:
 
 - Run `INTAKE_WIZARD_PRECHECK`.
-- Output `Intake Confirmation`.
 - Parse the compact reply.
-- Route to `THREE_MODE_COLOR_BAND_WORKFLOW` plus `FILE_INPUT_COPY_WORKFLOW`.
+- Because optional fields are not acknowledged, ask for optional fields or allow `无`, `跳过`, `请自动判断`.
+- Do not route to `THREE_MODE_COLOR_BAND_WORKFLOW` until intake is complete.
 - Build protection list before revision.
 
 ## Case 8: Safety Boundary
@@ -142,8 +141,8 @@ Expected:
 
 - Treat the task as matching this Skill even though the user did not name it.
 - Run `INTAKE_WIZARD_PRECHECK`.
-- If the pasted input includes goal, source, report, scope, output, character constraint, and protection defaults, output `Intake Confirmation` and proceed.
-- If any required field is absent, ask only for the missing field.
+- Show the full template unless the same message already contains a completed intake reply.
+- If the pasted input includes required fields but optional fields are absent, ask for optional fields or explicit skip/auto-judge.
 
 ## Case 10: Missing Required Fields Uses Template
 
@@ -172,7 +171,7 @@ Expected:
 
 - Run `INTAKE_WIZARD_PRECHECK`.
 - Ask only the conflict question: whether the task is AIGC-only, similarity-only, or dual revision.
-- Ask for output form only if it is required for the next action.
+- Also show unacknowledged strongly recommended and optional sections after the conflict is resolved.
 - Do not start rewriting before mode conflict is resolved.
 
 ## Case 12: File Input Copy Rule
@@ -186,6 +185,34 @@ Input:
 Expected:
 
 - Run `INTAKE_WIZARD_PRECHECK`.
-- Output `Intake Confirmation`.
-- Route to `FILE_INPUT_COPY_WORKFLOW` plus AIGC report-driven mode.
+- Because optional fields are not acknowledged, ask for optional fields or explicit skip/auto-judge.
 - State that the original DOCX is never edited directly.
+
+## Case 13: Completed Intake Template Proceeds
+
+Input:
+
+```text
+【任务目标】只降 AIGC
+【论文输入】原文 DOCX：/path/original.docx
+【处理范围】全文，只处理报告红橙片段
+【输出形式】创建副本并回写，同时输出诊断表
+【字数约束】全文 ±10%
+【保护项】引用、问卷数据、图表编号、参考文献、学校声明
+【AIGC 报告】/path/aigc.docx
+【查重报告】无
+【报告颜色规则】默认
+【论文专业和题目】人力资源管理，《示例论文》
+【当前状态】原文未改
+【历史版本】无
+【用户目标】请自动判断
+【可用证据】无
+【特殊要求】跳过
+```
+
+Expected:
+
+- Run `INTAKE_WIZARD_PRECHECK`.
+- Output `Intake Confirmation`.
+- Route to `FILE_INPUT_COPY_WORKFLOW` plus `REPORT_AIGC_ONLY` or `FIRST_PASS_RED_ORANGE_ENGINE`.
+- Start processing only after confirmation.

@@ -39,8 +39,8 @@
 
 ```text
 当前任务需要使用 zh-thesis-risk-optimizer。请先执行 INTAKE_WIZARD_PRECHECK。
-如果信息不足，请让我复制填写 workflow/intake_request_template.md 中的模板；
-如果信息足够，请输出 Intake Confirmation 后直接继续。
+请先展示 workflow/intake_request_template.md 中的完整模板，等我填写后再处理。
+必填项必须填写；强烈建议和可选项也要展示，我会填写、写无、写跳过或写请自动判断。
 ```
 
 可复制模板见 [workflow/intake_request_template.md](workflow/intake_request_template.md)。
@@ -103,11 +103,11 @@
 
 ## 支持模式
 
-日常使用不需要记住全部模式。一般先走 `INTAKE_WIZARD_PRECHECK`，再由 Skill 自动路由到下列常用工作流。
+日常使用不需要记住全部模式。一般先走 `INTAKE_WIZARD_PRECHECK`，用户填写 intake 模板后，再由 Skill 自动路由到下列常用工作流。
 
 | 常见需求 | 推荐路由 | 需要材料 |
 |---|---|---|
-| 不知道怎么开始 | `INTAKE_WIZARD_PRECHECK` | 按模板补充必填项 |
+| 不知道怎么开始 | `INTAKE_WIZARD_PRECHECK` | 按模板补充必填、强烈建议和可选项 |
 | 只降 AIGC | `AIGC_ONLY` / `REPORT_AIGC_ONLY` | 原文，最好有 AIGC 报告 |
 | 只降查重 | `SIMILARITY_ONLY` / `REPORT_SIMILARITY_ONLY` | 原文，最好有查重报告 |
 | 双降 | `THREE_MODE_COLOR_BAND_WORKFLOW` / `DUAL_OPTIMIZATION` | 原文，最好有两类报告 |
@@ -123,7 +123,7 @@
 
 ## 推荐工作流
 
-1. 先预检：任何匹配本 Skill 的任务先进入 `INTAKE_WIZARD_PRECHECK`；如果信息不足，再用 `workflow/intake_request_template.md` 收集目标、输入、报告、范围、输出和保护项。
+1. 先预检：任何匹配本 Skill 的任务先进入 `INTAKE_WIZARD_PRECHECK`；先展示 `workflow/intake_request_template.md`，等待用户填写必填项，并对强烈建议/可选项写明内容、无、跳过或请自动判断。
 2. 先诊断：识别章节结构、风险类型和输入材料。
 3. 建立保护清单：保护引用、术语、公式、代码、接口、字段和实验数据。
 4. 生成风险热区：按风险、报告贡献率和可安全改写程度排序。

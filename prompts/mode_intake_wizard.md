@@ -2,7 +2,7 @@
 
 Use this prompt whenever a task is routed to `zh-thesis-risk-optimizer`.
 
-Do not rewrite the thesis until the precheck determines whether required fields are present.
+Do not rewrite, diagnose, parse reports, or read files until the user completes the intake reply.
 
 ## Inputs
 
@@ -18,24 +18,27 @@ The user may provide any combination of:
 ## Decision Rules
 
 1. Always run intake precheck before selecting a revision mode.
-2. If the user provided enough context, do not run a full wizard. Output `Intake Confirmation`, state the selected route, and proceed.
-3. If one or two fields are missing, ask only those fields.
-4. If the task is underspecified, show the copyable intake template from `workflow/intake_request_template.md`.
-5. Always include selectable options plus "自动判断 / 其他补充".
-6. Use defaults unless the user overrides them:
+2. On first contact for a new task, show the full copyable intake template from `workflow/intake_request_template.md`.
+3. Required fields must be filled before processing.
+4. Strongly recommended and optional fields must also be shown. The user may fill them, write `无`, write `跳过`, or write `请自动判断`.
+5. If the user submits only required fields, do not proceed yet; ask them to fill or explicitly skip the strongly recommended and optional sections.
+6. If the user submits a completed intake template, output `Intake Confirmation`, state the selected route, and proceed.
+7. If the user submits conflicting fields, ask only the conflict question.
+8. Always include selectable options plus "自动判断 / 其他补充".
+9. Use defaults only after the user has accepted defaults or written `请自动判断`:
    - Whole-thesis character delta: `±10%`.
    - Report color legend: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
    - File input: create a copy and keep the original unchanged.
    - Protected items: citations, formulas, code, APIs, paths, table names, field names, parameters, experiment data, and reference entries.
-7. Never ask the user to provide fabricated data, fake reports, fake citations, or invented case facts.
+10. Never ask the user to provide fabricated data, fake reports, fake citations, or invented case facts.
 
 ## Output Format
 
-When context is incomplete, output:
+On first contact or incomplete intake, output:
 
 ```text
-当前任务需要使用 zh-thesis-risk-optimizer，但关键信息还不完整。
-请复制下面模板，替换参考值后发送；不知道的字段可以写“请自动判断”。
+当前任务将使用 zh-thesis-risk-optimizer。正式处理前需要先完成 intake。
+请复制下面模板，替换参考值后发送；不知道或不想提供的可选项可以写“无 / 跳过 / 请自动判断”。
 
 【任务目标】
 只降 AIGC / 只降查重 / 双降 / 只诊断不改写 / 报告映射 / 文件副本处理 / 全文项目管理 / 请自动判断
@@ -70,15 +73,40 @@ When context is incomplete, output:
 - 如果输入是文件，我会创建副本并只回写副本。
 ```
 
-When only a few fields are missing, output:
+When required fields are filled but strongly recommended or optional fields are not acknowledged, output:
 
 ```text
-我已能判断大方向，还缺少这几项：
+必填项已经足够判断大方向，但 intake 还没完成。
+请补充下面可选信息；如果没有或不想提供，请写“无 / 跳过 / 请自动判断”。
+
+【AIGC 报告】
+
+【查重报告】
+
+【报告颜色规则】
+
+【论文专业和题目】
+
+【当前状态】
+
+【历史版本】
+
+【用户目标】
+
+【可用证据】
+
+【特殊要求】
+```
+
+When a few required fields are missing after the user has already submitted an intake reply, output:
+
+```text
+我已收到 intake，但还缺少以下必填项：
 
 - [缺失项 1]：选项 A / 选项 B / 自动判断
 - [缺失项 2]：选项 A / 选项 B / 其他补充
 
-默认会保护引用、公式、代码、接口、路径、表名、字段、参数、实验数据和参考文献条目。
+可选项也请填写，或写“无 / 跳过 / 请自动判断”。
 ```
 
 When enough information is present, output:
@@ -108,18 +136,20 @@ When enough information is present, output:
 
 | User Input | Mode Decision |
 |---|---|
-| Any thesis AIGC/similarity/report task | Run `INTAKE_WIZARD_PRECHECK` first. |
-| "帮我降 AIGC" | Ask required intake template because input and report are missing. |
-| "这是原文和原版 AIGC 报告，先处理红橙" | `FIRST_PASS_RED_ORANGE_ENGINE`; do not ask full wizard. |
-| "查重够了，继续降 AIGC，别扩太多" | `AIGC_FOCUSED_LENGTH_CONTROLLED`; ask only budget if absent. |
-| "这是 DOCX 和报告，改完给我文件" | `FILE_INPUT_COPY_WORKFLOW` plus report-driven mode. |
-| "没有报告，帮我双降" | `NO_REPORT_FALLBACK_WORKFLOW`; state heuristic limitation. |
-| "人力资源管理论文，报告降不动" | Ask for company/survey/interview/process evidence; route to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`. |
+| Any thesis AIGC/similarity/report task | Run `INTAKE_WIZARD_PRECHECK` and show the full template unless a completed intake was already provided. |
+| "使用 zh-thesis-risk-optimizer 给我的论文降 AIGC" | Show the full intake template and wait. |
+| "帮我降 AIGC" | Show the full intake template and wait. |
+| "这是原文和原版 AIGC 报告，先处理红橙" | If optional fields are not acknowledged, ask for optional fields or skip/auto-judge before routing. |
+| "查重够了，继续降 AIGC，别扩太多" | Ask for the remaining intake fields unless the completed template is present. |
+| "这是 DOCX 和报告，改完给我文件" | Ask for remaining intake fields before file reading or writeback. |
+| Completed intake template with original thesis and original AIGC report | `FIRST_PASS_RED_ORANGE_ENGINE`; output `Intake Confirmation` and proceed. |
+| Completed intake template without report | `NO_REPORT_FALLBACK_WORKFLOW`; state heuristic limitation. |
+| Completed intake template for HR/management plateau | Route to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`; request evidence if missing. |
 
 ## Self-Check Before Asking
 
 - Did the user already provide the missing field?
-- Can the mode be selected safely without asking?
+- Has the user completed the intake, including optional fields marked as filled, skipped, or auto-judge?
 - Are you asking for only the minimum needed details?
 - Did you avoid promising external detection results?
 - Did you keep the file-copy and protection defaults visible?

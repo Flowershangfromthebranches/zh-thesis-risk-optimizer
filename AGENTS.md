@@ -173,8 +173,10 @@
 ## v0.9.2 Intake Precheck Template Rules
 
 - Any task that matches this Skill starts with `INTAKE_WIZARD_PRECHECK`, even if the user does not explicitly say "use this Skill".
-- If enough context is present, output an `Intake Confirmation` block and continue; do not force the user through the full template.
-- If required fields are missing, show or reference `workflow/intake_request_template.md` and ask only for the missing fields.
+- First contact for a new task must show `workflow/intake_request_template.md` and wait for the user's intake reply before diagnosis, report parsing, file reading, or rewriting.
+- Required fields must be filled before processing.
+- Strongly recommended and optional fields must be displayed; the user may fill them or explicitly mark `无`, `跳过`, or `请自动判断`.
+- If a completed intake reply is already present in the same message, output an `Intake Confirmation` block and continue; do not force the user through the template again.
 - Keep intake fields grouped as required, strongly recommended, and optional so users know what is mandatory.
 - Required fields are task goal, thesis input, processing scope, output form, character constraint, and protection items.
 - Strongly recommended fields are AIGC report, similarity report, report color legend, thesis major/title, and current state.

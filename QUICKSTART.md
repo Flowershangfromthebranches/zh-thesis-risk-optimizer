@@ -18,16 +18,15 @@ For Codex, Claude Code, Copilot, or similar agents:
 1. Put this repository where the agent can read it.
 2. Ask the agent to load `SKILL.md`.
 3. Start with `INTAKE_WIZARD_PRECHECK`.
-4. Fill in the required fields from `workflow/intake_request_template.md`.
+4. Fill in the required, strongly recommended, and optional fields from `workflow/intake_request_template.md`.
 5. Provide the thesis text, chapter, report fragment, file path, or project state.
 6. Ask the agent to preserve citations, data, conclusions, formulas, code, and technical identifiers.
 
-Every use of this Skill should start with intake precheck. If the required fields are already present, the agent should output an `Intake Confirmation` block and continue without asking the full template.
+Every use of this Skill should start with intake precheck. The agent should show the full template first unless the same message already contains a completed intake reply. Strongly recommended and optional fields should also be shown; write `无`, `跳过`, or `请自动判断` when you do not want to provide them.
 
 ```text
 当前任务需要使用 zh-thesis-risk-optimizer。请先执行 INTAKE_WIZARD_PRECHECK。
-如果信息不足，请让我复制填写 workflow/intake_request_template.md；
-如果信息足够，请输出 Intake Confirmation 后继续。
+请先展示 workflow/intake_request_template.md 的完整模板，等我填写后再继续。
 ```
 
 ## 3. Common Commands
@@ -42,6 +41,13 @@ Every use of this Skill should start with intake precheck. If the required field
 【保护项】引用、数据、图表编号、参考文献、学校声明
 【AIGC 报告】/path/to/aigc_report.docx
 【论文专业和题目】人力资源管理，《……》
+【查重报告】无
+【报告颜色规则】默认
+【当前状态】原文未改
+【历史版本】无
+【用户目标】请自动判断
+【可用证据】无
+【特殊要求】跳过
 ```
 
 ```text
@@ -116,6 +122,8 @@ Strongly recommended fields:
 - Report color legend if color-marked reports are used.
 - Thesis major and title.
 - Current state, such as original draft, rewritten draft, AIGC regression, or plateau.
+
+Optional fields are also shown in the template. Fill them in or explicitly write `无`, `跳过`, or `请自动判断`.
 
 ## 5. Full Thesis Workflow
 

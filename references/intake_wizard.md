@@ -1,8 +1,8 @@
 # Intake Wizard And Precheck
 
-The intake wizard is the startup precheck for this Skill. It runs whenever a task is routed to `zh-thesis-risk-optimizer`, not only when the user explicitly says "use this Skill".
+The intake wizard is the startup gate for this Skill. It runs whenever a task is routed to `zh-thesis-risk-optimizer`, not only when the user explicitly says "use this Skill".
 
-It is not a separate detection or rewriting engine. It only confirms whether the required inputs are present, asks for missing context, and routes the task safely.
+It is not a separate detection or rewriting engine. It collects the user's intake reply, confirms required and optional context, and routes the task safely.
 
 ## Purpose
 
@@ -10,21 +10,37 @@ It is not a separate detection or rewriting engine. It only confirms whether the
 - Reduce weak results caused by missing reports, unclear goals, unknown color legends, or missing protection rules.
 - Avoid starting full-thesis rewriting when the task only needs diagnosis, report mapping, or file-copy processing.
 - Preserve academic integrity by asking for evidence instead of inventing facts.
-- Make the Skill easier to use by providing a copyable request template.
+- Make the Skill easier to use by providing a copyable request template before processing starts.
 
-## Precheck Rule
+## Intake Completion Gate
 
 Every task that matches this Skill must start with `INTAKE_WIZARD_PRECHECK`.
 
-The precheck has three outcomes:
+First contact for a new task must show the full intake template from `workflow/intake_request_template.md`. This is true even when the user says only:
+
+- "使用 zh-thesis-risk-optimizer 给我的论文降 AIGC"
+- "帮我用这个 Skill 处理论文"
+- "给这篇论文双降"
+
+The model must not start diagnosis, file reading, report parsing, or rewriting until the user submits an intake reply.
+
+The intake reply is complete only when:
+
+1. Required fields are filled.
+2. Strongly recommended fields are filled or explicitly marked as `无`, `跳过`, or `请自动判断`.
+3. Optional fields are filled or explicitly marked as `无`, `跳过`, or `请自动判断`.
+
+The precheck has four outcomes:
 
 | outcome | action |
 |---|---|
-| `ENOUGH_CONTEXT` | Output an intake confirmation block and proceed to the selected mode. |
-| `MISSING_REQUIRED_FIELDS` | Show the required part of `workflow/intake_request_template.md` and ask only for missing fields. |
+| `NEEDS_FULL_INTAKE` | Show the full template and wait. |
+| `MISSING_REQUIRED_FIELDS` | Show missing required fields plus the full strongly recommended and optional sections. |
+| `OPTIONAL_FIELDS_NOT_ACKNOWLEDGED` | Show the strongly recommended and optional sections and ask the user to fill, skip, or mark auto-judge. |
 | `CONFLICTING_INPUTS` | Point out the conflict and ask only the conflict-resolution question. |
+| `INTAKE_COMPLETE` | Output an intake confirmation block and proceed to the selected mode. |
 
-Do not force a long questionnaire when the user already provided enough information.
+Do not treat implicit folder contents, unstated defaults, or nearby files as a completed intake. The user must identify inputs or explicitly authorize automatic judgment.
 
 ## Use Cases
 
@@ -37,15 +53,16 @@ Use `INTAKE_WIZARD` after precheck when:
 - The user provides a social-science or management thesis but does not provide organization, survey, interview, process, indicator, or case evidence.
 - The user asks for full-thesis work but does not provide character budget, protected items, or desired output.
 
-Do not ask the full wizard when the user has already provided enough information to route the task. In that case, output the intake confirmation block and proceed directly.
+Do not ask the full wizard again when the user has already submitted a completed intake template. In that case, output the intake confirmation block and proceed directly.
 
 ## Intake Principles
 
-- Ask only for missing information.
-- Prefer 4 to 7 compact fields, not a long questionnaire.
+- Show the full template on first contact for a new task.
+- After the first intake reply, ask only for missing or contradictory information.
 - Always include selectable options and a free-form supplement.
 - Allow the user to answer "不确定，自动判断".
 - Separate required, strongly recommended, and optional materials.
+- Optional does not mean hidden. Optional means the user may write `无`, `跳过`, or `请自动判断`.
 - Do not ask for private or unnecessary information.
 - Never pressure the user to provide fabricated evidence.
 - If a required report, citation, data point, or technical fact is absent, mark it as missing instead of inventing it.
@@ -73,7 +90,7 @@ These fields strongly improve results:
 4. Thesis major and title.
 5. Current state, such as original draft, first rewrite, AIGC regression, or plateau.
 
-If these are missing, proceed only when the user accepts heuristic processing.
+If these are missing, proceed only when the user explicitly writes `无`, `跳过`, or `请自动判断`.
 
 ## Optional Fields
 
@@ -81,6 +98,8 @@ If these are missing, proceed only when the user accepts heuristic processing.
 - User targets such as AIGC `<20%` or similarity `<10%`, treated as goals only.
 - Available evidence such as modules, parameters, survey data, interviews, company process nodes, or test results.
 - Special school format requirements.
+
+These fields must be displayed on first contact. The user may leave them out only by explicitly marking them as `无`, `跳过`, or `请自动判断`.
 
 ## Intake Fields
 

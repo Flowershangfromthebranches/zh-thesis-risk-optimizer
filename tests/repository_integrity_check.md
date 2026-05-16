@@ -56,6 +56,9 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] Social-science bottleneck workflows request missing evidence instead of fabricating case facts.
 - [ ] Intake wizard workflows ask only for missing context and do not start rewriting before route and safety constraints are clear.
 - [ ] Intake precheck runs for every matching Skill task, not only when the user explicitly says "use this Skill".
-- [ ] Enough-context tasks produce `Intake Confirmation` and continue without forcing the full wizard.
+- [ ] First contact for a new task shows the full `workflow/intake_request_template.md` before diagnosis, file reading, report parsing, or rewriting.
+- [ ] Required fields must be filled before processing.
+- [ ] Strongly recommended and optional fields are displayed and must be filled or explicitly marked `无`, `跳过`, or `请自动判断`.
+- [ ] Completed-intake tasks produce `Intake Confirmation` and continue without forcing the full wizard again.
 - [ ] Missing-context tasks show or reference `workflow/intake_request_template.md`.
 - [ ] Color-marked Word reports are not processed through plain-text extraction alone.

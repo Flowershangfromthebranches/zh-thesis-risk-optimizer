@@ -29,23 +29,27 @@ When integrity or technical correctness conflicts with risk reduction, integrity
 
 0. Run `INTAKE_WIZARD_PRECHECK` whenever this Skill is selected for a task.
 1. Identify input type: thesis text, chapter, full thesis, report fragment, full report, historical draft, or project handoff.
-2. If required fields are missing, show the copyable intake template in `workflow/intake_request_template.md` and ask only for missing fields.
-3. If enough information is present, output an intake confirmation block and continue without interrupting the task.
-4. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, parameters, experiment data, and no-edit zones.
-5. Choose the smallest applicable mode family below.
-6. Output diagnosis, mapping, task table, or project overview before revision.
-7. Run `BURSTINESS_INJECTION` as an early rhythm audit for AIGC-related revision; apply rhythm repair only when the paragraph actually lacks variation.
-8. Revise only confirmed and safe paragraphs or sentences.
-9. Run self-audit for AIGC style, similarity risk, citation integrity, technical facts, and character change.
-10. Update project artifacts when working at full-thesis or multi-round scope.
+2. On the first message of a new task, show the complete copyable intake template in `workflow/intake_request_template.md`; required, strongly recommended, and optional fields must all be visible.
+3. Do not start diagnosis, report parsing, file reading, or rewriting until the user submits an intake reply.
+4. Required fields must be filled. Strongly recommended and optional fields must be either filled or explicitly marked as `无`, `跳过`, or `请自动判断`.
+5. After the intake reply is complete, output an intake confirmation block and continue.
+6. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, parameters, experiment data, and no-edit zones.
+7. Choose the smallest applicable mode family below.
+8. Output diagnosis, mapping, task table, or project overview before revision.
+9. Run `BURSTINESS_INJECTION` as an early rhythm audit for AIGC-related revision; apply rhythm repair only when the paragraph actually lacks variation.
+10. Revise only confirmed and safe paragraphs or sentences.
+11. Run self-audit for AIGC style, similarity risk, citation integrity, technical facts, and character change.
+12. Update project artifacts when working at full-thesis or multi-round scope.
 
 **Critical principle**: AIGC detectors often react to **how** text is written, not only **what** is written. A rewrite that produces smoother, more balanced, more formal prose can increase AIGC risk. Rhythm matters, but it is not sufficient for management and social-science theses; these also need report-color parsing, template-skeleton repair, and evidence-first reconstruction.
 
 Special routing:
 
 - Any task that matches this Skill must start with `INTAKE_WIZARD_PRECHECK`.
-- If required information is missing, use `INTAKE_WIZARD` and show `workflow/intake_request_template.md`.
-- If required information is already present, do not ask the full wizard; output an `Intake Confirmation` block and proceed.
+- First contact must stop at `INTAKE_WIZARD` and show `workflow/intake_request_template.md`; do not proceed merely because the user said "使用 zh-thesis-risk-optimizer 给论文降 AIGC".
+- Required fields decide whether processing is possible. Strongly recommended and optional fields still must be displayed, and the user must fill them or explicitly mark them as `无`, `跳过`, or `请自动判断`.
+- If the user already submitted a completed intake template in the same request, do not show the full wizard again; output an `Intake Confirmation` block and proceed.
+- If the user submitted only required fields, show the strongly recommended and optional sections and wait before processing.
 - Default user-facing workflow: use `THREE_MODE_COLOR_BAND_WORKFLOW` to choose similarity-only, AIGC-only, or dual revision.
 - File input: use `FILE_INPUT_COPY_WORKFLOW`; create a copy, edit the copy, and keep the original untouched.
 - Color-marked DOCX report input: use `DOCX_COLOR_REPORT_EXTRACTION` before plain-text extraction or report-driven rewriting.

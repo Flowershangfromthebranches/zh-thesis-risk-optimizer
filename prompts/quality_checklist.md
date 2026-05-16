@@ -133,8 +133,9 @@ Use this checklist before final output.
 ## v0.9.2 Intake Precheck Template Checks
 
 - [ ] The task starts with intake precheck even when the user does not explicitly say "use this Skill".
-- [ ] If required information is already present, the output contains `Intake Confirmation` and proceeds directly to the selected mode.
-- [ ] If required information is missing, the output uses or references `workflow/intake_request_template.md`.
+- [ ] First contact for a new task shows `workflow/intake_request_template.md` and waits for the user's intake reply.
+- [ ] If a completed intake reply is already present, the output contains `Intake Confirmation` and proceeds to the selected mode.
+- [ ] If only required information is present, the output still asks the user to fill, skip, or auto-judge strongly recommended and optional fields.
 - [ ] Required, strongly recommended, and optional fields are clearly separated.
 - [ ] The user is not asked to memorize the full mode router.
 - [ ] The intake template includes character constraint and protected-item defaults.
