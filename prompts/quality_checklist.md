@@ -82,6 +82,19 @@ Use this checklist before final output.
 - [ ] Computer-science protected tokens were preserved exactly.
 - [ ] Repeated no-progress paragraphs were marked `NO_PROGRESS_REWRITE_LOOP` instead of being rewritten with the same strategy.
 
+## v0.8.1 Red-Orange First-Pass Checks
+
+- [ ] Original thesis plus original AIGC report routes to `FIRST_PASS_RED_ORANGE_ENGINE`.
+- [ ] Red/high-risk and orange/medium-risk fragments both appear in the first-pass primary task table.
+- [ ] Orange/medium-risk fragments are not deferred until plateau mode.
+- [ ] Purple/light-risk fragments are only local cleanup unless clearly connected to red/orange risks.
+- [ ] Black/white/low-risk paragraphs are frozen.
+- [ ] Internal rewrite loops have a fixed retry limit and use different repair moves.
+- [ ] The heuristic target is purple/black-like when safe, not merely red-to-orange demotion.
+- [ ] Whole-thesis character change is within `±10%` unless the user specified another range.
+- [ ] `CHARACTER_DELTA_FAIL` triggers compression before completion.
+- [ ] Protected or evidence-limited paragraphs stop with a reason instead of being recursively rewritten.
+
 ## Similarity-Risk Checks
 
 - [ ] High-repeat definitions were converted into thesis-specific explanations.

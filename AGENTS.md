@@ -111,6 +111,17 @@
 - For management/business plateaus, break list structures and anchor paragraphs in survey, interview, company, or case-specific evidence.
 - If remaining risk is protected or evidence-limited, label it instead of inventing details or repeatedly rewriting.
 
+## v0.8.1 Red-Orange First-Pass Rules
+
+- When the original thesis and original AIGC report are available, do not wait for orange plateau; use `FIRST_PASS_RED_ORANGE_ENGINE`.
+- Red/high-risk and orange/medium-risk fragments both belong in the first-pass primary task table.
+- Purple/light-risk fragments are secondary cleanup; black/white/low-risk fragments are frozen by default.
+- Internal retry loops must be finite and must use a different repair move on retry.
+- Do not mark a paragraph complete just because red became orange; the heuristic target is purple/black-like when safe.
+- Whole-thesis character change must stay within `±10%` by default unless the user provides another range.
+- If character delta exceeds the allowed range, mark `CHARACTER_DELTA_FAIL` and run compression before completion.
+- Stop rather than continue recursion when facts, citations, technical identifiers, protected text, or evidence limits block safe revision.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.

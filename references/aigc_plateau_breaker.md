@@ -6,6 +6,8 @@
 
 This mode is based on report feedback and local case regression analysis. It does not promise any external detection result.
 
+For original thesis plus original AIGC report workflows, use `references/first_pass_red_orange_engine.md` first. The plateau breaker is a fallback when the first pass was not available, was incomplete, or later reports still show orange/medium-risk concentration.
+
 ## Plateau Signal
 
 Enter this mode when one or more signals appear:

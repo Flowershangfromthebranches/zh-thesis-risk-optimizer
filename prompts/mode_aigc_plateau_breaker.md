@@ -2,6 +2,8 @@
 
 Use this mode when multiple AIGC reduction rounds show diminishing returns.
 
+If the user provides the original thesis and original AIGC report before any revision, use `FIRST_PASS_RED_ORANGE_ENGINE` instead so red and orange are handled together in the first pass.
+
 ## Inputs
 
 - Original text.

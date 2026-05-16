@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.8.1-red-orange-first-pass
+
+- Added first-pass red-orange engine for original thesis plus original AIGC report workflows.
+- Red/high-risk and orange/medium-risk report bands now both enter the first-pass primary task table.
+- Added finite internal red/orange self-audit loop with stop states for protection, evidence limits, character delta failure, and no-progress rewrites.
+- Added character delta guard with default whole-thesis `±10%` change range.
+- Updated README, SKILL router, quickstart, quality checklist, and tests.
+
 ## v0.8.0-aigc-plateau-breaker
 
 - Added AIGC plateau breaker for multi-round cases where AIGC reduction slows after initial improvement.

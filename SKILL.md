@@ -56,6 +56,7 @@ Do not use this Skill to:
 |---|---|---|
 | 只降 AIGC | `AIGC_ONLY` | `references/aigc_pattern_library.md`, `prompts/mode_aigc_only.md` |
 | AIGC 深度改写 | `AIGC_DEEP_REWRITE_ENGINE` | `references/aigc_deep_rewrite_engine.md`, `prompts/mode_aigc_deep_rewrite.md` |
+| 首轮红橙联合处理 | `FIRST_PASS_RED_ORANGE_ENGINE` | `references/first_pass_red_orange_engine.md`, `prompts/mode_first_pass_red_orange.md` |
 | AIGC 多轮平台期处理 | `AIGC_PLATEAU_BREAKER` | `references/aigc_plateau_breaker.md`, `prompts/mode_aigc_plateau_breaker.md` |
 | 橙色中风险专项处理 | `ORANGE_ZONE_REWRITE_STRATEGY` | `references/orange_zone_rewrite_strategy.md` |
 | 学科瓶颈判断 | `DISCIPLINE_AIGC_BOTTLENECK_RULES` | `references/discipline_aigc_bottleneck_rules.md` |
@@ -64,6 +65,7 @@ Do not use this Skill to:
 | 无报告保底双降 | `NO_REPORT_FALLBACK_WORKFLOW` | `references/no_report_fallback_workflow.md`, `prompts/mode_no_report_dual_fallback.md` |
 | 目标驱动多轮双降 | `TARGETED_MULTIPASS_ENGINE` | `references/targeted_multipass_engine.md`, `prompts/mode_targeted_multipass.md` |
 | 查重够用后继续降 AIGC | `AIGC_FOCUSED_LENGTH_CONTROLLED` | `references/aigc_focused_length_controlled_engine.md`, `prompts/mode_aigc_focused_length_controlled.md` |
+| 全文字符变动守卫 | `CHARACTER_DELTA_GUARD` | `references/character_delta_guard.md` |
 | 全文字数预算控制 | `LENGTH_BUDGET_CONTROLLER` | `references/length_budget_controller.md`, `prompts/mode_length_compression_pass.md` |
 | 句子级 AIGC 定位 | `SENTENCE_LEVEL_AIGC_LOCALIZER` | `references/sentence_level_aigc_localizer.md` |
 | 节奏和突发性控制 | `BURSTINESS_RHYTHM_CONTROL` | `references/burstiness_rhythm_control.md` |
@@ -107,24 +109,26 @@ Do not use this Skill to:
 
 1. Identify input type: thesis text, chapter, report fragment, full report, full thesis, or project handoff document.
 2. Build protection list: citations, terms, formulas, code, interfaces, table names, fields, experiment data, and no-edit zones.
-3. If the user gives explicit targets such as similarity `<10%` and AIGC `<20%`, use `TARGETED_MULTIPASS_ENGINE`.
-4. If similarity is already acceptable and the user asks to keep reducing AIGC or control over-expansion, use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
-5. If the revised draft exceeds the length budget, run `LENGTH_BUDGET_CONTROLLER` and Compression Pass.
-6. If the user provides multiple reports or historical drafts, run report difference analysis before revising.
-7. If the new version has higher AIGC risk than an earlier version, diagnose the failure cause before continuing revision.
-8. If similarity decreases but AIGC increases, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
-9. If two or more AIGC reports show diminishing returns, or red/high-risk text decreases while orange/medium-risk text stays high, use `AIGC_PLATEAU_BREAKER`.
-10. In plateau mode, freeze white/low-risk paragraphs, target orange/medium-risk paragraphs, and avoid repeating the same rewrite prompt.
-11. If deep rewriting lacks enough real evidence, output an author supplementation list or use conservative repair instead of fabricating details.
-12. Choose mode with the router.
-13. Output diagnosis, scoring, mapping, or project overview before revision.
-14. For full theses, generate master overview and chapter tasks before any chapter revision.
-15. Revise locally by paragraph/sentence/task priority.
-16. For AIGC-heavy text, run sentence-level localization and process only the key 1-3 sentences per paragraph when possible.
-17. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
-18. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
-19. Run citation, technical, data, and safety self-checks.
-20. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
+3. If the user provides the original thesis and original AIGC report, use `FIRST_PASS_RED_ORANGE_ENGINE`: red/high and orange/medium bands both enter the first-pass main task table.
+4. Apply `CHARACTER_DELTA_GUARD` to whole-thesis work; default total character change must stay within `±10%` unless the user specifies another range.
+5. If the user gives explicit targets such as similarity `<10%` and AIGC `<20%`, use `TARGETED_MULTIPASS_ENGINE`.
+6. If similarity is already acceptable and the user asks to keep reducing AIGC or control over-expansion, use `AIGC_FOCUSED_LENGTH_CONTROLLED`.
+7. If the revised draft exceeds the length budget or character-delta guard, run `LENGTH_BUDGET_CONTROLLER` and Compression Pass.
+8. If the user provides multiple reports or historical drafts, run report difference analysis before revising.
+9. If the new version has higher AIGC risk than an earlier version, diagnose the failure cause before continuing revision.
+10. If similarity decreases but AIGC increases, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
+11. If two or more AIGC reports show diminishing returns, or red/high-risk text decreases while orange/medium-risk text stays high, use `AIGC_PLATEAU_BREAKER`.
+12. In plateau mode, freeze white/low-risk paragraphs, target orange/medium-risk paragraphs, and avoid repeating the same rewrite prompt.
+13. If deep rewriting lacks enough real evidence, output an author supplementation list or use conservative repair instead of fabricating details.
+14. Choose mode with the router.
+15. Output diagnosis, scoring, mapping, or project overview before revision.
+16. For full theses, generate master overview and chapter tasks before any chapter revision.
+17. Revise locally by paragraph/sentence/task priority.
+18. For AIGC-heavy text, run sentence-level localization and process only the key 1-3 sentences per paragraph when possible.
+19. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
+20. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
+21. Run citation, technical, data, and safety self-checks.
+22. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
 
 ## 7. Full Thesis Project Workflow
 
@@ -185,9 +189,11 @@ Core diagnosis and revision:
 
 - `references/aigc_pattern_library.md`
 - `references/aigc_deep_rewrite_engine.md`
+- `references/first_pass_red_orange_engine.md`
 - `references/aigc_plateau_breaker.md`
 - `references/orange_zone_rewrite_strategy.md`
 - `references/discipline_aigc_bottleneck_rules.md`
+- `references/character_delta_guard.md`
 - `references/aigc_focused_length_controlled_engine.md`
 - `references/length_budget_controller.md`
 - `references/aigc_focused_rewrite_strategy.md`

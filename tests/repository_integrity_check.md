@@ -21,6 +21,7 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] v0.6 target-driven routes point to existing files.
 - [ ] v0.7 AIGC-focused length-control routes point to existing files.
 - [ ] v0.8 AIGC plateau breaker routes point to existing files.
+- [ ] v0.8.1 red-orange first-pass routes point to existing files.
 
 ## Repository Docs
 
@@ -41,3 +42,5 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] AIGC-focused work includes a length budget and does not encourage uncontrolled expansion.
 - [ ] AIGC plateau work does not treat red-risk reduction alone as completion.
 - [ ] Orange-zone work freezes white/low-risk paragraphs instead of rewriting everything again.
+- [ ] First-pass red-orange work does not defer orange/medium-risk paragraphs to later rounds.
+- [ ] Whole-thesis character change defaults to `±10%` unless the user specifies another range.

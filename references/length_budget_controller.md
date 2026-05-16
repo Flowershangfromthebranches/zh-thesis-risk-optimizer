@@ -19,8 +19,11 @@ Default:
 - `max_global_added_chars = 2000`.
 - `min_global_added_chars = 0`.
 - `preferred_added_chars = 500-1500`.
+- `allowed_total_delta_ratio = ±10%` for whole-thesis revision unless the user specifies another range.
 
 If the user provides another range, use the user range.
+
+When a fixed character-addition budget conflicts with the `±10%` whole-thesis delta guard, use the stricter user-stated constraint if one exists. Otherwise, use the stricter of the two default constraints.
 
 ## 3. Chapter Budget
 
@@ -53,9 +56,13 @@ Default paragraph rules:
 
 ## 5. Budget Failure
 
-If output exceeds `original_chars + 2000`, mark:
+If output exceeds `original_chars + 2000`, or falls outside the allowed `±10%` whole-thesis range, mark:
 
 `LENGTH_BUDGET_FAIL`
+
+or, when the ratio guard is the failing condition:
+
+`CHARACTER_DELTA_FAIL`
 
 Handling:
 
@@ -74,3 +81,5 @@ Every whole-thesis treatment must output:
 ## Relation To SKILL.md
 
 Use this file in `LENGTH_BUDGET_CONTROLLER` and any AIGC-focused full-thesis workflow.
+
+For ratio-based whole-thesis control, also load `references/character_delta_guard.md`.
