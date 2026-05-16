@@ -98,13 +98,19 @@ Use this checklist before final output.
 ## v0.8.3 Three-Mode File Workflow Checks
 
 - [ ] The task is routed to similarity-only, AIGC-only, or dual revision.
+- [ ] AIGC-only + DOCX AIGC color report + red/orange/purple/black rules + character control routes to `THREE_MODE_COLOR_BAND_WORKFLOW`, not plain `AIGC_ONLY`.
+- [ ] A revised/current draft plus current AIGC report routes to `CURRENT_REPORT_RED_ORANGE_ENGINE`, not `FIRST_PASS_RED_ORANGE_ENGINE`.
 - [ ] If a relevant report is provided, report-driven processing is used.
 - [ ] If no report is provided, the output states that report-based localization would be better.
 - [ ] Color legend is applied correctly: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%, unless the report says otherwise.
 - [ ] Red and orange are primary targets.
+- [ ] Current-report red and orange paragraphs are all included in the task table.
 - [ ] Purple is only light cleanup.
 - [ ] Black, gray, and white text are frozen unless needed for context.
 - [ ] Every red/orange fragment includes a reason analysis for its color.
+- [ ] Red-orange coverage acceptance table is output.
+- [ ] Each red/orange paragraph has a processing record.
+- [ ] Unprocessed red/orange count is zero before completion.
 - [ ] Whole-thesis character delta stays within `±10%` unless the user specified another range.
 - [ ] File input creates a copy and keeps the original untouched.
 - [ ] Revisions are written back only to HIGH or safe MEDIUM confidence mappings.
@@ -113,11 +119,27 @@ Use this checklist before final output.
 ## v0.8.4 Social-Science Template Bottleneck Checks
 
 - [ ] HR, management, marketing, education, public administration, accounting, tourism, logistics, or similar applied-social-science thesis is routed to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` when template plateau appears.
+- [ ] For HR, business administration, marketing, education management, and public administration, `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` is treated as a hard rule during report-driven red/orange work.
 - [ ] The output identifies repeated "status -> problem -> cause -> countermeasure -> guarantee" skeletons.
 - [ ] Generic countermeasure lists are not only polished into smoother language.
+- [ ] Rewrites do not only say 构建体系, 提升效率, 优化流程, 强化能力, 丰富渠道, 数据驱动, 智能高效, or 提供参考.
+- [ ] Current situation, problem, countermeasure, and conclusion paragraphs are grounded in company, post, process, form, system, indicator, responsibility, review-cycle, questionnaire, interview, or boundary evidence when available.
 - [ ] Available organization, survey, interview, process, department, post,制度, indicator, or case evidence is used before evaluation.
 - [ ] Missing evidence triggers author questions instead of invented details.
 - [ ] Policy, theory, citation, questionnaire, and data boundaries are preserved.
+
+## AIGC Acceptance Self-Audit Checks
+
+- [ ] Every current-report red/orange paragraph ran `AIGC_ACCEPTANCE_SELF_AUDIT`.
+- [ ] The audit checks synonym-only rewriting.
+- [ ] The audit checks "definition + meaning + countermeasure" templates.
+- [ ] The audit checks mechanical "一是、二是、三是、四是" enumeration.
+- [ ] The audit checks abstract noun density.
+- [ ] The audit checks missing company/local context.
+- [ ] The audit checks missing questionnaire, interview, process, post, indicator, responsibility, review-cycle, or boundary evidence when needed.
+- [ ] The audit checks whether the rewrite became smoother, more formal, or more AI-like.
+- [ ] Any failed audit item triggers second-pass rewrite.
+- [ ] Second-pass failure outputs an author evidence request and is not marked complete.
 
 ## v0.8.5 Intake Wizard Checks
 

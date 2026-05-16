@@ -50,6 +50,10 @@ Special routing:
 - Required fields decide whether processing is possible. Strongly recommended and optional fields still must be displayed, and the user must fill them or explicitly mark them as `无`, `跳过`, or `请自动判断`.
 - If the user already submitted a completed intake template in the same request, do not show the full wizard again; output an `Intake Confirmation` block and proceed.
 - If the user submitted only required fields, show the strongly recommended and optional sections and wait before processing.
+- Forced routing priority: if the completed intake says `只降 AIGC`, includes a DOCX AIGC color report, gives red/orange/purple/black color rules, and asks for character control or no broad full-text rewrite, route to `THREE_MODE_COLOR_BAND_WORKFLOW`. Do not fall back to plain `AIGC_ONLY` or generic polishing.
+- If that same task uses a report from a revised/current draft rather than the original report, apply `CURRENT_REPORT_RED_ORANGE_ENGINE` inside `THREE_MODE_COLOR_BAND_WORKFLOW`; `FIRST_PASS_RED_ORANGE_ENGINE` is only for original thesis plus original report.
+- If the task also includes first/second/third-round report feedback or orange accumulation after a prior revision, overlay `AIGC_PLATEAU_BREAKER` inside the three-mode workflow.
+- If the thesis discipline is human resource management, business administration, marketing, education management, or public administration, overlay `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` as a hard rule.
 - Default user-facing workflow: use `THREE_MODE_COLOR_BAND_WORKFLOW` to choose similarity-only, AIGC-only, or dual revision.
 - File input: use `FILE_INPUT_COPY_WORKFLOW`; create a copy, edit the copy, and keep the original untouched.
 - Color-marked DOCX report input: use `DOCX_COLOR_REPORT_EXTRACTION` before plain-text extraction or report-driven rewriting.
@@ -72,6 +76,7 @@ Special routing:
 | `AIGC_DEEP_REWRITE_ENGINE` | Shallow wording changes are not enough. | `prompts/mode_aigc_deep_rewrite.md`, `references/aigc_deep_rewrite_engine.md` |
 | `BURSTINESS_INJECTION` | Any AIGC revision needs rhythm audit; apply rhythm repair only when uniformity is a real risk. | `references/burstiness_injection_rules.md` |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original AIGC report is available before first revision. | `prompts/mode_first_pass_red_orange.md`, `references/first_pass_red_orange_engine.md` |
+| `CURRENT_REPORT_RED_ORANGE_ENGINE` | A revised/current draft and its current AIGC report are available. | `prompts/mode_current_report_red_orange.md`, `references/current_report_red_orange_engine.md` |
 | `AIGC_PLATEAU_BREAKER` | Multiple rounds plateau, especially red down but orange remains high. | `prompts/mode_aigc_plateau_breaker.md`, `references/aigc_plateau_breaker.md` |
 | `AIGC_FOCUSED_LENGTH_CONTROLLED` | Similarity is acceptable and AIGC remains the main issue. | `prompts/mode_aigc_focused_length_controlled.md`, `references/aigc_focused_length_controlled_engine.md` |
 
@@ -90,11 +95,12 @@ Supporting AIGC references:
 - `references/aigc_below_20_strategy.md`
 - `references/anti_shallow_rewrite_rules.md`
 - `references/post_rewrite_aigc_self_audit.md`
+- `references/aigc_acceptance_self_audit.md`
 - `references/social_science_template_bottleneck.md`
 - `prompts/mode_second_pass_rewrite.md`
 - `prompts/mode_social_science_aigc_bottleneck.md`
 
-Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`, `SENTENCE_LEVEL_AIGC_LOCALIZER`, `BURSTINESS_RHYTHM_CONTROL`, `BURSTINESS_INJECTION`, `REPEATED_EXPRESSION_COMPRESSOR`, `HUMAN_EVIDENCE_REQUEST`, `CONSERVATIVE_AIGC_REPAIR`, `AIGC_REGRESSION_GUARD`, `AIGC_BELOW_20_STRATEGY`, `POST_REWRITE_AIGC_SELF_AUDIT`, `SECOND_PASS_REWRITE_REQUIREMENT`.
+Mode aliases: `ORANGE_ZONE_REWRITE_STRATEGY`, `DISCIPLINE_AIGC_BOTTLENECK_RULES`, `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`, `SENTENCE_LEVEL_AIGC_LOCALIZER`, `BURSTINESS_RHYTHM_CONTROL`, `BURSTINESS_INJECTION`, `REPEATED_EXPRESSION_COMPRESSOR`, `HUMAN_EVIDENCE_REQUEST`, `CONSERVATIVE_AIGC_REPAIR`, `AIGC_REGRESSION_GUARD`, `AIGC_BELOW_20_STRATEGY`, `AIGC_ACCEPTANCE_SELF_AUDIT`, `POST_REWRITE_AIGC_SELF_AUDIT`, `SECOND_PASS_REWRITE_REQUIREMENT`.
 
 ### Similarity And Dual Optimization Family
 
@@ -202,6 +208,21 @@ Use only the blocks needed for the task.
 
 | 编号 | 原文章节 | 原文段落 | 风险带 | 是否首轮主处理 | 目标风险带 | 保护项 | 内部重试上限 | 字符变动策略 |
 |---|---|---|---|---|---|---|---:|---|
+
+### Red-Orange Coverage Acceptance Table
+
+| current_report_red_total | current_report_orange_total | processed_red_count | processed_orange_count | unprocessed_red_orange_count | completion_status |
+|---:|---:|---:|---:|---:|---|
+
+### Unprocessed Red-Orange List
+
+| id | section | paragraph_id | original_band | reason_not_processed | required_next_action |
+|---|---|---|---|---|---|
+
+### Red-Orange Paragraph Processing Record
+
+| id | section | original_band | original_fragment | risk_reason | rewrite_strategy | evidence_used | char_delta | self_audit_result | passed |
+|---|---|---|---|---|---|---|---:|---|---|
 
 ### Color Reason Analysis Table
 

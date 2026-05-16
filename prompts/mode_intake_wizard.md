@@ -143,6 +143,7 @@ When enough information is present, output:
 | "查重够了，继续降 AIGC，别扩太多" | Ask for the remaining intake fields unless the completed template is present. |
 | "这是 DOCX 和报告，改完给我文件" | Ask for remaining intake fields before file reading or writeback. |
 | Completed intake template with original thesis and original AIGC report | `FIRST_PASS_RED_ORANGE_ENGINE`; output `Intake Confirmation` and proceed. |
+| Completed intake template with revised/current thesis and current AIGC report | `THREE_MODE_COLOR_BAND_WORKFLOW` plus `CURRENT_REPORT_RED_ORANGE_ENGINE`; output `Intake Confirmation` and proceed. |
 | Completed intake template without report | `NO_REPORT_FALLBACK_WORKFLOW`; state heuristic limitation. |
 | Completed intake template for HR/management plateau | Route to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`; request evidence if missing. |
 

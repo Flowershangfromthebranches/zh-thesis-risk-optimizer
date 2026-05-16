@@ -15,6 +15,8 @@ Enter this mode when:
 - The user wants AIGC reduction in the first pass.
 - The user asks to avoid repeated second/third rounds caused by orange plateau.
 
+Do not use this mode when the user provides a revised/current draft and the current report after a prior rewrite. Use `references/current_report_red_orange_engine.md` instead.
+
 ## Band Policy
 
 | report_band | role in first pass | action |

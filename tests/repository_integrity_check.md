@@ -29,6 +29,8 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] v0.8.5 intake wizard routes point to existing files.
 - [ ] v0.9.2 intake precheck routes point to existing files.
 - [ ] `workflow/intake_request_template.md` exists and is referenced by `SKILL.md`.
+- [ ] Current-report red-orange routes point to existing files.
+- [ ] AIGC acceptance self-audit routes point to existing files.
 - [ ] DOCX color report extraction routes point to existing files.
 
 ## Repository Docs
@@ -62,3 +64,6 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] Completed-intake tasks produce `Intake Confirmation` and continue without forcing the full wizard again.
 - [ ] Missing-context tasks show or reference `workflow/intake_request_template.md`.
 - [ ] Color-marked Word reports are not processed through plain-text extraction alone.
+- [ ] AIGC-only DOCX color-report tasks with color rules and character control do not fall back to plain `AIGC_ONLY`.
+- [ ] Current/revised reports use `CURRENT_REPORT_RED_ORANGE_ENGINE`, not `FIRST_PASS_RED_ORANGE_ENGINE`.
+- [ ] Current-report red/orange coverage acceptance is required before completion.

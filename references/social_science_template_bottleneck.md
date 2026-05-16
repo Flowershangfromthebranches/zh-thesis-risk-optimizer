@@ -6,6 +6,8 @@ This file handles AIGC-risk plateaus common in management, business, education, 
 
 These papers often have reports and still reduce poorly because the issue is not only wording. The issue is a repeated standard-answer structure with insufficient local evidence.
 
+For human resource management, business administration, marketing, education management, and public administration theses, this file is a hard rule when report-driven AIGC red/orange work is active. It is not an optional style suggestion.
+
 ## High-Risk Thesis Types
 
 Use this workflow for these thesis types when AIGC risk remains high after normal rewriting:
@@ -115,6 +117,8 @@ Before content-level repair, run two checks:
 2. Rhythm gate: apply `references/burstiness_injection_rules.md` only if the paragraph is actually too uniform.
 
 If sentence rhythm is already varied but the paragraph is red/orange, do not add more short sentences. Switch to evidence-first reconstruction and template-skeleton repair.
+
+For current reports, every red/orange paragraph must still appear in the coverage table. Social-science repair does not replace red/orange coverage; it determines the rewrite strategy for each task.
 
 For social-science text specifically:
 - Mix short data-anchored sentences (8-15 chars) with longer analysis sentences (35-50 chars)
@@ -251,6 +255,46 @@ Do not use the same paragraph structure throughout the chapter. Alternate betwee
 - **Contrast→Evidence→Conclusion**: Present two sides or scenarios, show the evidence, draw a conclusion
 
 Do NOT use "问题→原因→对策" for more than 2 consecutive paragraphs.
+
+## Hard Evidence Rule For HR And Management Papers
+
+For human resource management paragraphs about current situation, problems, countermeasures, or conclusions, do not accept a rewrite that only says:
+
+- 构建体系
+- 提升效率
+- 优化流程
+- 强化能力
+- 丰富渠道
+- 数据驱动
+- 智能高效
+- 提供参考
+
+Accepted rewrites must, when source evidence exists, connect the statement to at least one concrete anchor:
+
+- which company, department, or post;
+- which recruitment, training, performance, incentive, service, or management process;
+- which form, system, channel, or table;
+- which indicator or review standard;
+- who is responsible;
+- how often the process is reviewed;
+- whether the evidence comes from a questionnaire, interview, process document, or existing rule;
+- what the implementation boundary is.
+
+If the source does not provide enough evidence, output `HUMAN_EVIDENCE_REQUEST`. Do not invent company facts, questionnaire results, interviews, forms, systems, owners, indicators, review cycles, or boundaries.
+
+## Social-Science Acceptance Gate
+
+A red/orange social-science paragraph fails acceptance when:
+
+- it is only synonym replacement;
+- it still follows "definition + meaning + countermeasure";
+- it still uses long "一是、二是、三是、四是" enumeration;
+- abstract nouns remain dense;
+- it lacks the company or local research object;
+- it lacks questionnaire, interview, process, post, indicator, responsibility, review-cycle, or boundary evidence when such evidence is needed;
+- the rewrite becomes smoother, more formal, or more policy-like.
+
+Any failed item triggers a second-pass rewrite. If second pass still fails, output the author evidence request and mark the paragraph incomplete.
 
 ## Stop Conditions
 

@@ -10,6 +10,24 @@ This workflow defines the default user-facing operating model for thesis risk re
 
 It supports plain-text input and file input. It uses report color bands when the user provides a similarity or AIGC report. It does not promise any external detection result.
 
+## Forced Routing Priority
+
+When the completed intake satisfies all of the following, this workflow is mandatory:
+
+1. Mode is AIGC-only.
+2. Input includes a DOCX AIGC color report or equivalent color-marked AIGC report.
+3. The user provides or accepts red/orange/purple/black color rules.
+4. The user requests character control, file-copy output, or no broad full-text rewrite.
+
+Do not route this case to plain `AIGC_ONLY` or generic polishing.
+
+Additional overlays:
+
+- If the report is for the original thesis before any revision, use `FIRST_PASS_RED_ORANGE_ENGINE`.
+- If the report is for a revised/current draft, use `CURRENT_REPORT_RED_ORANGE_ENGINE`.
+- If the task includes a first/second/third-round report or orange accumulation after a prior revision, overlay `AIGC_PLATEAU_BREAKER`.
+- If the discipline is human resource management, business administration, marketing, education management, or public administration, overlay `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`.
+
 ## Color Band Definitions
 
 Use these defaults unless the user provides another report legend:
@@ -76,6 +94,8 @@ Use report-driven AIGC revision:
 7. Internally self-audit whether revised text is closer to purple/black style level.
 8. Leave gray/white/black text unchanged.
 9. Apply character delta guard.
+
+If the AIGC report belongs to a revised/current draft, use `references/current_report_red_orange_engine.md` and `prompts/mode_current_report_red_orange.md`. Current-report mode must process all red and all orange fragments and output red-orange coverage acceptance.
 
 ### Without AIGC Report
 
@@ -146,7 +166,15 @@ Use these blocks when relevant:
 ## Character Delta Table
 
 ## Integrity Review
+
+## Red-Orange Coverage Acceptance Table
+
+## Unprocessed Red-Orange List
+
+## Red-Orange Paragraph Processing Record
 ```
+
+Completion is forbidden when current-report red/orange fragments exist without processing records.
 
 ## Safety
 

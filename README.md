@@ -24,6 +24,7 @@
 - AIGC 专项控长修复：在查重已基本满足要求后，定点降低 AIGC 风险并控制全文增幅。
 - AIGC 平台期突破：识别多轮改写后“红色高风险下降、橙色中风险卡住”的瓶颈。
 - 首轮红橙联合处理：原版报告进入首轮时，同时把红色和橙色纳入主处理区。
+- 当前报告红橙验收：第一次或多次改写后的复检报告必须覆盖当前红色和橙色段落，未处理红橙不能标记完成。
 - 字符变动守卫：默认整篇论文总字符变动控制在 `±10%` 范围内。
 - 三模式颜色分级工作流：只降重、只降 AIGC、双降统一使用红/橙/紫/黑处理规则。
 - 文件副本处理：文件输入时不改原件，创建副本、提取目标文本、回写副本并交付副本。
@@ -113,6 +114,7 @@
 | 双降 | `THREE_MODE_COLOR_BAND_WORKFLOW` / `DUAL_OPTIMIZATION` | 原文，最好有两类报告 |
 | Word 颜色报告 | `DOCX_COLOR_REPORT_EXTRACTION` | DOCX 报告和颜色规则 |
 | 原版 + 原版 AIGC 报告 | `FIRST_PASS_RED_ORANGE_ENGINE` | 原文和原版报告 |
+| 改写后 + 当前 AIGC 报告 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | 当前稿和当前报告 |
 | 多轮后 AIGC 卡住 | `AIGC_PLATEAU_BREAKER` | 历史稿和多轮报告 |
 | 查重够用，只降 AIGC | `AIGC_FOCUSED_LENGTH_CONTROLLED` | 原文、当前稿、AIGC 报告 |
 | 人力资源/管理类论文效果差 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | 原文、报告、问卷/访谈/流程证据 |

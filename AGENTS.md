@@ -183,6 +183,20 @@
 - README and QUICKSTART should point users to the template instead of asking them to memorize the full mode router.
 - All new mode routes, templates, and tests must preserve the rule that citations, facts, reports, and protected technical content are not fabricated or damaged.
 
+## v0.9.3 Current Report Red-Orange Rules
+
+- AIGC-only + DOCX AIGC color report + red/orange/purple/black rules + character control must route to `THREE_MODE_COLOR_BAND_WORKFLOW`.
+- Current/revised draft reports use `CURRENT_REPORT_RED_ORANGE_ENGINE`; `FIRST_PASS_RED_ORANGE_ENGINE` is only for original thesis plus original report.
+- Current-report red and orange fragments must all enter the task table.
+- Purple is only local cleanup when tied to red/orange; black, low-risk, cover, table of contents, declarations, references, appendices, and school-template text are frozen.
+- Every red/orange paragraph must have a processing record.
+- Output red-orange coverage acceptance table for current reports.
+- Completion is forbidden when any current-report red/orange paragraph is unprocessed.
+- `AIGC_ACCEPTANCE_SELF_AUDIT` must run for every red/orange paragraph; any failure triggers second-pass rewrite.
+- If second pass still fails, output an author evidence request instead of marking complete.
+- HR, business administration, marketing, education management, and public administration papers use `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` as a hard rule during report-driven red/orange work.
+- Do not accept generic management prose such as 构建体系, 提升效率, 优化流程, 强化能力, 丰富渠道, 数据驱动, 智能高效, or 提供参考 unless it is anchored to concrete company/process/evidence details.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.

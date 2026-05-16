@@ -91,6 +91,10 @@ Every use of this Skill should start with intake precheck. The agent should show
 ```
 
 ```text
+这是第一次降后的论文和第一次降后的 AIGC 颜色报告。请进入 CURRENT_REPORT_RED_ORANGE_ENGINE，当前报告红色和橙色全部进入任务表，紫色只做必要衔接，黑色、封面、目录、承诺书、参考文献和附录冻结；完成时输出红橙覆盖率验收表。
+```
+
+```text
 这是原文 DOCX 和 Word 颜色标记 AIGC 报告 DOCX。请先进入 DOCX_COLOR_REPORT_EXTRACTION，提取红/橙/紫/黑颜色片段，再进入 REPORT_AIGC_ONLY 或 FIRST_PASS_RED_ORANGE_ENGINE。
 ```
 
@@ -200,7 +204,20 @@ Use this when the user provides the original thesis and original AIGC report bef
 8. Apply `CHARACTER_DELTA_GUARD`; default whole-thesis character change is `±10%`.
 9. If safe revision cannot reach the heuristic purple/black target, mark protected, evidence-limited, character-delta, or no-progress status.
 
-## 11. Three-Mode Color-Band Workflow
+## 11. Current Report Red-Orange Workflow
+
+Use this when the user provides a revised/current draft and its current AIGC report.
+
+1. Use `CURRENT_REPORT_RED_ORANGE_ENGINE` inside `THREE_MODE_COLOR_BAND_WORKFLOW`.
+2. Include every current-report red paragraph.
+3. Include every current-report orange paragraph.
+4. Process purple only when it shares context with red/orange.
+5. Freeze black, low-risk, cover, table of contents, declaration, references, and appendices.
+6. Output a paragraph processing record for each red/orange paragraph.
+7. Output the red-orange coverage acceptance table.
+8. Do not mark completion when any red/orange paragraph lacks a passing record.
+
+## 12. Three-Mode Color-Band Workflow
 
 Use this as the default work mode for similarity-only, AIGC-only, or dual revision.
 
@@ -214,7 +231,7 @@ Use this as the default work mode for similarity-only, AIGC-only, or dual revisi
 8. Apply whole-thesis character delta guard, default `±10%`.
 9. For file input, create a copy and write revisions back to the copy only.
 
-## 12. Similarity Report Workflow
+## 13. Similarity Report Workflow
 
 1. Provide thesis source text and report fragments.
 2. Use `REPORT_SIMILARITY_ONLY`.
@@ -226,7 +243,7 @@ Use this as the default work mode for similarity-only, AIGC-only, or dual revisi
 8. In dual-risk cases, run `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`.
 9. After similarity revision, run AIGC deep rewrite and safety review before rechecking.
 
-## 13. AIGC Report Workflow
+## 14. AIGC Report Workflow
 
 1. Provide thesis source text and AIGC report fragments.
 2. Use `REPORT_AIGC_ONLY`.
@@ -236,7 +253,7 @@ Use this as the default work mode for similarity-only, AIGC-only, or dual revisi
 6. Revise locally and compare heuristic writing-risk scores.
 7. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
 
-## 14. Engineering / Science / CS Notes
+## 15. Engineering / Science / CS Notes
 
 Always protect:
 
@@ -248,7 +265,7 @@ Always protect:
 - Experiment data, metrics, and chart numbers.
 - Model, algorithm, dataset, and protocol names.
 
-## 15. Common Misuse
+## 16. Common Misuse
 
 Do not use this Skill to:
 
@@ -261,6 +278,6 @@ Do not use this Skill to:
 - Expand every paragraph to reduce AIGC risk.
 - Edit the original file directly when the user provided a file.
 
-## 16. Academic Integrity Reminder
+## 17. Academic Integrity Reminder
 
 If a sentence depends on a source, keep the citation boundary visible. If a report fragment cannot be mapped confidently, ask for more context before revising. If technical facts are unclear, flag them for human review instead of inventing a fix.

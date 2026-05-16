@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.9.4-current-report-red-orange-acceptance
+
+- Added forced routing priority for AIGC-only DOCX color-report workflows with character control.
+- Added `CURRENT_REPORT_RED_ORANGE_ENGINE` for revised/current draft reports; `FIRST_PASS_RED_ORANGE_ENGINE` remains first-pass only.
+- Added red-orange coverage acceptance table and unprocessed red-orange list.
+- Added required paragraph processing records for every current-report red/orange paragraph.
+- Added `AIGC_ACCEPTANCE_SELF_AUDIT` with mandatory second-pass rewrite on failure.
+- Strengthened management and HR evidence-based rewriting as a hard rule for report-driven red/orange paragraphs.
+- Added regression tests for HR first-rewrite reports where red decreases but orange accumulates and AIGC remains high.
+
 ## v0.9.3-intake-completion-gate
 
 - Changed intake behavior from "ask only when required fields are missing" to a strict intake completion gate.

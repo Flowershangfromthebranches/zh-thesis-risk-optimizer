@@ -16,6 +16,7 @@ Use this manual checklist before publishing.
 - [ ] `prompts/mode_engineering_science.md`
 - [ ] `prompts/mode_general_academic.md`
 - [ ] `prompts/mode_intake_wizard.md`
+- [ ] `prompts/mode_current_report_red_orange.md`
 - [ ] `prompts/quality_checklist.md`
 - [ ] `references/aigc_pattern_library.md`
 - [ ] `references/similarity_reduction_strategy.md`
@@ -25,6 +26,8 @@ Use this manual checklist before publishing.
 - [ ] `references/chapter_strategies.md`
 - [ ] `references/intake_wizard.md`
 - [ ] `references/docx_color_report_extraction.md`
+- [ ] `references/current_report_red_orange_engine.md`
+- [ ] `references/aigc_acceptance_self_audit.md`
 - [ ] `examples/01-aigc-only-before-after.md`
 - [ ] `examples/02-similarity-only-before-after.md`
 - [ ] `examples/03-dual-optimization-before-after.md`
@@ -67,6 +70,7 @@ license: MIT
 - [ ] THREE_MODE_COLOR_BAND_WORKFLOW exists.
 - [ ] FILE_INPUT_COPY_WORKFLOW exists.
 - [ ] FIRST_PASS_RED_ORANGE_ENGINE exists.
+- [ ] CURRENT_REPORT_RED_ORANGE_ENGINE exists.
 - [ ] AIGC_PLATEAU_BREAKER exists.
 - [ ] SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK exists.
 - [ ] ORANGE_ZONE_REWRITE_STRATEGY exists.
@@ -96,6 +100,7 @@ license: MIT
 - [ ] REVISION_LOG_MODE exists.
 - [ ] ITERATIVE_REVISION_MODE exists.
 - [ ] POST_REWRITE_AIGC_SELF_AUDIT exists.
+- [ ] AIGC_ACCEPTANCE_SELF_AUDIT exists.
 - [ ] SECOND_PASS_REWRITE_REQUIREMENT exists.
 - [ ] PROJECT_HANDOFF_MODE exists.
 - [ ] SKILL_SLIM_MODE exists.

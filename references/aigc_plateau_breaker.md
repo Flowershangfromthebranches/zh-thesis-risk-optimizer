@@ -8,6 +8,8 @@ This mode is based on report feedback and local case regression analysis. It doe
 
 For original thesis plus original AIGC report workflows, use `references/first_pass_red_orange_engine.md` first. The plateau breaker is a fallback when the first pass was not available, was incomplete, or later reports still show orange/medium-risk concentration.
 
+When the user provides a revised/current draft plus a current report, run this mode as an overlay inside `CURRENT_REPORT_RED_ORANGE_ENGINE`, not as a replacement for red/orange coverage.
+
 ## Plateau Signal
 
 Enter this mode when one or more signals appear:
@@ -53,9 +55,19 @@ The failure was not lack of rewriting. The failure was that the strategy kept tr
 
 If a round produces less than a small visible report improvement, or if orange text remains the main risk band, do not run another normal rewrite. Switch to `ORANGE_PLATEAU_PASS`.
 
+For current reports after a first rewrite:
+
+- Red and orange both remain mandatory task-table items.
+- Orange is not a secondary cleanup band.
+- Do not mark a task complete when orange paragraphs remain unprocessed.
+- Do not run broad full-text polishing to "smooth" the paper.
+- Freeze black, low-risk, cover, table of contents, declaration, references, and appendices.
+
 ## Completion Rule
 
 Do not mark completed when only red risk decreases. Completion requires the residual orange plateau to be addressed or explicitly marked as protected, evidence-limited, or low return.
+
+If current-report red/orange coverage is incomplete, completion is forbidden. The output must include the red-orange coverage acceptance table and the unprocessed red-orange list.
 
 ## Relation To SKILL.md
 

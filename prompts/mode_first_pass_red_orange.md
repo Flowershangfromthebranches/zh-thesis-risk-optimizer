@@ -2,6 +2,8 @@
 
 Use this prompt when the user provides the original thesis and the original AIGC report and wants the first revision to attack both red and orange bands.
 
+Do not use this prompt for a revised/current draft plus a current report after prior rewriting. That case uses `prompts/mode_current_report_red_orange.md`.
+
 ## Inputs
 
 - Original thesis text.
