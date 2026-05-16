@@ -55,6 +55,10 @@ For Codex, Claude Code, Copilot, or similar agents:
 查重已经基本达标，当前稿比原文扩写太多。请进入 AIGC_FOCUSED_LENGTH_CONTROLLED，把全文增幅控制在 0-2000 中文字内，先输出 AIGC 热点句表和长度预算表。
 ```
 
+```text
+我有原文、三轮改写稿和对应 AIGC 报告。AIGC 下降到 54% 后变慢，请进入 AIGC_PLATEAU_BREAKER，先分析红色/橙色/紫色风险带趋势，再输出橙色平台期任务表。
+```
+
 ## 4. Full Thesis Workflow
 
 1. Provide the full thesis or chaptered text.
@@ -103,7 +107,20 @@ Use this when similarity reduction is already enough but AIGC risk remains high.
 7. If the draft exceeds budget, run `LENGTH_COMPRESSION_PASS`.
 8. If evidence is missing, output `HUMAN_EVIDENCE_REQUEST` or use conservative repair.
 
-## 8. Similarity Report Workflow
+## 8. AIGC Plateau Breaker Workflow
+
+Use this when several AIGC rounds improve slowly or report colors show red text falling while orange text remains high.
+
+1. Use `AIGC_PLATEAU_BREAKER`.
+2. Compare the original and each rewrite report by risk band.
+3. If red risk decreased but orange stayed high, enter `ORANGE_PLATEAU_PASS`.
+4. Freeze white/low-risk paragraphs.
+5. Identify whether the plateau is technical-protected, management-template, evidence-limited, or likely a report-model floor.
+6. For orange management-style paragraphs, break enumeration, start from local evidence, and compress repeated value claims.
+7. For computer-science plateaus, protect code, APIs, parameters, paths, formulas, table names, fields, and data.
+8. If a paragraph has been rewritten repeatedly without report improvement, mark `NO_PROGRESS_REWRITE_LOOP` and request missing evidence or human review.
+
+## 9. Similarity Report Workflow
 
 1. Provide thesis source text and report fragments.
 2. Use `REPORT_SIMILARITY_ONLY`.
@@ -115,7 +132,7 @@ Use this when similarity reduction is already enough but AIGC risk remains high.
 8. In dual-risk cases, run `REPORT_DRIVEN_MULTI_PASS_WORKFLOW`.
 9. After similarity revision, run AIGC deep rewrite and safety review before rechecking.
 
-## 9. AIGC Report Workflow
+## 10. AIGC Report Workflow
 
 1. Provide thesis source text and AIGC report fragments.
 2. Use `REPORT_AIGC_ONLY`.
@@ -125,7 +142,7 @@ Use this when similarity reduction is already enough but AIGC risk remains high.
 6. Revise locally and compare heuristic writing-risk scores.
 7. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
 
-## 10. Engineering / Science / CS Notes
+## 11. Engineering / Science / CS Notes
 
 Always protect:
 
@@ -137,7 +154,7 @@ Always protect:
 - Experiment data, metrics, and chart numbers.
 - Model, algorithm, dataset, and protocol names.
 
-## 11. Common Misuse
+## 12. Common Misuse
 
 Do not use this Skill to:
 
@@ -149,6 +166,6 @@ Do not use this Skill to:
 - Repeatedly rewrite already completed low-risk chapters.
 - Expand every paragraph to reduce AIGC risk.
 
-## 12. Academic Integrity Reminder
+## 13. Academic Integrity Reminder
 
 If a sentence depends on a source, keep the citation boundary visible. If a report fragment cannot be mapped confidently, ask for more context before revising. If technical facts are unclear, flag them for human review instead of inventing a fix.

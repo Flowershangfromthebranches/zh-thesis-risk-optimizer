@@ -38,10 +38,12 @@ This file localizes AIGC risk at sentence level so the Skill revises only the se
 ## Mandatory Rules
 
 - Process `HIGH` and `CRITICAL` sentences first.
+- In `AIGC_PLATEAU_BREAKER`, treat persistent `MEDIUM` sentences as orange-zone targets when they repeat the same paragraph skeleton across reports.
 - Do not force-rewrite `LOW` sentences just because the full-text mode is active.
 - If a sentence contains code, parameters, paths, data, or citations, protect it first.
 - Process at most 1-3 key sentences per paragraph.
 - Prefer replacement, not appending.
+- For orange-zone sentences, mark whether the repair should break enumeration, move local evidence earlier, compress a value claim, or preserve a protected fact.
 
 ## Relation To SKILL.md
 

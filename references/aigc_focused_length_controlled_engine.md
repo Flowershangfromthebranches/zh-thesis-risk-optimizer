@@ -15,6 +15,7 @@ Enter `AIGC_FOCUSED_LENGTH_CONTROLLED` when any condition applies:
 - The new draft grew too much.
 - The user requires a whole-thesis growth range such as 0-2000 Chinese characters.
 - Reports show `similarity improved but AIGC still high`.
+- Multi-round AIGC reports show red/high-risk text decreasing but orange/medium-risk text remaining high.
 - The rewrite shows over-expansion.
 
 ## 2. Primary Objective
@@ -96,6 +97,19 @@ Mark the task complete only when all conditions hold:
 - The whole-thesis delta stays within the user's length budget.
 - Similarity-protection items are not damaged.
 - Technical facts, citations, data, and terms remain intact.
+
+## 7. Plateau Handoff
+
+If AIGC-focused repair improves the report only slightly across two or more rounds, do not keep running the same prompt.
+
+Switch to `AIGC_PLATEAU_BREAKER` when:
+
+- Red/high-risk text is already much lower.
+- Orange/medium-risk text remains the main residual band.
+- The same paragraphs keep appearing in reports.
+- The next likely edit would repeat synonym replacement, connector changes, or append-based explanation.
+
+In plateau mode, freeze white/low-risk text and treat orange paragraphs as the primary target.
 
 ## Relation To SKILL.md
 

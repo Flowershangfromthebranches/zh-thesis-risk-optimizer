@@ -38,6 +38,24 @@ For each paragraph, check:
 - Is there no short sentence?
 - Do all sentences sound uniformly generated?
 
+## 6. Orange-Zone Rhythm
+
+When a paragraph stays in an orange/medium-risk band after multiple rounds, inspect paragraph rhythm before changing more words.
+
+Common orange-zone rhythm problems:
+
+- Every sentence follows "problem -> effect -> improvement".
+- Each item in a list has the same grammatical length.
+- Survey data or case evidence appears after a generic conclusion instead of shaping the sentence.
+- Management or technical nouns repeat without local anchors.
+
+Repair by changing the paragraph skeleton:
+
+- Put one concrete observation before the general explanation.
+- Merge duplicate list items.
+- Split a long enumerated paragraph only when it clarifies the argument.
+- Delete one generic value sentence before adding any new detail.
+
 ## Relation To SKILL.md
 
 Use this file in AIGC-focused repair and sentence-level localization.

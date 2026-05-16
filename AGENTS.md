@@ -99,6 +99,18 @@
 - Missing evidence should trigger author questions or conservative repair, not invented detail.
 - Repeated AI-like expressions should be compressed to create budget for necessary evidence.
 
+## v0.8 AIGC Plateau Breaker Rules
+
+- Do not treat red/high-risk reduction alone as AIGC success.
+- If red risk decreases but orange/medium-risk text remains high, enter `AIGC_PLATEAU_BREAKER`.
+- Orange-zone paragraphs need structural repair, not another light synonym or connector pass.
+- Freeze white/low-risk paragraphs and do not spend rewrite budget on them.
+- After two or more weak-improvement rounds, mark `NO_PROGRESS_REWRITE_LOOP` before trying another normal rewrite.
+- Distinguish computer-science technical protected plateaus from management/business template plateaus.
+- For computer-science plateaus, protect code, paths, APIs, parameters, table names, fields, formulas, and data; revise only surrounding explanations.
+- For management/business plateaus, break list structures and anchor paragraphs in survey, interview, company, or case-specific evidence.
+- If remaining risk is protected or evidence-limited, label it instead of inventing details or repeatedly rewriting.
+
 ## Validation Checklist
 
 - `SKILL.md` contains the required frontmatter.

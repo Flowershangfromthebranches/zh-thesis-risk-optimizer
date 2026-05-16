@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v0.8.0-aigc-plateau-breaker
+
+- Added AIGC plateau breaker for multi-round cases where AIGC reduction slows after initial improvement.
+- Added orange-zone rewrite strategy for persistent medium-risk paragraphs.
+- Added discipline-specific AIGC bottleneck rules for computer-science technical plateaus and management/business template plateaus.
+- Added plateau-breaker execution prompt, local case example, and v0.8 regression tests.
+- Updated Skill routing, quality checklist, quickstart, and repository maintenance rules.
+
 ## v0.7.0-aigc-focused-length-controlled-engine
 
 - Added AIGC-focused length-controlled engine for cases where similarity reduction is already enough.

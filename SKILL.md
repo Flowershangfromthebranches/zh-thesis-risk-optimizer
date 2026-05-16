@@ -56,6 +56,9 @@ Do not use this Skill to:
 |---|---|---|
 | 只降 AIGC | `AIGC_ONLY` | `references/aigc_pattern_library.md`, `prompts/mode_aigc_only.md` |
 | AIGC 深度改写 | `AIGC_DEEP_REWRITE_ENGINE` | `references/aigc_deep_rewrite_engine.md`, `prompts/mode_aigc_deep_rewrite.md` |
+| AIGC 多轮平台期处理 | `AIGC_PLATEAU_BREAKER` | `references/aigc_plateau_breaker.md`, `prompts/mode_aigc_plateau_breaker.md` |
+| 橙色中风险专项处理 | `ORANGE_ZONE_REWRITE_STRATEGY` | `references/orange_zone_rewrite_strategy.md` |
+| 学科瓶颈判断 | `DISCIPLINE_AIGC_BOTTLENECK_RULES` | `references/discipline_aigc_bottleneck_rules.md` |
 | 只降查重 | `SIMILARITY_ONLY` | `references/similarity_reduction_strategy.md`, `prompts/mode_similarity_only.md` |
 | 双降 | `DUAL_OPTIMIZATION` | `references/dual_optimization_arbitration.md`, `prompts/mode_dual_optimization.md` |
 | 无报告保底双降 | `NO_REPORT_FALLBACK_WORKFLOW` | `references/no_report_fallback_workflow.md`, `prompts/mode_no_report_dual_fallback.md` |
@@ -110,16 +113,18 @@ Do not use this Skill to:
 6. If the user provides multiple reports or historical drafts, run report difference analysis before revising.
 7. If the new version has higher AIGC risk than an earlier version, diagnose the failure cause before continuing revision.
 8. If similarity decreases but AIGC increases, mark `PARTIAL_SUCCESS_SIMILARITY_ONLY_AIGC_FAILED`.
-9. If deep rewriting lacks enough real evidence, output an author supplementation list or use conservative repair instead of fabricating details.
-10. Choose mode with the router.
-11. Output diagnosis, scoring, mapping, or project overview before revision.
-12. For full theses, generate master overview and chapter tasks before any chapter revision.
-13. Revise locally by paragraph/sentence/task priority.
-14. For AIGC-heavy text, run sentence-level localization and process only the key 1-3 sentences per paragraph when possible.
-15. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
-16. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
-17. Run citation, technical, data, and safety self-checks.
-18. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
+9. If two or more AIGC reports show diminishing returns, or red/high-risk text decreases while orange/medium-risk text stays high, use `AIGC_PLATEAU_BREAKER`.
+10. In plateau mode, freeze white/low-risk paragraphs, target orange/medium-risk paragraphs, and avoid repeating the same rewrite prompt.
+11. If deep rewriting lacks enough real evidence, output an author supplementation list or use conservative repair instead of fabricating details.
+12. Choose mode with the router.
+13. Output diagnosis, scoring, mapping, or project overview before revision.
+14. For full theses, generate master overview and chapter tasks before any chapter revision.
+15. Revise locally by paragraph/sentence/task priority.
+16. For AIGC-heavy text, run sentence-level localization and process only the key 1-3 sentences per paragraph when possible.
+17. For AIGC-heavy or dual-risk text, reject shallow rewriting and run deep rewrite plus post-rewrite self-audit.
+18. If self-audit still finds three or more AI-like risks, run the second-pass rewrite prompt.
+19. Run citation, technical, data, and safety self-checks.
+20. Update progress tracker, revision log, rolling summary, or iteration plan when the task is project-level.
 
 ## 7. Full Thesis Project Workflow
 
@@ -180,6 +185,9 @@ Core diagnosis and revision:
 
 - `references/aigc_pattern_library.md`
 - `references/aigc_deep_rewrite_engine.md`
+- `references/aigc_plateau_breaker.md`
+- `references/orange_zone_rewrite_strategy.md`
+- `references/discipline_aigc_bottleneck_rules.md`
 - `references/aigc_focused_length_controlled_engine.md`
 - `references/length_budget_controller.md`
 - `references/aigc_focused_rewrite_strategy.md`

@@ -70,6 +70,18 @@ Use this checklist before final output.
 - [ ] Missing evidence is listed for the author when needed.
 - [ ] Formalization regression phrases such as "持续演进", "深度嵌入", "赋能", "支撑", "机制", "体系", and "价值" are avoided unless technically necessary.
 
+## v0.8 AIGC Plateau Breaker Checks
+
+- [ ] Multi-round AIGC reports were compared before another rewrite.
+- [ ] Red/high-risk reduction was not treated as completion when orange/medium risk remained high.
+- [ ] White/low-risk paragraphs were frozen.
+- [ ] Orange/medium-risk paragraphs were treated as primary targets, not minor cleanup.
+- [ ] Persistent orange paragraphs changed structure, evidence placement, or paragraph rhythm, not only wording.
+- [ ] Enumerated "第一、第二、第三" structures were broken or justified when they caused standard-answer rhythm.
+- [ ] Discipline plateau type was identified: technical protected, management template, evidence limited, or report-model floor.
+- [ ] Computer-science protected tokens were preserved exactly.
+- [ ] Repeated no-progress paragraphs were marked `NO_PROGRESS_REWRITE_LOOP` instead of being rewritten with the same strategy.
+
 ## Similarity-Risk Checks
 
 - [ ] High-repeat definitions were converted into thesis-specific explanations.

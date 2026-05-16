@@ -19,6 +19,8 @@ Use this prompt when similarity is already acceptable or similarity reduction is
 - Enter AIGC_FOCUSED_LENGTH_CONTROLLED: yes/no.
 - Reason:
 - Similarity mode downgraded to stability check: yes/no.
+- Switch to AIGC_PLATEAU_BREAKER: yes/no.
+- Plateau reason, if any:
 
 ## 2. Metrics and Budget
 
@@ -75,11 +77,15 @@ Requirements:
 ## 8. Self Audit
 
 - aigc_pattern_reduction:
+- red_orange_purple_trend:
+- orange_plateau_detected:
 - formalization_regression_check:
 - over_expansion_check:
 - similarity_stability_check:
 - integrity_check:
 - human_review_needed:
+
+If orange/medium-risk text remains high after two or more rounds, stop normal AIGC-focused repair and use `prompts/mode_aigc_plateau_breaker.md`.
 
 ## Safety
 
