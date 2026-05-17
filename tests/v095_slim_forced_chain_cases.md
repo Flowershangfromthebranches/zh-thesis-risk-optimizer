@@ -1,5 +1,7 @@
 # v0.9.5 Slim Forced Chain Cases
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 Use this checklist to verify that the Skill behaves as a forced execution chain instead of a broad rule library.
 
 ## Case 1: Original HR Thesis First Pass

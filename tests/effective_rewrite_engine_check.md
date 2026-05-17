@@ -1,5 +1,7 @@
 # Effective Rewrite Engine Check
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 - [ ] `AIGC_DEEP_REWRITE_ENGINE` exists.
 - [ ] Deep rewrite action library exists.
 - [ ] Structure rebuilding rules exist.

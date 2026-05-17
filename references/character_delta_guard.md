@@ -1,5 +1,7 @@
 # Character Delta Guard
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Purpose
 
 `CHARACTER_DELTA_GUARD` controls total thesis character change during AIGC-focused or report-driven revision. It prevents both uncontrolled expansion and excessive compression.

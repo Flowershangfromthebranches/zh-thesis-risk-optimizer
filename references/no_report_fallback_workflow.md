@@ -1,5 +1,7 @@
 # No Report Fallback Workflow
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Purpose
 
 `NO_REPORT_FALLBACK_WORKFLOW` improves dual optimization when the user has not provided a similarity or AIGC report.

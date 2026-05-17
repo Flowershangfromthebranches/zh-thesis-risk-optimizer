@@ -1,5 +1,7 @@
 # v0.9.3 Current Report Red-Orange Cases
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 Use this checklist to verify forced routing, current-report red/orange coverage, social-science hard rules, and AIGC acceptance self-audit.
 
 ## Case 1: Forced Route For AIGC-Only DOCX Color Report

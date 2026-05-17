@@ -1,5 +1,7 @@
 # AIGC-Focused Length-Controlled Case
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Case
 
 《基于 Python 的 Web 漏洞扫描工具设计》

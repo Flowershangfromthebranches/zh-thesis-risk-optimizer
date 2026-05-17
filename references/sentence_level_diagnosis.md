@@ -1,5 +1,7 @@
 # Sentence-Level Diagnosis
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 Sentence-level diagnosis is used when paragraph-level guidance is too coarse.
 
 ## Step 1: Split Paragraphs

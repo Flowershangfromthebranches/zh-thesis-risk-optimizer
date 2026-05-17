@@ -1,5 +1,7 @@
 # Repository Integrity Check
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 Use this checklist before publishing documentation cleanup releases.
 
 ## Markdown Format

@@ -1,5 +1,7 @@
 # Example 08: Sentence-Level Risk Location
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## P1
 
 随着人工智能技术的快速发展，其在教育领域的应用具有重要意义。首先，人工智能能够提升教学效率；其次，人工智能能够促进个性化学习；最后，人工智能能够推动教育信息化建设。已有研究指出，智能推荐系统可以改善学习资源匹配效果[6]。

@@ -1,5 +1,7 @@
 # Example 06: Long Thesis Workflow
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Scenario
 
 用户一次性提供完整论文正文，希望先诊断再分段修改。

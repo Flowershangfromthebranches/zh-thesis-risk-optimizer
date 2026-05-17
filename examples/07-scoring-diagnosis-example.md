@@ -1,5 +1,7 @@
 # Example 07: Scoring Diagnosis
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Original Paragraph
 
 随着智慧养老服务的不断发展，其在提升老年人生活质量、缓解家庭照护压力以及推动养老行业数字化转型方面具有重要意义。本文通过构建健康数据管理模块，实现了心率、血氧和用药提醒等信息的统一管理，从而为后续研究提供有力支撑。系统接口 `/api/health/latest` 用于获取最近一次健康记录。

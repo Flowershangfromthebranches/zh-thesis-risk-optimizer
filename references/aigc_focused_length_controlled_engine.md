@@ -1,5 +1,7 @@
 # v0.7 AIGC-Focused Length-Controlled Engine
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Core Idea
 
 When similarity risk is already acceptable or close to the user's target, the Skill should stop increasing similarity-rewrite intensity and enter AIGC-focused mode. This mode repairs only high-AIGC-risk paragraphs and controls the whole-thesis length budget so the draft does not become much longer only for risk reduction.

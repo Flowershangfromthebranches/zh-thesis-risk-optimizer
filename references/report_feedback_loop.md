@@ -1,5 +1,7 @@
 # Report Feedback Loop
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Purpose
 
 Use this workflow whenever the user uploads a new similarity report, AIGC report, or revised draft after a previous pass.

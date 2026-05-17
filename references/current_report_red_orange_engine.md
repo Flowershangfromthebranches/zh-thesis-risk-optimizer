@@ -1,5 +1,7 @@
 # Current Report Red-Orange Engine
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Purpose
 
 `CURRENT_REPORT_RED_ORANGE_ENGINE` is used when the user provides a revised thesis file and the AIGC report for that revised/current file.

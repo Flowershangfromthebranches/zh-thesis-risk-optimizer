@@ -1,5 +1,7 @@
 # Prompt: REPORT_DUAL_OPTIMIZATION
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 Use this prompt when the user provides both similarity and AIGC reports, or one report contains both similarity and AIGC-style risks.
 
 ## Required Order

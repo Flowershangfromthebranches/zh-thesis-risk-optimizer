@@ -1,5 +1,7 @@
 # Example 17: Progress Tracking
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 | 章节 | 字数 | AIGC风险 | 查重风险 | 报告状态 | 建议模式 | 当前状态 | 最后修改 | 待处理问题 | 下一步 |
 |---|---:|---|---|---|---|---|---|---|---|
 | 摘要 | 850 | 中 | 低 | 无报告 | AIGC_ONLY | DRAFT_REVISED | 2026-05-11 | 需人工确认结论措辞 | 人工复核 |

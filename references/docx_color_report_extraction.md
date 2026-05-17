@@ -65,7 +65,8 @@ If the report uses different colors, record the raw hex values and ask the user 
 7. After mapping confidence is assigned, route through `THREE_MODE_COLOR_BAND_WORKFLOW`.
 8. If the input is original thesis plus original report, overlay `FIRST_PASS_RED_ORANGE_ENGINE`.
 9. If the input is current draft plus current report, overlay `CURRENT_REPORT_RED_ORANGE_ENGINE`.
-10. Freeze black, gray, white, reference, declaration, and school-template areas unless the user explicitly asks otherwise.
+10. For similarity-only work, use `task_type = similarity_only` inside `THREE_MODE_COLOR_BAND_WORKFLOW`.
+11. Freeze black, gray, white, reference, declaration, and school-template areas unless the user explicitly asks otherwise.
 
 ## Failure Mode
 

@@ -1,5 +1,7 @@
 # v0.6 Targeted Multipass Cases
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Case 1: Similarity Down But AIGC Up
 
 Input trend:

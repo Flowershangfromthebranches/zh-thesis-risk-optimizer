@@ -1,5 +1,7 @@
 # Content Substance Injection
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Purpose
 
 This rule reduces template-like writing by increasing real content substance, not by surface polishing.

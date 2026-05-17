@@ -1,5 +1,7 @@
 # AIGC Deep Rewrite Engine
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Purpose
 
 `AIGC_DEEP_REWRITE_ENGINE` reduces AIGC detection risk by making text **sound more human**, not more polished. AIGC detectors measure statistical fingerprints (perplexity, burstiness, structure patterns), not writing quality. A rewrite that produces smoother, more balanced, more abstract prose will **increase** AIGC rates.

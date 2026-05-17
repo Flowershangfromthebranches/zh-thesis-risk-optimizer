@@ -1,5 +1,7 @@
 # Example 09: Before/After Score Comparison
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 All scores below are heuristic writing-risk scores. They are not real detection results and do not represent any commercial detection system.
 
 ## AIGC_ONLY

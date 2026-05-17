@@ -1,5 +1,7 @@
 # Structure Rebuilding Rules
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Purpose
 
 `STRUCTURE_REBUILDING_RULES` provides paragraph-level rebuild templates for stronger AIGC-risk reduction and better similarity-risk handling.

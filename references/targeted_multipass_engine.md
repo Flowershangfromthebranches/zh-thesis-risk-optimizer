@@ -1,5 +1,7 @@
 # Targeted Multipass Engine
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 ## Purpose
 
 `TARGETED_MULTIPASS_ENGINE` is the v0.6 core workflow: target-driven, report-feedback-based, evidence-injected, multi-pass, and regression-guarded.

@@ -1,5 +1,7 @@
 # Iterative Optimization Rules
 
+> ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
+
 Use `ITERATIVE_REVISION_MODE` when the user provides a new report or asks for another pass after initial work.
 
 ## First Round
