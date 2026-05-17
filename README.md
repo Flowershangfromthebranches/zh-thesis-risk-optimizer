@@ -16,12 +16,16 @@
 - OOXML DOCX 补丁：用 OOXML 方式修改 DOCX，最大限度保留格式，不重建全文。
 - 重复插入防护：防止同一段落在 DOCX 中被重复插入。
 - DOCX 颜色报告提取：先读取颜色元数据，再做红橙紫黑风险带映射。
+- 专业策略路由：根据论文专业选择管理、计算机、工科、医学、法学、教育或人文 profile。
+- 颜色分层路由：红、橙、紫、黑从第一次颜色报告解析后全部统计、路由和验收。
 - 三任务类型颜色分级：在 `THREE_MODE_COLOR_BAND_WORKFLOW` 内处理只降 AIGC、只降查重、双降三类任务。
 - 首轮红橙联合处理：原文和原版 AIGC 报告进入 `FIRST_PASS_RED_ORANGE_ENGINE`，红色和橙色一起作为主处理区。
 - 当前报告红橙验收：复检稿进入 `CURRENT_REPORT_RED_ORANGE_ENGINE`，当前红橙必须全部进入任务表。
 - 社科/管理类模板瓶颈处理：人力资源管理、工商管理、市场营销、教育管理、行政管理等论文启用 `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`。
 - 受控人类化引擎：根据当前 AIGC 疑似率选择保守、受控或局部升级策略；Level 4 只能通过 `LOCAL_ESCALATED_HUMANIZATION` 局部执行。
 - 论文语体守卫：`THESIS_REGISTER_GUARD` 按章节限制人化强度，摘要、理论基础和结论禁止聊天化。
+- 紫色重平衡：`PURPLE_BAND_REBALANCER` 对紫色段做低强度统计扰动，不能 Level 4、不能聊天化、不能大幅扩写。
+- 全文统计风格重平衡：`GLOBAL_STYLE_VARIANCE_ENGINE` 检查章节开头、句长、连接词和段落节奏是否过于统一。
 - 改写写回门禁：确认改写文本不只是生成在表格里，而是已经真实写回 DOCX 正文。
 - 模板残留检测：检测摘要、理论基础、第五章、结论等高风险章节是否仍保留原 AI 模板句。
 - 学术语体守卫：防止受控人类化过度，禁止日记式、自媒体式、聊天式表达。
@@ -54,6 +58,10 @@
 【保护项】引用、数据、图表编号、参考文献、学校声明、代码、路径、参数
 【AIGC 报告】/path/to/aigc_report.docx
 【是否有 AIGC 颜色报告 has_aigc_color_report】true
+【红段数量/比例 current_red_count/current_red_ratio】1 / 请自动解析
+【橙段数量/比例 current_orange_count/current_orange_ratio】17 / 请自动解析
+【紫段数量/比例 current_purple_count/current_purple_ratio】紫段较多 / 请自动解析
+【黑段数量/比例 current_black_count/current_black_ratio】请自动解析
 【论文专业和题目】人力资源管理，《……》
 【查重报告】无
 【是否有查重报告 has_similarity_report】false
@@ -89,12 +97,16 @@ DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保
 | `OOXML_DOCX_PATCH_WORKFLOW` | 内部引擎：OOXML 方式修改 DOCX，最大限度保留格式。 |
 | `DOCX_COLOR_REPORT_EXTRACTION` | 用户提供 Word/DOCX 颜色标记报告时，先提取颜色元数据。 |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | 按红橙紫黑风险带处理 AIGC、查重或双目标任务。 |
+| `DISCIPLINE_STRATEGY_ROUTER` | 根据专业选择 profile、保护项和允许的人化强度。 |
+| `COLOR_BAND_ROUTER` | 第一次颜色解析后立即统计和路由红橙紫黑。 |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | 原文加原版 AIGC 报告的首轮红橙联合处理。 |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | 当前稿加当前 AIGC 报告的红橙覆盖处理。 |
 | `AIGC_PLATEAU_BREAKER` | 多轮后红色下降但橙色堆积、AIGC 下降变慢时使用。 |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | 社科/管理类论文模板骨架和证据不足问题处理。 |
 | `CONTROLLED_HUMANIZATION_ENGINE` | 内部引擎：受控去 AIGC 人类化，打破 AI 模板但保持学术语体。 |
 | `LOCAL_ESCALATED_HUMANIZATION` | 内部引擎：只对符合条件的红橙残留段局部启用 Level 4，禁止全文 Level 4。 |
+| `PURPLE_BAND_REBALANCER` | 内部引擎：对紫色段做低强度统计重平衡，不允许 Level 4。 |
+| `GLOBAL_STYLE_VARIANCE_ENGINE` | 内部引擎：检查全文统计风格统一问题并输出局部调整计划。 |
 | `REWRITE_APPLICATION_GATE` | 内部门禁：验证改写是否真实写回 DOCX 正文、diff 是否足够。 |
 | `TEMPLATE_RESIDUE_DETECTOR` | 内部门禁：检测改写后是否仍残留高风险模板句。 |
 | `THESIS_REGISTER_GUARD` | 内部门禁：按章节把人化文本拉回论文语体，严格章节禁止聊天化。 |
@@ -108,14 +120,18 @@ DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保
 
 ```text
 RISK_INTAKE_GATE
+-> DISCIPLINE_STRATEGY_ROUTER
 -> FILE_INPUT_COPY_WORKFLOW
 -> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
+-> COLOR_BAND_ROUTER
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> LOCAL_ESCALATED_HUMANIZATION when triggered
+-> PURPLE_BAND_REBALANCER when triggered
+-> GLOBAL_STYLE_VARIANCE_ENGINE
 -> REWRITE_APPLICATION_GATE
 -> TEMPLATE_RESIDUE_DETECTOR
 -> THESIS_REGISTER_GUARD
@@ -128,14 +144,18 @@ RISK_INTAKE_GATE
 
 ```text
 RISK_INTAKE_GATE
+-> DISCIPLINE_STRATEGY_ROUTER
 -> FILE_INPUT_COPY_WORKFLOW
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
+-> COLOR_BAND_ROUTER
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
 -> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> LOCAL_ESCALATED_HUMANIZATION when triggered
+-> PURPLE_BAND_REBALANCER when triggered
+-> GLOBAL_STYLE_VARIANCE_ENGINE
 -> REWRITE_APPLICATION_GATE
 -> TEMPLATE_RESIDUE_DETECTOR
 -> THESIS_REGISTER_GUARD
@@ -145,6 +165,8 @@ RISK_INTAKE_GATE
 ```
 
 任一步缺失，都不能标记完成。
+
+Level 4 不是全文模式，只能局部用于符合专业 profile 和 section profile 的高风险残留段。摘要、理论基础、结论禁止聊天化表达。紫色处理用于降低全文统计一致性，不用于大幅改写。
 
 ## DOCX 格式保护
 

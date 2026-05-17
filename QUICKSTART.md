@@ -31,11 +31,15 @@ Every matching task starts with `RISK_INTAKE_GATE` and `INTAKE_WIZARD_PRECHECK`.
 - task_type: `aigc_only` / `similarity_only` / `dual_optimization`；
 - has_similarity_report: 是否有查重报告；
 - has_aigc_color_report: 是否有 AIGC 颜色报告；
+- current_red_count / current_red_ratio: 红段数量/比例；
+- current_orange_count / current_orange_ratio: 橙段数量/比例；
+- current_purple_count / current_purple_ratio: 紫段数量/比例；
+- current_black_count / current_black_ratio: 黑段数量/比例；
 - preserve_docx_format_required: 是否要求保持 DOCX 原格式；
 - discipline: 论文专业；
 - stage: `original` / `first_pass` / `second_pass` / `current_report_pass` / `first_pass_failure`。
 
-If `current_similarity_rate` or `current_aigc_rate` is missing, the Skill outputs `INTAKE_INCOMPLETE`. It may read files or parse reports to complete intake, but it must not rewrite.
+If `current_similarity_rate`, `current_aigc_rate`, or color distribution is missing, the Skill outputs `INTAKE_INCOMPLETE`. If an AIGC color report is available, parse it first; if neither a color report nor color distribution is available, do not decide the purple strategy.
 
 Copy this instruction when you want to use the Skill:
 
@@ -60,6 +64,10 @@ If you already know the inputs, fill the template directly:
 【保护项】引用、数据、图表编号、参考文献、学校声明、代码、路径、参数
 【AIGC 报告】/path/to/aigc_report.docx
 【是否有 AIGC 颜色报告 has_aigc_color_report】true
+【红段数量/比例 current_red_count/current_red_ratio】22 / 请自动解析
+【橙段数量/比例 current_orange_count/current_orange_ratio】25 / 请自动解析
+【紫段数量/比例 current_purple_count/current_purple_ratio】请自动解析
+【黑段数量/比例 current_black_count/current_black_ratio】请自动解析
 【论文专业和题目】人力资源管理，《……》
 【查重报告】无
 【是否有查重报告 has_similarity_report】false
@@ -80,17 +88,21 @@ The current slim router exposes these entry modes and internal mandatory engines
 | mode | use when |
 |---|---|
 | `RISK_INTAKE_GATE` | Before every rewrite route; collects current/target rates and decides strategy, max level, and local Level 4 permission. |
+| `DISCIPLINE_STRATEGY_ROUTER` | Selects the discipline profile and section profiles before any rewrite decision. |
 | `INTAKE_WIZARD_PRECHECK` | Start every matching task and collect required, recommended, and optional fields. |
 | `FILE_INPUT_COPY_WORKFLOW` | The user provides DOCX/TXT/Markdown/LaTeX files; create a copy before editing. |
 | `OOXML_DOCX_PATCH_WORKFLOW` | DOCX format preservation required; default writeback method. Internal, not a user entry. |
 | `DOCX_COLOR_REPORT_EXTRACTION` | The user provides a Word/DOCX color-marked AIGC report. |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | A task uses red/orange/purple/black color bands for AIGC, similarity, or dual-risk handling. |
+| `COLOR_BAND_ROUTER` | Counts and routes red/orange/purple/black immediately after color extraction. |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC report before any rewrite. |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current draft plus its current AIGC report. |
 | `AIGC_PLATEAU_BREAKER` | Multiple rounds slow down, red decreases but orange remains, or user reports a plateau after revision. |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | Human resource management, business administration, marketing, education management, public administration, or similar template-heavy papers. |
 | `CONTROLLED_HUMANIZATION_ENGINE` | Internal engine for controlled de-AIGC humanization; breaks AI templates while preserving academic register. Not a user entry. |
 | `LOCAL_ESCALATED_HUMANIZATION` | Internal local-only Level 4 engine for eligible residual red/orange/template paragraphs. Never full-text. |
+| `PURPLE_BAND_REBALANCER` | Internal low-intensity rebalance for purple-band text when triggered. |
+| `GLOBAL_STYLE_VARIANCE_ENGINE` | Internal full-thesis style uniformity check; outputs a local variance plan, not full rewrite. |
 | `REWRITE_APPLICATION_GATE` | Internal gate that verifies generated rewrites were actually patched into DOCX body text. Not a user entry. |
 | `TEMPLATE_RESIDUE_DETECTOR` | Internal gate that detects residual high-risk template sentences after patching. Not a user entry. |
 | `THESIS_REGISTER_GUARD` | Internal section-aware guard that repairs over-humanized text back to thesis register. |
@@ -118,14 +130,18 @@ Required chain:
 
 ```text
 RISK_INTAKE_GATE
+-> DISCIPLINE_STRATEGY_ROUTER
 -> FILE_INPUT_COPY_WORKFLOW
 -> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
+-> COLOR_BAND_ROUTER
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> LOCAL_ESCALATED_HUMANIZATION when triggered
+-> PURPLE_BAND_REBALANCER when triggered
+-> GLOBAL_STYLE_VARIANCE_ENGINE
 -> REWRITE_APPLICATION_GATE
 -> TEMPLATE_RESIDUE_DETECTOR
 -> THESIS_REGISTER_GUARD
@@ -165,6 +181,14 @@ Example with risk intake:
 请只降 AIGC，并根据红橙残留决定是否局部启用 LOCAL_ESCALATED_HUMANIZATION。
 ```
 
+Example with purple rebalance:
+
+```text
+专业：人力资源管理；当前查重率 11%；当前 AIGC 率 36.42%；目标 AIGC 低于 20%；
+红段 1，橙段 17，紫段较多，黑段请从报告解析；有 AIGC 颜色报告；要求保持 DOCX 原格式。
+请根据专业 profile、颜色分布和目标阈值选择策略，重点处理橙色与紫色残留，并保持毕业论文语体。
+```
+
 ## 6. Current-Report Workflow
 
 Use this when the paper has already been revised once or more and you provide the current draft plus current AIGC report.
@@ -173,7 +197,7 @@ Use this when the paper has already been revised once or more and you provide th
 请使用 zh-thesis-risk-optimizer。这里是当前稿和当前 AIGC 颜色报告。
 请进入 CURRENT_REPORT_RED_ORANGE_ENGINE：
 当前报告红色全部处理，橙色全部处理；
-紫色只在与红橙同段或必要衔接时处理；
+紫色从当前颜色报告开始统计、路由和验收；若 `purple_action = mandatory_rebalance`，必须执行 `PURPLE_BAND_REBALANCER`；
 黑色、低风险、封面、目录、承诺书、参考文献、附录冻结。
 完成时必须输出红橙覆盖率验收表和 FINAL_ACCEPTANCE_AUDIT。
 ```
@@ -182,14 +206,18 @@ Required chain:
 
 ```text
 RISK_INTAKE_GATE
+-> DISCIPLINE_STRATEGY_ROUTER
 -> FILE_INPUT_COPY_WORKFLOW
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
+-> COLOR_BAND_ROUTER
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
 -> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> LOCAL_ESCALATED_HUMANIZATION when triggered
+-> PURPLE_BAND_REBALANCER when triggered
+-> GLOBAL_STYLE_VARIANCE_ENGINE
 -> REWRITE_APPLICATION_GATE
 -> TEMPLATE_RESIDUE_DETECTOR
 -> THESIS_REGISTER_GUARD
@@ -251,6 +279,8 @@ Every delivery should include:
 - Selected strategy, maximum humanization level, and Level 4 permission.
 - Controlled humanization level used.
 - Local escalation applied and sections used.
+- Purple targets count, purple action, and purple rebalance result.
+- Global style variance result.
 - Thesis register guard result.
 - Academic tone guard result.
 - OOXML patch result.

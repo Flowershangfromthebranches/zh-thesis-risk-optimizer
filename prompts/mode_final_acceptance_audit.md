@@ -8,6 +8,10 @@ Do not mark a task complete until this audit passes.
 
 - Intake confirmation.
 - Risk intake decision from `RISK_INTAKE_GATE`.
+- Discipline strategy router result.
+- Color band router result.
+- Purple band rebalancer result.
+- Global style variance result.
 - Mandatory chain trace.
 - DOCX color extraction summary.
 - Red-orange task table.
@@ -30,15 +34,19 @@ Do not mark a task complete until this audit passes.
 | step | required | executed | evidence |
 |---|---|---|---|
 | RISK_INTAKE_GATE | yes |  |  |
+| DISCIPLINE_STRATEGY_ROUTER | yes |  |  |
 | INTAKE_WIZARD_PRECHECK | yes |  |  |
 | FILE_INPUT_COPY_WORKFLOW |  |  |  |
 | OOXML_DOCX_PATCH_WORKFLOW when DOCX |  |  |  |
 | DOCX_COLOR_REPORT_EXTRACTION |  |  |  |
 | THREE_MODE_COLOR_BAND_WORKFLOW |  |  |  |
+| COLOR_BAND_ROUTER | yes when color report exists |  |  |
 | FIRST_PASS_RED_ORANGE_ENGINE or CURRENT_REPORT_RED_ORANGE_ENGINE |  |  |  |
 | SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable |  |  |  |
 | CONTROLLED_HUMANIZATION_ENGINE when applicable |  |  |  |
 | LOCAL_ESCALATED_HUMANIZATION when triggered |  |  |  |
+| PURPLE_BAND_REBALANCER when triggered |  |  |  |
+| GLOBAL_STYLE_VARIANCE_ENGINE | yes for AIGC color-report work |  |  |
 | REWRITE_APPLICATION_GATE when DOCX writeback or patch verification is required |  |  |  |
 | TEMPLATE_RESIDUE_DETECTOR |  |  |  |
 | THESIS_REGISTER_GUARD |  |  |  |
@@ -175,6 +183,21 @@ If `rewrite_application_gate_result = FAILED`, set `final_delivery_status = REWR
 
 If `template_residue_detector_result = FAILED`, set `final_delivery_status = TEMPLATE_RESIDUE_FAILURE`.
 
+## 12. Purple And Global Style Review
+
+| item | result | evidence |
+|---|---|---|
+| purple_targets_count |  |  |
+| purple_action | skip / observe / light_rebalance / mandatory_rebalance |  |
+| purple_band_rebalancer_result | PASSED / FAILED / NOT_RUN / NOT_REQUIRED |  |
+| purple_deferred_reason | none / reason |  |
+| purple_remaining_risk | low / medium / high / unknown |  |
+| global_style_variance_result | PASSED / FAILED / NOT_RUN / NOT_APPLICABLE |  |
+
+If `current_aigc_rate > target_aigc_rate` and `purple_action = skip`, set `final_delivery_status = PURPLE_BAND_NOT_HANDLED_FAILURE`.
+
+If `stage = second_pass`, `third_pass`, or `current_report_pass`, and `purple_band_rebalancer_result = NOT_RUN` while AIGC remains above target, final status is not completed.
+
 ## 12. First-Pass Failure Branch
 
 If the user says original first-pass testing barely changed AIGC risk, output:
@@ -211,6 +234,9 @@ Use `final_delivery_status` as the primary status:
 | `TEMPLATE_RESIDUE_FAILURE` | Patched output still contains high-risk template residue |
 | `LOCAL_ESCALATION_SKIPPED` | Local Level 4 repair was required but not executed |
 | `LEVEL_4_SECTION_BLOCKED` | Level 4 was used in a forbidden strict section |
+| `PURPLE_BAND_NOT_HANDLED_FAILURE` | Purple needed rebalance but was skipped |
+| `DISCIPLINE_PROFILE_MISSING_FAILURE` | Discipline profile was not selected |
+| `GLOBAL_VARIANCE_NOT_RUN_FAILURE` | Global style variance check was skipped |
 | `NEEDS_ACADEMIC_TONE_REPAIR` | AIGC reduced but academic tone guard failed |
 | `FORMAT_FAILURE` | Duplicate insertion or format corruption detected |
 | `FORMAT_RISK_REVIEW_REQUIRED` | OOXML patch not used but user requires DOCX format |
@@ -236,6 +262,18 @@ The final output table must include all these rows:
 | target_similarity_rate |  |  |
 | target_aigc_rate |  |  |
 | selected_strategy |  |  |
+| selected_discipline_profile |  |  |
+| discipline_strategy_router_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| color_band_router_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| purple_targets_count |  |  |
+| purple_action | skip / observe / light_rebalance / mandatory_rebalance |  |
+| purple_band_rebalancer_result | PASSED / FAILED / NOT_RUN / NOT_REQUIRED |  |
+| purple_deferred_reason | none / reason |  |
+| purple_remaining_risk | low / medium / high / unknown |  |
+| global_style_variance_result | PASSED / FAILED / NOT_RUN / NOT_APPLICABLE |  |
+| section_profile_violations | none / list |  |
+| protected_element_violations | none / list |  |
+| final_aigc_strategy_summary |  |  |
 | max_humanization_level |  |  |
 | level_4_allowed | false / local_only |  |
 | similarity_status |  |  |

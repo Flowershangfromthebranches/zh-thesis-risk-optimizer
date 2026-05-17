@@ -22,6 +22,9 @@ To evaluate the gate, the following must be available:
 - `TEMPLATE_RESIDUE_DETECTOR` report showing whether template residue remains after patching.
 - Minimum diff-ratio results for every red/orange target paragraph.
 - `RISK_INTAKE_GATE` decision, especially `current_aigc_rate`, `selected_strategy`, `max_humanization_level`, and `level_4_allowed`.
+- `COLOR_BAND_ROUTER` decision, especially `purple_action`, `purple_targets_count`, and black/frozen targets.
+- `PURPLE_BAND_REBALANCER` report when `purple_action` is `light_rebalance` or `mandatory_rebalance`.
+- `GLOBAL_STYLE_VARIANCE_ENGINE` plan when purple remains high or full-text rhythm is uniform.
 
 ## Gate Conditions
 
@@ -126,6 +129,22 @@ If orange count/share remains high:
 
 then enter `LOCAL_ESCALATED_HUMANIZATION` for high-risk residual targets only. Do not rewrite black/low-risk text.
 
+### Condition 16: Purple Increased Significantly
+
+If red/orange decreased but purple increased significantly, do not mark the pass complete. This may mean the workflow demoted risk into purple rather than rebalancing full-text style.
+
+### Condition 17: AIGC Still Above 30% But Purple Was Skipped
+
+If `current_aigc_rate > 30%` and `purple_action = skip`, the first-pass gate fails. Purple must at least be observed or lightly rebalanced depending on counts and ratios.
+
+### Condition 18: Stage Requires Purple Rebalance But It Was Not Run
+
+If `stage = second_pass`, `third_pass`, or `current_report_pass`, and `current_aigc_rate > target_aigc_rate`, then `PURPLE_BAND_REBALANCER` is required. If it was not executed, the gate fails.
+
+### Condition 19: Purple Remains High Without Global Plan
+
+If `purple_count` or `purple_ratio` remains high and no `global_style_variance_plan` exists, the gate fails.
+
 ## Output: Required Fields
 
 The gate output must include all of the following:
@@ -151,6 +170,10 @@ The gate output must include all of the following:
 | `local_escalation_required` | yes / no |
 | `local_escalation_sections` | list of eligible sections or none |
 | `thesis_register_guard_required` | yes / no |
+| `purple_action` | skip / observe / light_rebalance / mandatory_rebalance |
+| `purple_band_rebalancer_result` | PASSED / FAILED / NOT_RUN / NOT_REQUIRED |
+| `purple_deferred_reason` | reason or none |
+| `global_style_variance_result` | PASSED / FAILED / NOT_RUN |
 
 ## Output: Gate Verdict Table
 
@@ -171,6 +194,10 @@ If **any** condition is met → `FIRST_PASS_FAILURE` → route to `AIGC_PLATEAU_
 | 11. Rewrite application failed | — | to be checked | ? | CHECK |
 | 12. Template residue in key sections | — | to be checked | ? | CHECK |
 | 13. Minimum diff ratio failed | — | to be checked | ? | CHECK |
+| 16. Purple increased significantly | — | to be checked | ? | CHECK |
+| 17. AIGC > 30% and purple skipped | — | to be checked | ? | CHECK |
+| 18. Required purple rebalance not run | — | to be checked | ? | CHECK |
+| 19. Purple high without global plan | — | to be checked | ? | CHECK |
 
 If **any** condition is met → `FIRST_PASS_FAILURE` → route to `AIGC_PLATEAU_BREAKER` (or `ACADEMIC_TONE_GUARD` for condition 9, or `FORMAT_FAILURE` for condition 10).
 
@@ -194,6 +221,7 @@ The gate must produce a color migration table showing how each band's character 
 | ALL conditions clear | proceed to `FINAL_ACCEPTANCE_AUDIT` |
 | Any condition met | enter `AIGC_PLATEAU_BREAKER`; output FIRST_PASS_FAILURE diagnosis |
 | Condition 14 or 15 met and Level 4 is locally allowed | enter `LOCAL_ESCALATED_HUMANIZATION` for eligible residual sections; do not say only "retest and see" |
+| Condition 16, 17, 18, or 19 met | enter `PURPLE_BAND_REBALANCER` and `GLOBAL_STYLE_VARIANCE_ENGINE`; do not mark completed |
 | Processing records missing | return to `FIRST_PASS_RED_ORANGE_ENGINE` to complete records first |
 | Author evidence missing | output material gap table and request `workflow/author_evidence_pack_template.md` |
 

@@ -50,7 +50,7 @@ intake_prompt = read("prompts/mode_intake_wizard.md")
 
 expected_frontmatter = """---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with forced risk intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, controlled/local humanization, thesis-register guard, and final acceptance audit.
+description: Chinese thesis AIGC and similarity-risk optimization skill with forced risk intake, discipline-aware routing, color-band routing, purple-band rebalancing, global style variance checks, DOCX protection, local humanization, thesis-register guard, and final acceptance audit.
 license: MIT
 ---"""
 
@@ -62,17 +62,21 @@ if len(skill.splitlines()) < 80:
 
 expected_router_modes = [
     "RISK_INTAKE_GATE",
+    "DISCIPLINE_STRATEGY_ROUTER",
     "INTAKE_WIZARD_PRECHECK",
     "FILE_INPUT_COPY_WORKFLOW",
     "OOXML_DOCX_PATCH_WORKFLOW",
     "DOCX_COLOR_REPORT_EXTRACTION",
     "THREE_MODE_COLOR_BAND_WORKFLOW",
+    "COLOR_BAND_ROUTER",
     "FIRST_PASS_RED_ORANGE_ENGINE",
     "CURRENT_REPORT_RED_ORANGE_ENGINE",
     "AIGC_PLATEAU_BREAKER",
     "SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK",
     "CONTROLLED_HUMANIZATION_ENGINE",
     "LOCAL_ESCALATED_HUMANIZATION",
+    "PURPLE_BAND_REBALANCER",
+    "GLOBAL_STYLE_VARIANCE_ENGINE",
     "REWRITE_APPLICATION_GATE",
     "TEMPLATE_RESIDUE_DETECTOR",
     "THESIS_REGISTER_GUARD",
@@ -97,6 +101,18 @@ required_files = [
     "references/risk_intake_gate.md",
     "prompts/mode_risk_intake_gate.md",
     "tests/risk_intake_gate_cases.md",
+    "references/discipline_strategy_router.md",
+    "prompts/mode_discipline_strategy_router.md",
+    "tests/discipline_strategy_router_cases.md",
+    "references/color_band_router.md",
+    "tests/color_band_router_cases.md",
+    "references/purple_band_rebalancer.md",
+    "prompts/mode_purple_band_rebalancer.md",
+    "tests/purple_band_rebalancer_cases.md",
+    "references/global_style_variance_engine.md",
+    "prompts/mode_global_style_variance.md",
+    "tests/global_style_variance_engine_cases.md",
+    "tests/purple_band_trigger_cases.md",
     "references/local_escalated_humanization.md",
     "tests/local_escalated_humanization_cases.md",
     "references/thesis_register_guard.md",
@@ -124,11 +140,15 @@ quick_current_chain = section_between(quickstart, "Current-Report Workflow", "DO
 
 required_chain_tokens = [
     "RISK_INTAKE_GATE",
+    "DISCIPLINE_STRATEGY_ROUTER",
     "FILE_INPUT_COPY_WORKFLOW",
     "DOCX_COLOR_REPORT_EXTRACTION",
     "THREE_MODE_COLOR_BAND_WORKFLOW",
+    "COLOR_BAND_ROUTER",
     "CONTROLLED_HUMANIZATION_ENGINE",
     "LOCAL_ESCALATED_HUMANIZATION",
+    "PURPLE_BAND_REBALANCER",
+    "GLOBAL_STYLE_VARIANCE_ENGINE",
     "REWRITE_APPLICATION_GATE",
     "TEMPLATE_RESIDUE_DETECTOR",
     "THESIS_REGISTER_GUARD",
@@ -149,11 +169,15 @@ for token in required_chain_tokens:
 
 main_workflow_order = [
     "RISK_INTAKE_GATE",
+    "DISCIPLINE_STRATEGY_ROUTER",
     "FILE_INPUT_COPY_WORKFLOW",
     "DOCX_COLOR_REPORT_EXTRACTION",
     "THREE_MODE_COLOR_BAND_WORKFLOW",
+    "COLOR_BAND_ROUTER",
     "CONTROLLED_HUMANIZATION_ENGINE",
     "LOCAL_ESCALATED_HUMANIZATION",
+    "PURPLE_BAND_REBALANCER",
+    "GLOBAL_STYLE_VARIANCE_ENGINE",
     "REWRITE_APPLICATION_GATE",
     "TEMPLATE_RESIDUE_DETECTOR",
     "THESIS_REGISTER_GUARD",
@@ -205,6 +229,10 @@ for token in ["当前查重率", "当前 AIGC", "目标查重率", "目标 AIGC"
     if token not in readme:
         fail(errors, f"README.md does not clearly document required field: {token}")
 
+for token in ["红段数量", "橙段数量", "紫段数量", "黑段数量"]:
+    if token not in quickstart:
+        fail(errors, f"QUICKSTART.md does not clearly list required color field: {token}")
+
 for token in [
     "selected_strategy",
     "max_humanization_level",
@@ -216,6 +244,18 @@ for token in [
     "current_aigc_rate",
     "target_similarity_rate",
     "target_aigc_rate",
+    "selected_discipline_profile",
+    "discipline_strategy_router_result",
+    "color_band_router_result",
+    "purple_targets_count",
+    "purple_action",
+    "purple_band_rebalancer_result",
+    "purple_deferred_reason",
+    "purple_remaining_risk",
+    "global_style_variance_result",
+    "section_profile_violations",
+    "protected_element_violations",
+    "final_aigc_strategy_summary",
 ]:
     if token not in final_audit:
         fail(errors, f"FINAL_ACCEPTANCE_AUDIT missing {token}")
@@ -254,6 +294,36 @@ effectiveness_gate = read("references/first_pass_effectiveness_gate.md")
 for token in ["Condition 14", "Condition 15", "LOCAL_ESCALATED_HUMANIZATION", "orange_count > 25", "red_count + orange_count > 40"]:
     if token not in effectiveness_gate:
         fail(errors, f"first_pass_effectiveness_gate.md missing {token}")
+
+for rel in [
+    "discipline_profiles/management.md",
+    "discipline_profiles/computer_science.md",
+    "discipline_profiles/engineering.md",
+    "discipline_profiles/medicine.md",
+    "discipline_profiles/law.md",
+    "discipline_profiles/education.md",
+    "discipline_profiles/humanities.md",
+    "section_profiles/abstract_profile.md",
+    "section_profiles/introduction_profile.md",
+    "section_profiles/methods_profile.md",
+    "section_profiles/theory_profile.md",
+    "section_profiles/analysis_profile.md",
+    "section_profiles/solution_profile.md",
+    "section_profiles/experiment_profile.md",
+    "section_profiles/conclusion_profile.md",
+]:
+    if not (ROOT / rel).exists():
+        fail(errors, f"Profile file missing: {rel}")
+
+color_router = read("references/color_band_router.md")
+for token in ["purple_action", "mandatory_rebalance", "red_count", "orange_count", "purple_count", "black_count"]:
+    if token not in color_router:
+        fail(errors, f"color_band_router.md missing {token}")
+
+purple_rebalancer = read("references/purple_band_rebalancer.md")
+for token in ["purple_action", "mandatory_rebalance", "Level 4", "current_aigc_rate > target_aigc_rate"]:
+    if token not in purple_rebalancer:
+        fail(errors, f"purple_band_rebalancer.md missing {token}")
 
 retired_quickstart_entries = [
     "AIGC_ONLY",

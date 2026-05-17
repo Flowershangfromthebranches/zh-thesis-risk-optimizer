@@ -21,7 +21,13 @@ The user must provide or explicitly fill:
 | `has_aigc_color_report` | `true` or `false`. |
 | `preserve_docx_format_required` | `true` or `false`. |
 | `discipline` | Thesis discipline. |
-| `stage` | `original`, `first_pass`, `second_pass`, `current_report_pass`, or `first_pass_failure`. |
+| `discipline_confidence` | `high`, `medium`, or `low`; may be inferred by `DISCIPLINE_STRATEGY_ROUTER`. |
+| `discipline_profile_required` | `true` unless the user requests only file/report extraction. |
+| `stage` | `original`, `first_pass`, `second_pass`, `third_pass`, `current_report_pass`, or `first_pass_failure`. |
+| `current_red_count` / `current_red_ratio` | Required when AIGC color report exists or color distribution is user-provided. |
+| `current_orange_count` / `current_orange_ratio` | Required when AIGC color report exists or color distribution is user-provided. |
+| `current_purple_count` / `current_purple_ratio` | Required when AIGC color report exists or color distribution is user-provided. |
+| `current_black_count` / `current_black_ratio` | Required when AIGC color report exists or color distribution is user-provided. |
 
 If `current_similarity_rate` or `current_aigc_rate` is missing:
 
@@ -30,6 +36,16 @@ If `current_similarity_rate` or `current_aigc_rate` is missing:
 - file reading and report parsing may continue only to complete intake;
 - do not enter the rewrite chain;
 - do not select Level 4 or generate candidate rewrites.
+
+If color distribution is missing but `has_aigc_color_report = true`:
+
+- run `DOCX_COLOR_REPORT_EXTRACTION` first;
+- do not decide `purple_action` until red/orange/purple/black counts or ratios are known.
+
+If there is no AIGC color report and no user-provided color distribution:
+
+- output `INTAKE_INCOMPLETE` for color-band strategy;
+- do not decide whether `PURPLE_BAND_REBALANCER` is needed.
 
 ## AIGC Strategy Rules
 
@@ -80,7 +96,17 @@ risk_intake_decision:
   has_aigc_color_report: true | false
   preserve_docx_format_required: true | false
   discipline: <discipline>
-  stage: original | first_pass | second_pass | current_report_pass | first_pass_failure
+  discipline_confidence: high | medium | low
+  discipline_profile_required: true | false
+  stage: original | first_pass | second_pass | third_pass | current_report_pass | first_pass_failure
+  current_red_count: <count or unknown>
+  current_orange_count: <count or unknown>
+  current_purple_count: <count or unknown>
+  current_black_count: <count or unknown>
+  current_red_ratio: <ratio or unknown>
+  current_orange_ratio: <ratio or unknown>
+  current_purple_ratio: <ratio or unknown>
+  current_black_ratio: <ratio or unknown>
   similarity_status: already_passed | needs_similarity_reduction | already_low_risk
   selected_strategy: <strategy>
   max_humanization_level: 2 | 3 | 3.5 | 4

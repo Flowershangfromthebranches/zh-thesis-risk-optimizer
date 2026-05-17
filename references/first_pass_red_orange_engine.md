@@ -4,7 +4,9 @@
 
 `FIRST_PASS_RED_ORANGE_ENGINE` is used when the user provides the original thesis and the original AIGC report. It prevents the common failure mode where the first pass only reduces red/high-risk text and leaves orange/medium-risk text as the next bottleneck.
 
-This engine treats red and orange report bands as the first-pass main work area. It does not promise that any external system will mark the result as purple, black, or low risk.
+This engine treats red and orange report bands as the first-pass main work area, but it must not ignore purple. It receives red/orange/purple/black routing from `COLOR_BAND_ROUTER` immediately after the first color extraction.
+
+It does not promise that any external system will mark the result as purple, black, or low risk.
 
 ## Activation Conditions
 
@@ -23,11 +25,11 @@ Do not use this mode when the user provides a revised/current draft and the curr
 |---|---|---|---|
 | red/high | primary target | strong reconstruction with protection checks | must reach purple or below; red→orange is UNPASSED |
 | orange/medium | primary target | structural repair, rhythm repair, evidence placement | must reach black or near-black; orange→light-orange is UNPASSED |
-| purple/light | secondary target | local cleanup only when safe | black preferred |
+| purple/light | tracked target | light rebalance if `COLOR_BAND_ROUTER` sets `purple_action = light_rebalance` or `mandatory_rebalance` | no Level 4 |
 | black/white/low | frozen | do not rewrite unless user explicitly asks | — |
 | protected | no-edit or surrounding-edit only | preserve exact data, code, citations, terms, formulas, paths, parameters | — |
 
-Red and orange paragraphs must both enter the first-pass task table. Orange is not deferred to a later plateau stage.
+Red and orange paragraphs must both enter the first-pass task table. Orange is not deferred to a later plateau stage. Purple must also enter the color task table with `purple_targets_count`, `purple_action`, `purple_deferred_reason`, and `next_purple_action_trigger`.
 
 **Critical rule**: Demoting a red paragraph to orange is NOT a success. It is `UNPASSED`. The engine must not consider a paragraph "processed" or "passed" unless it reaches its minimum target band. Red→orange migration in aggregate is the primary signal of `FIRST_PASS_FAILURE`.
 
@@ -43,7 +45,8 @@ Red and orange paragraphs must both enter the first-pass task table. Orange is n
 ## First-Pass Workflow
 
 1. Parse the user-provided report and record the meaning of each color/risk band.
-2. Map red and orange fragments back to the thesis source.
+2. Call `COLOR_BAND_ROUTER` and receive `red_targets`, `orange_targets`, `purple_targets`, `black_targets`, counts, ratios, and `purple_action`.
+3. Map red and orange fragments back to the thesis source.
 3. Build a protected list before any rewrite.
 4. Create a red-orange task table.
 5. Run sentence-level localization inside each red/orange paragraph.
@@ -56,7 +59,12 @@ Red and orange paragraphs must both enter the first-pass task table. Orange is n
 8. Record the action type in the paragraph processing record.
 9. Run band-target self-audit.
 10. If red/orange risk remains in the heuristic self-audit, run one limited internal retry with a different repair move.
-11. Stop when the paragraph is heuristically reduced to purple/black, protected, evidence-limited, author-material-needed, or no-progress.
+11. Record purple handling:
+   - `purple_targets_count`;
+   - `purple_action`;
+   - `purple_deferred_reason`;
+   - `next_purple_action_trigger`.
+12. Stop when the paragraph is heuristically reduced to purple/black, protected, evidence-limited, author-material-needed, or no-progress.
 
 If a red/orange paragraph does not have one of the four action types, it is unprocessed.
 
@@ -137,6 +145,19 @@ If red/orange repair would exceed this range:
 - `NO_PROGRESS_INTERNAL_LOOP`: internal retries did not materially change the risk pattern.
 - `UNPASSED`: a red paragraph was only demoted to orange, or an orange paragraph could not reach black/near-black. Must be recorded in the unprocessed list.
 - `FIRST_PASS_FAILURE`: original-thesis first-pass testing barely changed AIGC risk, or color migration shows red→orange transfer.
+- `PURPLE_TRACKED_NOT_REWRITTEN`: purple was recorded but not rewritten because `purple_action = observe`.
+- `PURPLE_REBALANCE_REQUIRED`: purple must route to `PURPLE_BAND_REBALANCER`.
+
+## Required Purple Output
+
+Even when first-pass rewriting focuses on red/orange, output:
+
+| field | value |
+|---|---|
+| `purple_targets_count` | count |
+| `purple_action` | skip / observe / light_rebalance / mandatory_rebalance |
+| `purple_deferred_reason` | reason or none |
+| `next_purple_action_trigger` | trigger or none |
 
 ## First-Pass Failure Handling
 

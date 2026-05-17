@@ -22,6 +22,7 @@ The user may provide any combination of:
 2. On first contact for a new task, show the full copyable intake template from `workflow/intake_request_template.md`.
 3. Required fields must be filled before processing.
 3a. `current_similarity_rate` and `current_aigc_rate` are mandatory before rewriting. If either is missing, output `INTAKE_INCOMPLETE`; file reading and report parsing may continue only to complete intake.
+3b. If AIGC color work is requested, red/orange/purple/black counts or ratios are mandatory. If the user uploaded a color report, parse it first; otherwise ask for the distribution.
 4. Strongly recommended and optional fields must also be shown. The user may fill them, write `无`, write `跳过`, or write `请自动判断`.
 5. If the user submits only required fields, do not proceed yet; ask them to fill or explicitly skip the strongly recommended and optional sections.
 6. If the user submits a completed intake template, output `Intake Confirmation`, state the selected route, and proceed.
@@ -81,6 +82,18 @@ aigc_only / similarity_only / dual_optimization
 
 【是否有 AIGC 颜色报告 has_aigc_color_report】
 true / false
+
+【红段数量/比例 current_red_count/current_red_ratio】
+红段数量 / 红色比例 / 有报告请自动解析
+
+【橙段数量/比例 current_orange_count/current_orange_ratio】
+橙段数量 / 橙色比例 / 有报告请自动解析
+
+【紫段数量/比例 current_purple_count/current_purple_ratio】
+紫段数量 / 紫色比例 / 有报告请自动解析
+
+【黑段数量/比例 current_black_count/current_black_ratio】
+黑段数量 / 黑色比例 / 有报告请自动解析
 
 【查重报告】可选
 无 / 查重报告 DOCX 路径 / HTML 报告 / PDF 复制文本 / 手动复制标红片段
@@ -144,6 +157,7 @@ INTAKE_INCOMPLETE
 请补充：
 - current_similarity_rate：当前查重总体相似度
 - current_aigc_rate：当前 AIGC 总体疑似率
+- red/orange/purple/black counts or ratios：若没有报告且没有颜色分布，无法判断紫色策略
 
 说明：可以继续读取文件或解析报告来补全 intake，但不能直接改写。
 ```

@@ -9,9 +9,11 @@
 It may run only when all are true:
 
 1. `RISK_INTAKE_GATE` allows `level_4_allowed = local_only`;
-2. `FIRST_PASS_EFFECTIVENESS_GATE`, current-report diagnosis, or `TEMPLATE_RESIDUE_DETECTOR` identifies unresolved high-risk residuals;
-3. the target paragraph is in an allowed section or is a confirmed report red/orange/template-residue target;
-4. `THESIS_REGISTER_GUARD` is scheduled after the rewrite.
+2. `DISCIPLINE_STRATEGY_ROUTER` selected a profile that permits local escalation;
+3. the target section profile permits local escalation;
+4. `FIRST_PASS_EFFECTIVENESS_GATE`, current-report diagnosis, or `TEMPLATE_RESIDUE_DETECTOR` identifies unresolved high-risk residuals;
+5. the target paragraph is in an allowed section or is a confirmed report red/orange/template-residue target;
+6. `THESIS_REGISTER_GUARD` is scheduled after the rewrite.
 
 ## Allowed Targets
 
@@ -34,6 +36,18 @@ Local escalation may apply to:
 | 第五章对策分析 | 4 | yes, controlled and local |
 | 研究方法 | 3 | no |
 | 企业现状分析 | 3.5 | no |
+
+## Discipline Constraints
+
+| profile | local Level 4 rule |
+|---|---|
+| `management_profile` | 第四章问题分析 and 第五章对策分析 may use controlled local Level 4. |
+| `computer_science_profile` | system design, implementation, code, interface, table, field, and parameter sections must not use Level 4. |
+| `engineering_profile` | experiment, method, parameter, unit, process, and data sections must not use Level 4. |
+| `medicine_profile` | Level 4 disabled across the thesis. |
+| `law_profile` | theory, statute, legal-concept, quotation, and article-number sections must not use Level 4. |
+| `education_profile` | local escalation rarely allowed; classroom/countermeasure sections max 3.5 unless user evidence is strong. |
+| `humanities_profile` | no management-style Level 4; textual analysis may use Level 3.5 only. |
 
 ## Level 4 Behavior
 

@@ -55,6 +55,18 @@ aigc_only / similarity_only / dual_optimization
 【是否有 AIGC 颜色报告 has_aigc_color_report】
 true / false
 
+【红段数量/比例 current_red_count/current_red_ratio】
+例如：红段 1 / 红色 2% / 有报告请自动解析
+
+【橙段数量/比例 current_orange_count/current_orange_ratio】
+例如：橙段 17 / 橙色 18% / 有报告请自动解析
+
+【紫段数量/比例 current_purple_count/current_purple_ratio】
+例如：紫段较多 / 紫色 20% / 有报告请自动解析
+
+【黑段数量/比例 current_black_count/current_black_ratio】
+例如：黑色 60% / 有报告请自动解析
+
 【查重报告】
 无 / 查重报告 DOCX 路径 / HTML 报告 / PDF 复制文本 / 手动复制标红片段
 
@@ -153,6 +165,18 @@ aigc_only
 
 【是否有 AIGC 颜色报告 has_aigc_color_report】
 true
+
+【红段数量/比例 current_red_count/current_red_ratio】
+请自动解析
+
+【橙段数量/比例 current_orange_count/current_orange_ratio】
+请自动解析
+
+【紫段数量/比例 current_purple_count/current_purple_ratio】
+请自动解析
+
+【黑段数量/比例 current_black_count/current_black_ratio】
+请自动解析
 
 【查重报告】
 无
