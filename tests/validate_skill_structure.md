@@ -10,6 +10,8 @@ Use this check before publishing or syncing the Skill.
 - `QUICKSTART.md` recommends only the 10 slim-router entry modes.
 - `README.md` recommends only the 10 slim-router entry modes.
 - Retired historical modes are not recommended as public-document entry modes.
+- `SKILL.md` has the expected legal YAML frontmatter.
+- `prompts/mode_intake_wizard.md` does not route no-report work to a retired entry mode.
 - Path references inside `tests/*.md` resolve to real files.
 - Failure on any missing path blocks release.
 
@@ -56,6 +58,7 @@ root = Path('.')
 skill = (root / 'SKILL.md').read_text(encoding='utf-8')
 quickstart = (root / 'QUICKSTART.md').read_text(encoding='utf-8')
 readme = (root / 'README.md').read_text(encoding='utf-8')
+intake_prompt = (root / 'prompts/mode_intake_wizard.md').read_text(encoding='utf-8')
 
 expected_modes = [
     'INTAKE_WIZARD_PRECHECK',
@@ -98,6 +101,15 @@ archived_prompt_files = [
 
 errors = []
 
+expected_frontmatter = """---
+name: zh-thesis-risk-optimizer
+description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, and final acceptance audit.
+license: MIT
+---"""
+
+if not skill.startswith(expected_frontmatter + "\\n\\n# zh-thesis-risk-optimizer"):
+    errors.append('SKILL.md frontmatter is not the expected legal YAML block')
+
 declared_paths = sorted(set(re.findall(
     r'((?:prompts|references|workflow)/[A-Za-z0-9_./-]+\\.md)',
     skill,
@@ -127,6 +139,9 @@ for mode in retired_quickstart_entries:
 for mode in expected_modes:
     if f'`{mode}`' not in readme:
         errors.append(f'README.md does not list entry mode: {mode}')
+
+if 'Completed intake template without report | `NO_REPORT_FALLBACK_WORKFLOW`' in intake_prompt:
+    errors.append('mode_intake_wizard.md still routes no-report intake to retired NO_REPORT_FALLBACK_WORKFLOW')
 
 for rel in archived_prompt_files:
     path = root / rel

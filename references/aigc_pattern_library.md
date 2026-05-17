@@ -182,7 +182,7 @@ Do not state that these signals reproduce any commercial detection system.
 
 ## Deep Rewrite Routing
 
-If a paragraph still has high AIGC risk after local cleanup, route it to `AIGC_DEEP_REWRITE_ENGINE` instead of repeating synonym-level polishing.
+If a paragraph still has high AIGC risk after local cleanup, keep it inside the active red-orange engine and apply internal deep-rewrite actions instead of repeating synonym-level polishing.
 
 Use `references/anti_shallow_rewrite_rules.md` to reject ineffective rewrites. A valid high-risk AIGC revision should usually change at least two of these items:
 

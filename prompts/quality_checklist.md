@@ -98,7 +98,7 @@ Use this checklist before final output.
 ## v0.8.3 Three-Mode File Workflow Checks
 
 - [ ] The task is routed to similarity-only, AIGC-only, or dual revision.
-- [ ] AIGC-only + DOCX AIGC color report + red/orange/purple/black rules + character control routes to `THREE_MODE_COLOR_BAND_WORKFLOW`, not plain `AIGC_ONLY`.
+- [ ] AIGC-only + DOCX AIGC color report + red/orange/purple/black rules + character control routes to `THREE_MODE_COLOR_BAND_WORKFLOW` with `task_type = aigc_only`, not any archived standalone prompt.
 - [ ] A revised/current draft plus current AIGC report routes to `CURRENT_REPORT_RED_ORANGE_ENGINE`, not `FIRST_PASS_RED_ORANGE_ENGINE`.
 - [ ] If a relevant report is provided, report-driven processing is used.
 - [ ] If no report is provided, the output states that report-based localization would be better.

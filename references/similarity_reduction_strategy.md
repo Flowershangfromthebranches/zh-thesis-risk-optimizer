@@ -145,11 +145,11 @@ When running similarity-risk scoring, treat these signals as heuristic features:
 - Legal, standard, and classic definition zones that should be protected.
 - Dense professional terminology that should not be misread as a rewrite target.
 
-## Mode Selection
+## Internal Task-Type Selection
 
-- Use SIMILARITY_ONLY when expression is source-close but not mechanically written.
-- Use AIGC_ONLY when the paragraph is original but template-like.
-- Use DUAL_OPTIMIZATION when both risks appear, then run a post-rewrite AIGC self-audit after similarity repair.
+- Use `task_type = similarity_only` inside `THREE_MODE_COLOR_BAND_WORKFLOW` when expression is source-close but not mechanically written.
+- Use `task_type = aigc_only` inside `THREE_MODE_COLOR_BAND_WORKFLOW` when the paragraph is original but template-like.
+- Use `task_type = dual_optimization` inside `THREE_MODE_COLOR_BAND_WORKFLOW` when both risks appear, then run `AIGC_REGRESSION_GUARD` after similarity repair.
 - Recommend no modification when the paragraph is precise, cited, and technically constrained.
 
 ## Report-Driven Similarity Handling

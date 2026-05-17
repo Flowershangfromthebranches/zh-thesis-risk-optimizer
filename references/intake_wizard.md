@@ -203,16 +203,16 @@ Use the collected answers to route:
 
 | Intake Result | Route |
 |---|---|
-| User wants only AIGC revision with report | `REPORT_AIGC_ONLY` or `FIRST_PASS_RED_ORANGE_ENGINE` |
-| User wants only AIGC revision without report | `AIGC_ONLY` plus `NO_REPORT_FALLBACK_WORKFLOW` if long text |
-| User says similarity is enough and AIGC remains high | `AIGC_FOCUSED_LENGTH_CONTROLLED` |
+| User wants only AIGC revision with report | `THREE_MODE_COLOR_BAND_WORKFLOW` with `task_type = aigc_only`; overlay `FIRST_PASS_RED_ORANGE_ENGINE` or `CURRENT_REPORT_RED_ORANGE_ENGINE` when report state is known |
+| User wants only AIGC revision without report | `THREE_MODE_COLOR_BAND_WORKFLOW` with `task_type = aigc_only` and `fallback_heuristic: true` |
+| User says similarity is enough and AIGC remains high | `THREE_MODE_COLOR_BAND_WORKFLOW` with `task_type = aigc_only`; run `AIGC_REGRESSION_GUARD` and character control |
 | User provides original thesis and original AIGC report | `FIRST_PASS_RED_ORANGE_ENGINE` |
-| User provides multiple drafts and reports | `TARGETED_MULTIPASS_ENGINE` or `AIGC_PLATEAU_BREAKER` |
+| User provides multiple drafts and reports | `AIGC_PLATEAU_BREAKER` when multi-round slowdown or orange accumulation exists |
 | User provides file input | `FILE_INPUT_COPY_WORKFLOW` plus the selected revision mode |
-| User asks for only mapping | `REPORT_TO_SOURCE_MAPPING` |
-| User provides no report and no mode | `AUTO_DIAGNOSIS` |
+| User asks for only mapping | `THREE_MODE_COLOR_BAND_WORKFLOW` with mapping-only output and no rewrite |
+| User provides no report and no mode | `INTAKE_WIZARD_PRECHECK`, then `THREE_MODE_COLOR_BAND_WORKFLOW` with `fallback_heuristic: true` if the user confirms |
 | Social-science template plateau is likely | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` |
-| Full-thesis project is requested | `FULL_THESIS_PROJECT_MODE` |
+| Full-thesis project is requested | `INTAKE_WIZARD_PRECHECK`, then file/chapter planning through the slim router; do not call an archived full-thesis entry directly |
 
 ## Minimal Dialog Template
 

@@ -113,4 +113,4 @@ Mandatory rules:
 
 ## Relation To SKILL.md
 
-`SKILL.md` routes AIGC-heavy paragraphs to this reference through `AIGC_DEEP_REWRITE_ENGINE`.
+`SKILL.md` no longer exposes this as an entry mode. Load this reference only as an internal deep-rewrite rule through `THREE_MODE_COLOR_BAND_WORKFLOW`, `FIRST_PASS_RED_ORANGE_ENGINE`, or `CURRENT_REPORT_RED_ORANGE_ENGINE`.
