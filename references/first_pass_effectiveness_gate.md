@@ -18,6 +18,9 @@ To evaluate the gate, the following must be available:
 - Post-first-pass overall AIGC suspicion percentage.
 - Red/orange paragraph processing records (per-paragraph A/B/C/D action type and self-audit result).
 - Whether special sections (abstract, theoretical basis, chapter 5, conclusion) still have whole-paragraph red/orange blocks.
+- `REWRITE_APPLICATION_GATE` report proving that generated rewrites were actually patched into DOCX body text.
+- `TEMPLATE_RESIDUE_DETECTOR` report showing whether template residue remains after patching.
+- Minimum diff-ratio results for every red/orange target paragraph.
 
 ## Gate Conditions
 
@@ -74,6 +77,40 @@ If `OOXML_DOCX_PATCH_WORKFLOW` was required but:
 
 ...the deliverable is not acceptable regardless of AIGC score.
 
+### Condition 11: Rewrite Application Gate Failed
+
+If `REWRITE_APPLICATION_GATE` reports any of the following, the first pass failed:
+
+- a red/orange target paragraph has no `rewrite_text`;
+- `rewrite_text` failed `ACADEMIC_TONE_GUARD`;
+- the patch did not change `document.xml` (`patch_not_applied`);
+- the patched paragraph does not match the approved rewrite (`patch_mismatch`);
+- the patched paragraph still contains the original high-risk template skeleton (`patch_ineffective`);
+- the character-level diff ratio is below the required threshold.
+
+This condition directly covers the failure mode where a rewrite was generated in a report table but the DOCX body still contains the original AIGC-heavy paragraph.
+
+### Condition 12: Template Residue In Key Sections
+
+If `TEMPLATE_RESIDUE_DETECTOR` finds residual template language in any of these sections, the first pass failed:
+
+- 摘要;
+- 理论基础;
+- 第五章;
+- 结论.
+
+Examples include "随着……深度发展", "研究发现……存在四个核心问题", "针对上述问题", "提供实践参考与借鉴", and "招聘是组织为获取合格人才而进行的一系列系统性活动".
+
+### Condition 13: Minimum Diff Ratio Not Met
+
+For red/orange paragraphs:
+
+- standard minimum character-level diff ratio is 35%;
+- 摘要, 理论基础, 第五章, and 结论 require 45%;
+- sentence-structure changes must be visible, not only synonym substitution.
+
+If facts or protected content prevent a safe rewrite at the threshold, the output must include `material_gap_table` and cannot mark the paragraph complete.
+
 ## Output: Required Fields
 
 The gate output must include all of the following:
@@ -90,6 +127,12 @@ The gate output must include all of the following:
 | `format_preservation_result` | PASSED / FAILED / NOT_APPLICABLE |
 | `duplicate_insertion_guard_result` | PASSED / FAILED / NOT_APPLICABLE |
 | `ooxml_patch_result` | USED_AND_PASSED / USED_AND_FAILED / NOT_USED |
+| `rewrite_application_gate_result` | PASSED / FAILED / NOT_APPLICABLE |
+| `template_residue_detector_result` | PASSED / FAILED / NOT_APPLICABLE |
+| `min_diff_ratio_passed` | yes / no / not_applicable |
+| `patch_status_summary` | all_applied / patch_not_applied / patch_mismatch / patch_ineffective / not_applicable |
+| `unchanged_high_risk_sections` | none or list |
+| `template_residue_sections` | none or list |
 
 ## Output: Gate Verdict Table
 
@@ -107,6 +150,9 @@ The gate output must include all of the following:
 If **any** condition is met → `FIRST_PASS_FAILURE` → route to `AIGC_PLATEAU_BREAKER`.
 | 9. Academic tone guard failed | — | to be checked | ? | CHECK |
 | 10. Format preservation failed | — | to be checked | ? | CHECK |
+| 11. Rewrite application failed | — | to be checked | ? | CHECK |
+| 12. Template residue in key sections | — | to be checked | ? | CHECK |
+| 13. Minimum diff ratio failed | — | to be checked | ? | CHECK |
 
 If **any** condition is met → `FIRST_PASS_FAILURE` → route to `AIGC_PLATEAU_BREAKER` (or `ACADEMIC_TONE_GUARD` for condition 9, or `FORMAT_FAILURE` for condition 10).
 
@@ -140,6 +186,8 @@ This gate runs after `AIGC_REGRESSION_GUARD` and before `FINAL_ACCEPTANCE_AUDIT`
 FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
+-> REWRITE_APPLICATION_GATE
+-> TEMPLATE_RESIDUE_DETECTOR
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE       ← here
 -> FINAL_ACCEPTANCE_AUDIT

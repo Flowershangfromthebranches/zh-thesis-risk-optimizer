@@ -19,8 +19,12 @@ Use this check before publishing or syncing the Skill.
 - Path references inside `tests/*.md` resolve to real files.
 - Failure on any missing path blocks release.
 - `SKILL.md` Minimal Mode Router includes `FIRST_PASS_EFFECTIVENESS_GATE`.
+- `SKILL.md` Minimal Mode Router includes `REWRITE_APPLICATION_GATE` and `TEMPLATE_RESIDUE_DETECTOR`.
 - The mandatory first-pass chain in `SKILL.md` places `FIRST_PASS_EFFECTIVENESS_GATE` between `AIGC_REGRESSION_GUARD` and `FINAL_ACCEPTANCE_AUDIT`.
+- The mandatory first-pass chain places `REWRITE_APPLICATION_GATE` and `TEMPLATE_RESIDUE_DETECTOR` between `CONTROLLED_HUMANIZATION_ENGINE` and `AIGC_REGRESSION_GUARD`.
 - `references/first_pass_effectiveness_gate.md` exists.
+- `references/rewrite_application_gate.md` exists.
+- `references/template_residue_detector.md` exists.
 - `references/final_acceptance_audit.md` contains `FIRST_PASS_EFFECTIVENESS_GATE`.
 - `references/first_pass_red_orange_engine.md` contains a rule equivalent to "red to orange is not success / 红转橙不算成功".
 
@@ -103,6 +107,8 @@ all_modes = [
     'AIGC_PLATEAU_BREAKER',
     'SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK',
     'CONTROLLED_HUMANIZATION_ENGINE',
+    'REWRITE_APPLICATION_GATE',
+    'TEMPLATE_RESIDUE_DETECTOR',
     'AIGC_REGRESSION_GUARD',
     'FIRST_PASS_EFFECTIVENESS_GATE',
     'FINAL_ACCEPTANCE_AUDIT',
@@ -111,6 +117,8 @@ all_modes = [
 internal_engines = [
     'OOXML_DOCX_PATCH_WORKFLOW',
     'CONTROLLED_HUMANIZATION_ENGINE',
+    'REWRITE_APPLICATION_GATE',
+    'TEMPLATE_RESIDUE_DETECTOR',
     'FIRST_PASS_EFFECTIVENESS_GATE',
 ]
 
@@ -182,6 +190,17 @@ if 'SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK' in chain_text and 'CONTROLLED_HUMANIZATI
 else:
     errors.append('Mandatory first-pass chain missing one of: SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK, CONTROLLED_HUMANIZATION_ENGINE, AIGC_REGRESSION_GUARD')
 
+# Check rewrite application and template residue gates are before AIGC regression guard
+if all(token in chain_text for token in ['CONTROLLED_HUMANIZATION_ENGINE', 'REWRITE_APPLICATION_GATE', 'TEMPLATE_RESIDUE_DETECTOR', 'AIGC_REGRESSION_GUARD']):
+    idx_ch = chain_text.index('CONTROLLED_HUMANIZATION_ENGINE')
+    idx_rewrite_gate = chain_text.index('REWRITE_APPLICATION_GATE')
+    idx_residue = chain_text.index('TEMPLATE_RESIDUE_DETECTOR')
+    idx_rg = chain_text.index('AIGC_REGRESSION_GUARD')
+    if not (idx_ch < idx_rewrite_gate < idx_residue < idx_rg):
+        errors.append('REWRITE_APPLICATION_GATE and TEMPLATE_RESIDUE_DETECTOR not between CONTROLLED_HUMANIZATION_ENGINE and AIGC_REGRESSION_GUARD')
+else:
+    errors.append('Mandatory first-pass chain missing one of: CONTROLLED_HUMANIZATION_ENGINE, REWRITE_APPLICATION_GATE, TEMPLATE_RESIDUE_DETECTOR, AIGC_REGRESSION_GUARD')
+
 # Check FIRST_PASS_EFFECTIVENESS_GATE is between AIGC_REGRESSION_GUARD and FINAL_ACCEPTANCE_AUDIT
 if 'AIGC_REGRESSION_GUARD' in chain_text and 'FIRST_PASS_EFFECTIVENESS_GATE' in chain_text and 'FINAL_ACCEPTANCE_AUDIT' in chain_text:
     idx_guard = chain_text.index('AIGC_REGRESSION_GUARD')
@@ -198,9 +217,13 @@ required_files = [
     'references/controlled_humanization_engine.md',
     'references/academic_tone_guard.md',
     'references/ooxml_docx_patch_workflow.md',
+    'references/rewrite_application_gate.md',
+    'references/template_residue_detector.md',
     'references/docx_duplicate_insertion_guard.md',
     'workflow/ooxml_patch_checklist.md',
     'tests/first_pass_failure_color_migration_case.md',
+    'tests/rewrite_application_gate_cases.md',
+    'tests/template_residue_detector_cases.md',
 ]
 for f in required_files:
     if not (root / f).exists():
@@ -220,6 +243,16 @@ if 'duplicate_insertion_guard_result' not in faa:
     errors.append('final_acceptance_audit.md missing duplicate_insertion_guard_result')
 if 'final_delivery_status' not in faa:
     errors.append('final_acceptance_audit.md missing final_delivery_status')
+for required in [
+    'rewrite_application_gate_result',
+    'template_residue_detector_result',
+    'min_diff_ratio_passed',
+    'patch_status_summary',
+    'REWRITE_NOT_APPLIED_FAILURE',
+    'TEMPLATE_RESIDUE_FAILURE',
+]:
+    if required not in faa:
+        errors.append(f'final_acceptance_audit.md missing {required}')
 
 # Check first_pass_red_orange_engine.md contains red-to-orange not success rule
 fpro = (root / 'references/first_pass_red_orange_engine.md').read_text(encoding='utf-8')
@@ -230,6 +263,25 @@ if 'Red→orange' not in fpro and 'red to orange' not in fpro.lower() and '红�
 fpeg = (root / 'references/first_pass_effectiveness_gate.md').read_text(encoding='utf-8')
 if 'Red-to-orange migration is NOT success' not in fpeg:
     errors.append('first_pass_effectiveness_gate.md missing core principle')
+for required in [
+    'REWRITE_APPLICATION_GATE',
+    'TEMPLATE_RESIDUE_DETECTOR',
+    'Condition 11',
+    'Condition 12',
+    'Condition 13',
+]:
+    if required not in fpeg:
+        errors.append(f'first_pass_effectiveness_gate.md missing {required}')
+
+rag = (root / 'references/rewrite_application_gate.md').read_text(encoding='utf-8')
+for required in ['rewrite_not_applied', 'patch_mismatch', 'patch_ineffective', 'diff_ratio', 'FIRST_PASS_FAILURE']:
+    if required not in rag:
+        errors.append(f'rewrite_application_gate.md missing {required}')
+
+trd = (root / 'references/template_residue_detector.md').read_text(encoding='utf-8')
+for required in ['随着', '研究发现', '针对上述问题', 'TEMPLATE_RESIDUE_FAILURE']:
+    if required not in trd:
+        errors.append(f'template_residue_detector.md missing {required}')
 
 # Check aigc_regression_guard.md has over-humanization regression
 arg = (root / 'references/aigc_regression_guard.md').read_text(encoding='utf-8')
@@ -241,12 +293,20 @@ if 'CONTROLLED_HUMANIZATION_ENGINE' not in quickstart:
     errors.append('QUICKSTART.md does not mention CONTROLLED_HUMANIZATION_ENGINE')
 if 'FIRST_PASS_EFFECTIVENESS_GATE' not in quickstart:
     errors.append('QUICKSTART.md does not mention FIRST_PASS_EFFECTIVENESS_GATE')
+if 'REWRITE_APPLICATION_GATE' not in quickstart:
+    errors.append('QUICKSTART.md does not mention REWRITE_APPLICATION_GATE')
+if 'TEMPLATE_RESIDUE_DETECTOR' not in quickstart:
+    errors.append('QUICKSTART.md does not mention TEMPLATE_RESIDUE_DETECTOR')
 if 'OOXML' not in quickstart:
     errors.append('QUICKSTART.md does not mention OOXML')
 
 # Check README contains new engines
 if 'CONTROLLED_HUMANIZATION_ENGINE' not in readme:
     errors.append('README.md does not mention CONTROLLED_HUMANIZATION_ENGINE')
+if 'REWRITE_APPLICATION_GATE' not in readme:
+    errors.append('README.md does not mention REWRITE_APPLICATION_GATE')
+if 'TEMPLATE_RESIDUE_DETECTOR' not in readme:
+    errors.append('README.md does not mention TEMPLATE_RESIDUE_DETECTOR')
 if 'OOXML' not in readme:
     errors.append('README.md does not mention OOXML')
 

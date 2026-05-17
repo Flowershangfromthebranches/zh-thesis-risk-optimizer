@@ -62,11 +62,14 @@ the mandatory chain is:
 
 ```text
 FILE_INPUT_COPY_WORKFLOW
+-> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
 -> CONTROLLED_HUMANIZATION_ENGINE when AIGC remains high or discipline is template-heavy
+-> REWRITE_APPLICATION_GATE
+-> TEMPLATE_RESIDUE_DETECTOR
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -86,6 +89,8 @@ FILE_INPUT_COPY_WORKFLOW
 -> AIGC_PLATEAU_BREAKER when orange accumulation or multi-round slowdown exists
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
 -> CONTROLLED_HUMANIZATION_ENGINE when AIGC remains high or discipline is template-heavy
+-> REWRITE_APPLICATION_GATE
+-> TEMPLATE_RESIDUE_DETECTOR
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -138,6 +143,8 @@ When `CONTROLLED_HUMANIZATION_ENGINE` is active, run `ACADEMIC_TONE_GUARD` to pr
 | `AIGC_PLATEAU_BREAKER` | Multi-round slowdown or orange accumulation. | prompts/mode_aigc_plateau_breaker.md, references/aigc_plateau_breaker.md |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | HR/management/social-science red-orange template risk. | prompts/mode_social_science_aigc_bottleneck.md, references/social_science_template_bottleneck.md, workflow/author_evidence_pack_template.md |
 | `CONTROLLED_HUMANIZATION_ENGINE` | Internal engine for controlled de-AIGC humanization of social-science text. | prompts/mode_controlled_humanization.md, references/controlled_humanization_engine.md, references/academic_tone_guard.md |
+| `REWRITE_APPLICATION_GATE` | Verifies generated rewrites were actually patched into DOCX body text. | references/rewrite_application_gate.md |
+| `TEMPLATE_RESIDUE_DETECTOR` | Detects residual high-risk AIGC template sentences after patching. | references/template_residue_detector.md |
 | `AIGC_REGRESSION_GUARD` | Rewrite becomes smoother/more AI-like OR too colloquial/casual. | references/aigc_regression_guard.md, references/academic_tone_guard.md |
 | `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration, AIGC thresholds, tone, and format. | references/first_pass_effectiveness_gate.md |
 | `FINAL_ACCEPTANCE_AUDIT` | End of every report-driven or file-copy task. | prompts/mode_final_acceptance_audit.md, references/final_acceptance_audit.md |
@@ -213,6 +220,12 @@ Allowed `action_type` values:
 | ooxml_patch_result |  |  |
 | duplicate_insertion_guard_result |  |  |
 | format_preservation_result |  |  |
+| rewrite_application_gate_result |  |  |
+| template_residue_detector_result |  |  |
+| min_diff_ratio_passed |  |  |
+| patch_status_summary |  |  |
+| unchanged_high_risk_sections |  |  |
+| template_residue_sections |  |  |
 | over_humanization_regression_found |  |  |
 | final_delivery_status |  |  |
 

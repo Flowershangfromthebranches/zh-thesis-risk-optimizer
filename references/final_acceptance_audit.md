@@ -24,6 +24,12 @@ The final output must report:
 12. **Academic tone guard result**: whether `ACADEMIC_TONE_GUARD` found and corrected over-humanization.
 13. **Format preservation result**: whether `OOXML_DOCX_PATCH_WORKFLOW` preserved the DOCX structure.
 14. **Duplicate insertion guard result**: whether paragraph duplication was detected.
+15. **Rewrite application gate result**: whether generated rewrites were actually patched into DOCX body text.
+16. **Template residue detector result**: whether high-risk template sentences remain after patching.
+17. **Minimum diff-ratio result**: whether every red/orange target meets the required character-level and structure-level change threshold.
+18. **Patch status summary**: whether any target produced `patch_not_applied`, `patch_mismatch`, or `patch_ineffective`.
+19. **Unchanged high-risk sections**: whether 摘要, 理论基础, 第五章, or 结论 still preserve their original high-risk skeleton.
+20. **Template residue sections**: where residual template patterns remain.
 
 This audit absorbs the older post-rewrite self-audit, anti-shallow-rewrite, and effectiveness-evaluation gates. These checks are no longer separate entry modes; completion depends on this final gate.
 
@@ -47,7 +53,12 @@ The task can be marked `COMPLETED` only when:
 - if both `original_report_distribution` and `post_first_pass_report_distribution` exist, `FIRST_PASS_EFFECTIVENESS_GATE` was executed and passed;
 - `academic_tone_guard_result` is PASSED or NOT_APPLICABLE;
 - `duplicate_insertion_guard_result` is PASSED or NOT_APPLICABLE;
-- `format_preservation_result` is PASSED or NOT_APPLICABLE.
+- `format_preservation_result` is PASSED or NOT_APPLICABLE;
+- `rewrite_application_gate_result` is PASSED or NOT_APPLICABLE;
+- `template_residue_detector_result` is PASSED or NOT_APPLICABLE;
+- `min_diff_ratio_passed` is yes or NOT_APPLICABLE;
+- no target has `patch_not_applied`, `patch_mismatch`, or `patch_ineffective`;
+- the post-patch red+orange share is not above 40% when a post-patch AIGC report is available.
 
 The task must not be marked `COMPLETED` when:
 
@@ -60,6 +71,11 @@ The task must not be marked `COMPLETED` when:
 - `FIRST_PASS_EFFECTIVENESS_GATE` returned any `FAIL` verdict;
 - `ACADEMIC_TONE_GUARD` found violations that were not corrected;
 - `DOCX_DUPLICATE_INSERTION_GUARD` detected duplicate insertions.
+- `REWRITE_APPLICATION_GATE` failed or was skipped for DOCX writeback;
+- `TEMPLATE_RESIDUE_DETECTOR` failed or was skipped for patched red/orange targets;
+- any required red/orange target failed the minimum diff-ratio threshold;
+- post-patch text still contains the original high-risk paragraph skeleton in 摘要, 理论基础, 第五章, or 结论;
+- red+orange remains above 40% in the post-patch report.
 
 If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, but the paragraph should be marked as needing author input rather than rewritten as complete.
 
@@ -76,6 +92,15 @@ When both `original_report_distribution` and `post_first_pass_report_distributio
    - output **must** route to `AIGC_PLATEAU_BREAKER`;
    - output **must** list priority sections for the next pass: 摘要, 理论基础, 第五章, 结论;
    - output **must** include a `material_gap_table` if evidence is insufficient, and must not continue rewriting without author input.
+
+When DOCX writeback is involved:
+
+1. `REWRITE_APPLICATION_GATE` **must** be run before this audit.
+2. `TEMPLATE_RESIDUE_DETECTOR` **must** be run after patch verification.
+3. If `rewrite_application_gate_result = failed`, final delivery status must be `REWRITE_NOT_APPLIED_FAILURE`.
+4. If `template_residue_detector_result = failed`, final delivery status must be `TEMPLATE_RESIDUE_FAILURE`.
+5. If red+orange remains above 40%, final delivery status must be `FIRST_PASS_FAILURE`.
+6. None of these failure states may be described as completed, effective, or ready to deliver.
 
 ## Color Migration Check (First-Pass Only)
 
@@ -114,6 +139,9 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 | AIGC risk reduced but academic_tone_guard failed | NEEDS_ACADEMIC_TONE_REPAIR |
 | AIGC risk reduced but duplicate_insertion_guard failed | FORMAT_FAILURE |
 | AIGC risk reduced but ooxml_patch not used and user requires DOCX format | FORMAT_RISK_REVIEW_REQUIRED |
+| Generated rewrites were not actually patched into DOCX text | REWRITE_NOT_APPLIED_FAILURE |
+| Post-patch text still contains high-risk template residue | TEMPLATE_RESIDUE_FAILURE |
+| Red+orange remains above 40% in the post-patch report | FIRST_PASS_FAILURE |
 | First-pass effectiveness gate failed | FIRST_PASS_FAILURE |
 | Mandatory chain step missing | BLOCKED |
 | Author evidence missing | NEEDS_AUTHOR_EVIDENCE |
@@ -145,8 +173,14 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 | ooxml_patch_result | USED_AND_PASSED / USED_AND_FAILED / NOT_USED |  |
 | duplicate_insertion_guard_result | PASSED / FAILED / NOT_APPLICABLE |  |
 | format_preservation_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| rewrite_application_gate_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| template_residue_detector_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| min_diff_ratio_passed | yes / no / not_applicable |  |
+| patch_status_summary | all_applied / patch_not_applied / patch_mismatch / patch_ineffective / not_applicable |  |
+| unchanged_high_risk_sections | none / list |  |
+| template_residue_sections | none / list |  |
 | over_humanization_regression_found | yes / no / not_applicable |  |
-| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
+| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
 
 ## First-Pass Failure
 
@@ -166,5 +200,8 @@ Check:
 - Does the color migration show red-to-orange transfer?
 - Was academic tone guard applied and passed?
 - Was format preservation verified?
+- Did `REWRITE_APPLICATION_GATE` prove that every generated rewrite was actually written back?
+- Did `TEMPLATE_RESIDUE_DETECTOR` confirm that the patched text no longer preserves the original high-risk template sentences?
+- Did every red/orange target meet the minimum diff-ratio threshold?
 
 Output a failure-cause table and a next repair plan. The next repair plan must reference `AIGC_PLATEAU_BREAKER` as the next step.

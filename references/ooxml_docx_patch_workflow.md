@@ -85,6 +85,15 @@ Replace ONLY the `w:t` node content. Preserve:
 
 If the revised text is longer or shorter than the original, adjust `w:t` content only. Do NOT add or remove `w:r` or `w:p` nodes unless the mapping explicitly requires it.
 
+For each replacement, record:
+
+- `replacement_id`
+- `original_text_hash`
+- `rewrite_text_hash`
+- `original_text_excerpt`
+- `rewrite_text_excerpt`
+- target paragraph location in `word/document.xml`
+
 ### Step 5: Repackage
 
 ```bash
@@ -101,17 +110,22 @@ After repackaging:
 3. **Resource preservation:** Verify styles.xml, numbering.xml, headers, footers, footnotes, endnotes, comments, media, and rels are unchanged.
 4. **Page count:** If page count increases by >10%, flag FORMAT_REGRESSION_RISK.
 5. **document.xml well-formedness:** Verify XML is parseable.
+6. **Patch application:** Re-open `word/document.xml` after patching and compute `patched_text_hash`.
+7. **Hash movement:** If `original_text_hash == patched_text_hash`, mark `patch_not_applied`.
+8. **Rewrite match:** If `patched_text` does not match `rewrite_text` materially, mark `patch_mismatch`.
+9. **Template residue:** If the patched paragraph still contains template residue, mark `patch_ineffective`.
+10. **Diff ratio:** Compute `diff_ratio` for every red/orange replacement and pass the result to `REWRITE_APPLICATION_GATE`.
 
 ### Step 7: Output Patch Log
 
 ```markdown
 ## OOXML Patch Log
 
-| replacement_id | paragraph_location | original_text | revised_text | confidence | writeback_status |
-|---|---|---|---|---|---|
-| 1 | word/document.xml § body § p[42] | ... | ... | HIGH | WRITTEN |
-| 2 | word/document.xml § body § p[87] | ... | ... | LOW | SKIPPED |
-| 3 | word/document.xml § body § p[103] | ... | ... | HIGH | MULTI_MATCH_STOP |
+| replacement_id | paragraph_location | original_text_excerpt | rewrite_text_excerpt | patched_text_excerpt | diff_ratio | confidence | patch_status |
+|---|---|---|---|---|---:|---|---|
+| 1 | word/document.xml § body § p[42] | ... | ... | ... | 52% | HIGH | WRITTEN |
+| 2 | word/document.xml § body § p[87] | ... | ... | ... | 0% | LOW | SKIPPED |
+| 3 | word/document.xml § body § p[103] | ... | ... | ... | 0% | HIGH | MULTI_MATCH_STOP |
 
 ### Validation Summary
 - zip_integrity: OK / FAIL
@@ -120,6 +134,9 @@ After repackaging:
 - page_count_change: +N / -N / 0
 - format_regression_risk: NONE / DETECTED
 - xml_wellformed: OK / FAIL
+- patch_hash_movement: OK / PATCH_NOT_APPLIED
+- patch_mismatch: NONE / DETECTED
+- template_residue_after_patch: NONE / DETECTED
 ```
 
 ## Confidence Levels

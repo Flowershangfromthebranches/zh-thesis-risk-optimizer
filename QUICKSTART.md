@@ -11,6 +11,8 @@ Use `zh-thesis-risk-optimizer` when you need a Chinese thesis revision workflow 
 - Social-science and management-template bottleneck repair.
 - Controlled humanization that preserves academic register.
 - OOXML-based DOCX format preservation.
+- Rewrite application verification: generated rewrites must be actually patched into DOCX body text.
+- Template residue detection after patching.
 - Final acceptance auditing before delivery.
 
 The Skill does not promise any external detection-platform result. It does not crack, simulate, reverse engineer, or forge detection systems or reports.
@@ -62,6 +64,8 @@ The current slim router exposes these entry modes and internal mandatory engines
 | `AIGC_PLATEAU_BREAKER` | Multiple rounds slow down, red decreases but orange remains, or user reports a plateau after revision. |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | Human resource management, business administration, marketing, education management, public administration, or similar template-heavy papers. |
 | `CONTROLLED_HUMANIZATION_ENGINE` | Internal engine for controlled de-AIGC humanization; breaks AI templates while preserving academic register. Not a user entry. |
+| `REWRITE_APPLICATION_GATE` | Internal gate that verifies generated rewrites were actually patched into DOCX body text. Not a user entry. |
+| `TEMPLATE_RESIDUE_DETECTOR` | Internal gate that detects residual high-risk template sentences after patching. Not a user entry. |
 | `AIGC_REGRESSION_GUARD` | A rewrite becomes smoother/more AI-like OR too colloquial/casual. |
 | `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration, AIGC thresholds, tone, and format. Not a user entry. |
 | `FINAL_ACCEPTANCE_AUDIT` | End every report-driven or file-copy task with coverage, evidence, regression, tone, format, and character-change checks. |
@@ -86,11 +90,14 @@ Required chain:
 
 ```text
 FILE_INPUT_COPY_WORKFLOW
+-> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
+-> REWRITE_APPLICATION_GATE
+-> TEMPLATE_RESIDUE_DETECTOR
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -141,6 +148,8 @@ FILE_INPUT_COPY_WORKFLOW
 -> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
+-> REWRITE_APPLICATION_GATE
+-> TEMPLATE_RESIDUE_DETECTOR
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -198,6 +207,8 @@ Every delivery should include:
 - Controlled humanization level used.
 - Academic tone guard result.
 - OOXML patch result.
+- Rewrite application gate result.
+- Template residue detector result.
 - Duplicate insertion guard result.
 - Format preservation result.
 - Final delivery status.

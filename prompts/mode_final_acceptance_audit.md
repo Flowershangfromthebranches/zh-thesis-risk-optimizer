@@ -18,6 +18,9 @@ Do not mark a task complete until this audit passes.
 - Academic tone guard report (if applicable).
 - OOXML patch log (if applicable).
 - Duplicate insertion guard report (if applicable).
+- Rewrite application gate report (if DOCX writeback or patching occurred).
+- Template residue detector report.
+- Minimum diff-ratio report for red/orange target paragraphs.
 
 ## 1. Mandatory Chain Trace
 
@@ -30,6 +33,8 @@ Do not mark a task complete until this audit passes.
 | FIRST_PASS_RED_ORANGE_ENGINE or CURRENT_REPORT_RED_ORANGE_ENGINE |  |  |  |
 | SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable |  |  |  |
 | CONTROLLED_HUMANIZATION_ENGINE when applicable |  |  |  |
+| REWRITE_APPLICATION_GATE when DOCX writeback or patch verification is required |  |  |  |
+| TEMPLATE_RESIDUE_DETECTOR |  |  |  |
 | AIGC_REGRESSION_GUARD |  |  |  |
 | FIRST_PASS_EFFECTIVENESS_GATE |  |  |  |
 | FINAL_ACCEPTANCE_AUDIT | yes | yes | current table |
@@ -105,7 +110,32 @@ When DOCX input was used:
 | page_count_change | +N / -N / 0 |  |
 | resource_preservation | OK / FAIL |  |
 
-## 8. First-Pass Failure Branch
+## 8. Rewrite Application Review
+
+When generated rewrites are written back to DOCX, confirm the rewrite was applied to the actual body text.
+
+| item | result | evidence |
+|---|---|---|
+| rewrite_application_gate_result | PASSED / FAILED / N/A |  |
+| original_text_hash_changed | yes / no / N/A |  |
+| patched_text_matches_rewrite | yes / no / N/A |  |
+| min_diff_ratio_passed | yes / no / N/A |  |
+| unchanged_high_risk_sections | none / list |  |
+| patch_status_summary | all_applied / patch_not_applied / patch_mismatch / patch_ineffective / N/A |  |
+
+If `rewrite_application_gate_result = FAILED`, set `final_delivery_status = REWRITE_NOT_APPLIED_FAILURE`.
+
+## 9. Template Residue Review
+
+| item | result | evidence |
+|---|---|---|
+| template_residue_detector_result | PASSED / FAILED / N/A |  |
+| template_residue_sections | none / list |  |
+| residue_patterns_found | none / list |  |
+
+If `template_residue_detector_result = FAILED`, set `final_delivery_status = TEMPLATE_RESIDUE_FAILURE`.
+
+## 10. First-Pass Failure Branch
 
 If the user says original first-pass testing barely changed AIGC risk, output:
 
@@ -119,10 +149,13 @@ If the user says original first-pass testing barely changed AIGC risk, output:
 | controlled humanization applied |  |  |  |
 | academic tone guard passed |  |  |  |
 | format preservation verified |  |  |  |
+| rewrite application gate passed |  |  |  |
+| template residue detector passed |  |  |  |
+| red+orange below 40% |  |  |  |
 
 Final status should be `FIRST_PASS_FAILURE` unless all checks pass and a new repair plan is ready.
 
-## 9. Final Status and Delivery Status
+## 11. Final Status and Delivery Status
 
 Use `final_delivery_status` as the primary status:
 
@@ -130,6 +163,8 @@ Use `final_delivery_status` as the primary status:
 |---|---|
 | `COMPLETED` | All checks pass; ready to deliver |
 | `FIRST_PASS_FAILURE` | First-pass effectiveness gate failed |
+| `REWRITE_NOT_APPLIED_FAILURE` | Generated rewrite was not actually written into DOCX body text |
+| `TEMPLATE_RESIDUE_FAILURE` | Patched output still contains high-risk template residue |
 | `NEEDS_ACADEMIC_TONE_REPAIR` | AIGC reduced but academic tone guard failed |
 | `FORMAT_FAILURE` | Duplicate insertion or format corruption detected |
 | `FORMAT_RISK_REVIEW_REQUIRED` | OOXML patch not used but user requires DOCX format |
@@ -138,13 +173,13 @@ Use `final_delivery_status` as the primary status:
 
 Never promise external detector results.
 
-## 8. Required Output Table (Extended)
+## 12. Required Output Table (Extended)
 
 The final output table must include these additional rows:
 
 | item | result | evidence |
 |---|---|---|
-## 10. Required Output Table
+## 13. Required Output Table
 
 The final output table must include all these rows:
 
@@ -172,5 +207,11 @@ The final output table must include all these rows:
 | ooxml_patch_result | USED_AND_PASSED / USED_AND_FAILED / NOT_USED |  |
 | duplicate_insertion_guard_result | PASSED / FAILED / NOT_APPLICABLE |  |
 | format_preservation_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| rewrite_application_gate_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| template_residue_detector_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| min_diff_ratio_passed | yes / no / not_applicable |  |
+| patch_status_summary | all_applied / patch_not_applied / patch_mismatch / patch_ineffective / not_applicable |  |
+| unchanged_high_risk_sections | none / list |  |
+| template_residue_sections | none / list |  |
 | over_humanization_regression_found | yes / no / not_applicable |  |
-| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
+| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |

@@ -48,6 +48,29 @@ There is NO unlimited aggressive colloquialization mode.
 
 ## Core Strategies
 
+Each red/orange paragraph must apply at least two concrete transformation categories. If fewer than two are applied, mark the paragraph `shallow_rewrite` and do not pass it to final acceptance.
+
+Required transformation categories:
+
+- **A. Template opening replacement**: replace "随着……发展", "在……背景下", or similar openings with the thesis object, company process, data point, or concrete problem.
+- **B. Argument order adjustment**: change the order from background -> finding -> countermeasure into evidence/problem -> reason judgment -> bounded solution.
+- **C. Sentence-length distribution change**: vary sentence length and structure without becoming colloquial.
+- **D. Author judgment insertion**: add evidence-grounded judgment such as "从访谈结果看", "问题并不完全在于", or "在A公司现有条件下".
+- **E. Generic value deletion**: remove empty value claims such as "提供参考与借鉴", "具有重要意义", "提升核心竞争力".
+- **F. Theory definition conversion**: convert encyclopedia definitions into "how this thesis uses the concept".
+
+Invalid:
+
+```text
+伴随数字技术不断发展，企业数智化转型越来越重要。
+```
+
+Valid:
+
+```text
+在 A 公司这样的跨境电商企业中，招聘压力并不只来自岗位数量增加，更来自岗位要求变化：业务部门需要既懂平台运营、又能处理数据的复合型人才。由此，招聘管理是否具备数字化识别和筛选能力，直接影响岗位补给速度。
+```
+
 ### Strategy A: Template Skeleton Dispersal
 
 Break the standard "研究发现→四个问题→四项对策→提供参考" structure.

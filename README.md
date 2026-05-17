@@ -20,6 +20,8 @@
 - 当前报告红橙验收：复检稿进入 `CURRENT_REPORT_RED_ORANGE_ENGINE`，当前红橙必须全部进入任务表。
 - 社科/管理类模板瓶颈处理：人力资源管理、工商管理、市场营销、教育管理、行政管理等论文启用 `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`。
 - 受控人类化引擎：吸收老版本强降 AIGC 能力（去模板化、句长变化、作者判断），但通过学术语体守卫防止口语化过头。
+- 改写写回门禁：确认改写文本不只是生成在表格里，而是已经真实写回 DOCX 正文。
+- 模板残留检测：检测摘要、理论基础、第五章、结论等高风险章节是否仍保留原 AI 模板句。
 - 学术语体守卫：防止受控人类化过度，禁止日记式、自媒体式、聊天式表达。
 - AIGC 回归防线：同时防两种回归——更正式更像 AI，或太口语太不像论文。
 - 首轮效果门禁：检查颜色迁移、AIGC 阈值、语体质量和格式完整性。
@@ -80,6 +82,8 @@ DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保
 | `AIGC_PLATEAU_BREAKER` | 多轮后红色下降但橙色堆积、AIGC 下降变慢时使用。 |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | 社科/管理类论文模板骨架和证据不足问题处理。 |
 | `CONTROLLED_HUMANIZATION_ENGINE` | 内部引擎：受控去 AIGC 人类化，打破 AI 模板但保持学术语体。 |
+| `REWRITE_APPLICATION_GATE` | 内部门禁：验证改写是否真实写回 DOCX 正文、diff 是否足够。 |
+| `TEMPLATE_RESIDUE_DETECTOR` | 内部门禁：检测改写后是否仍残留高风险模板句。 |
 | `AIGC_REGRESSION_GUARD` | 防止改写后更正式更像 AI，或太口语太不像论文。 |
 | `FIRST_PASS_EFFECTIVENESS_GATE` | 内部必经门禁：检查颜色迁移、AIGC 阈值、语体质量和格式完整性。 |
 | `FINAL_ACCEPTANCE_AUDIT` | 每次报告驱动或文件副本任务结束前的最终验收。 |
@@ -90,11 +94,14 @@ DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保
 
 ```text
 FILE_INPUT_COPY_WORKFLOW
+-> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
+-> REWRITE_APPLICATION_GATE
+-> TEMPLATE_RESIDUE_DETECTOR
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -110,6 +117,8 @@ FILE_INPUT_COPY_WORKFLOW
 -> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
+-> REWRITE_APPLICATION_GATE
+-> TEMPLATE_RESIDUE_DETECTOR
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
