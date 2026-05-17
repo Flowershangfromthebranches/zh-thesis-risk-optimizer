@@ -67,6 +67,7 @@ FILE_INPUT_COPY_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
 -> AIGC_REGRESSION_GUARD
+-> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
@@ -123,6 +124,7 @@ Then output a failure-cause table and next repair plan.
 | `AIGC_PLATEAU_BREAKER` | Multi-round slowdown or orange accumulation. | prompts/mode_aigc_plateau_breaker.md, references/aigc_plateau_breaker.md |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | HR/management/social-science red-orange template risk. | prompts/mode_social_science_aigc_bottleneck.md, references/social_science_template_bottleneck.md, workflow/author_evidence_pack_template.md |
 | `AIGC_REGRESSION_GUARD` | Rewrite becomes smoother, more formal, or more AI-like. | references/aigc_regression_guard.md |
+| `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration and AIGC thresholds. | references/first_pass_effectiveness_gate.md |
 | `FINAL_ACCEPTANCE_AUDIT` | End of every report-driven or file-copy task. | prompts/mode_final_acceptance_audit.md, references/final_acceptance_audit.md |
 
 Internal sub-rules such as burstiness audit, orange-zone repair, conservative repair, structure rebuilding, evidence injection, paragraph strategies, second-pass rewrite, and effectiveness evaluation are not entry modes. Load them only through the main modes above when needed.

@@ -39,7 +39,8 @@ The task can be marked `COMPLETED` only when:
   - `D_AUTHOR_MATERIAL_REQUEST`;
 - social-science hard rule was enabled when applicable;
 - no protected content was damaged;
-- no fabricated data, interviews, citations, company facts, forms, systems, indicators, or report facts were introduced.
+- no fabricated data, interviews, citations, company facts, forms, systems, indicators, or report facts were introduced;
+- if both `original_report_distribution` and `post_first_pass_report_distribution` exist, `FIRST_PASS_EFFECTIVENESS_GATE` was executed and passed.
 
 The task must not be marked `COMPLETED` when:
 
@@ -47,9 +48,23 @@ The task must not be marked `COMPLETED` when:
 - the rewrite mainly makes the paragraph more formal, smoother, longer, or more abstract;
 - red/orange paragraphs lack an A/B/C/D action record;
 - social-science red/orange paragraphs still use generic "体系、机制、能力、价值、保障" prose without local evidence;
-- missing author evidence was silently invented or ignored.
+- missing author evidence was silently invented or ignored;
+- `FIRST_PASS_EFFECTIVENESS_GATE` returned any `FAIL` verdict.
 
 If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, but the paragraph should be marked as needing author input rather than rewritten as complete.
+
+## First-Pass Effectiveness Gate Hard Rules
+
+When both `original_report_distribution` and `post_first_pass_report_distribution` are available:
+
+1. `FIRST_PASS_EFFECTIVENESS_GATE` **must** be run before this audit.
+2. If **any** gate condition fails:
+   - final status **must** be `FIRST_PASS_FAILURE`;
+   - output **must not** contain `COMPLETED`;
+   - output **must not** contain "有效", "完成", "可交付", or any completion-affirming language;
+   - output **must** include the Color Migration Table from the gate;
+   - output **must** route to `AIGC_PLATEAU_BREAKER`;
+   - output **must** list priority sections for the next pass: 摘要, 理论基础, 第五章, 结论.
 
 ## Color Migration Check (First-Pass Only)
 

@@ -31,6 +31,15 @@ Red and orange paragraphs must both enter the first-pass task table. Orange is n
 
 **Critical rule**: Demoting a red paragraph to orange is NOT a success. It is `UNPASSED`. The engine must not consider a paragraph "processed" or "passed" unless it reaches its minimum target band. Red→orange migration in aggregate is the primary signal of `FIRST_PASS_FAILURE`.
 
+## Hard Targets
+
+- **Red paragraph target**: priority is to reduce to black; minimum acceptable is below purple (i.e., purple or black). Red→orange only is **not passed**.
+- **Orange paragraph target**: must reduce to black or near-black. Orange→light-orange is **not passed**.
+- If red paragraphs only drop to orange, the first pass is **not passed**.
+- If the aggregate orange share increases compared to the original, the first pass is **not passed**.
+- If red + orange combined is still above 40%, the first pass is **not passed**.
+- If the overall AIGC suspicion percentage is still above 60%, the first pass is **not passed**.
+
 ## First-Pass Workflow
 
 1. Parse the user-provided report and record the meaning of each color/risk band.

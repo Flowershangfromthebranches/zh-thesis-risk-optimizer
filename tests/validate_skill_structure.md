@@ -16,6 +16,11 @@ Use this check before publishing or syncing the Skill.
 - `prompts/mode_intake_wizard.md` does not route no-report work to a retired entry mode.
 - Path references inside `tests/*.md` resolve to real files.
 - Failure on any missing path blocks release.
+- `SKILL.md` Minimal Mode Router includes `FIRST_PASS_EFFECTIVENESS_GATE`.
+- The mandatory first-pass chain in `SKILL.md` places `FIRST_PASS_EFFECTIVENESS_GATE` between `AIGC_REGRESSION_GUARD` and `FINAL_ACCEPTANCE_AUDIT`.
+- `references/first_pass_effectiveness_gate.md` exists.
+- `references/final_acceptance_audit.md` contains `FIRST_PASS_EFFECTIVENESS_GATE`.
+- `references/first_pass_red_orange_engine.md` contains a rule equivalent to "red to orange is not success / 红转橙不算成功".
 
 ## Expected Entry Modes
 
@@ -28,6 +33,7 @@ Use this check before publishing or syncing the Skill.
 - `AIGC_PLATEAU_BREAKER`
 - `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`
 - `AIGC_REGRESSION_GUARD`
+- `FIRST_PASS_EFFECTIVENESS_GATE`
 - `FINAL_ACCEPTANCE_AUDIT`
 
 ## Retired Modes Must Not Be QUICKSTART Entries
@@ -72,6 +78,7 @@ expected_modes = [
     'AIGC_PLATEAU_BREAKER',
     'SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK',
     'AIGC_REGRESSION_GUARD',
+    'FIRST_PASS_EFFECTIVENESS_GATE',
     'FINAL_ACCEPTANCE_AUDIT',
 ]
 
@@ -109,11 +116,11 @@ description: Chinese thesis AIGC and similarity-risk optimization skill with for
 license: MIT
 ---"""
 
-if not skill.startswith(expected_frontmatter + "\\n\\n# zh-thesis-risk-optimizer"):
+if not skill.startswith(expected_frontmatter + "\n\n# zh-thesis-risk-optimizer"):
     errors.append('SKILL.md frontmatter is not the expected legal YAML block')
 
 declared_paths = sorted(set(re.findall(
-    r'((?:prompts|references|workflow)/[A-Za-z0-9_./-]+\\.md)',
+    r'((?:prompts|references|workflow)/[A-Za-z0-9_./-]+\.md)',
     skill,
 )))
 
@@ -121,7 +128,7 @@ for rel in declared_paths:
     if not (root / rel).exists():
         errors.append(f'SKILL.md declares missing path: {rel}')
 
-router_modes = re.findall(r'^\\| `([^`]+)` \\|', skill, flags=re.MULTILINE)
+router_modes = re.findall(r'^\| `([^`]+)` \|', skill, flags=re.MULTILINE)
 if router_modes != expected_modes:
     errors.append(
         'Minimal Mode Router mismatch: '
@@ -160,7 +167,7 @@ test_paths = []
 for test_file in sorted((root / 'tests').glob('*.md')):
     text = test_file.read_text(encoding='utf-8')
     for rel in re.findall(
-        r'((?:prompts|references|workflow|tests|examples)/[A-Za-z0-9_./-]+\\.md)',
+        r'((?:prompts|references|workflow|tests|examples)/[A-Za-z0-9_./-]+\.md)',
         text,
     ):
         test_paths.append((test_file, rel))

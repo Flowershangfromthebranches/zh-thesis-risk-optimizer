@@ -59,6 +59,7 @@ The current slim router exposes only these entry modes:
 | `AIGC_PLATEAU_BREAKER` | Multiple rounds slow down, red decreases but orange remains, or user reports a plateau after revision. |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | Human resource management, business administration, marketing, education management, public administration, or similar template-heavy papers. |
 | `AIGC_REGRESSION_GUARD` | A rewrite becomes smoother, more formal, more abstract, or more AI-like. |
+| `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration and AIGC thresholds. Not a user-facing entry. |
 | `FINAL_ACCEPTANCE_AUDIT` | End every report-driven or file-copy task with coverage, evidence, regression, and character-change checks. |
 
 Other historical rules are internal sub-rules only. Do not invoke them as user-facing entry modes.
@@ -85,6 +86,7 @@ FILE_INPUT_COPY_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> AIGC_REGRESSION_GUARD
+-> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 

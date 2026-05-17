@@ -25,6 +25,7 @@ Do not mark a task complete until this audit passes.
 | FIRST_PASS_RED_ORANGE_ENGINE or CURRENT_REPORT_RED_ORANGE_ENGINE |  |  |  |
 | SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable |  |  |  |
 | AIGC_REGRESSION_GUARD |  |  |  |
+| FIRST_PASS_EFFECTIVENESS_GATE |  |  |  |
 | FINAL_ACCEPTANCE_AUDIT | yes | yes | current table |
 
 If a required step is missing, final status is `BLOCKED`.
@@ -96,3 +97,14 @@ Use one:
 - `FIRST_PASS_FAILURE`
 
 Never promise external detector results.
+
+## 8. Required Output Table (Extended)
+
+The final output table must include these additional rows:
+
+| item | result | evidence |
+|---|---|---|
+| first_pass_effectiveness_gate_result | PASSED / FIRST_PASS_FAILURE / NOT_APPLICABLE |  |
+| color_migration_conclusion | 有效降低 / 红转橙未突破 / 无原版对比 |  |
+| red_to_orange_migration_detected | yes / no / not_applicable |  |
+| next_required_route | FINAL_ACCEPTANCE_AUDIT / AIGC_PLATEAU_BREAKER / not_applicable |  |

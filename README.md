@@ -64,6 +64,7 @@
 | `AIGC_PLATEAU_BREAKER` | 多轮后红色下降但橙色堆积、AIGC 下降变慢时使用。 |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | 社科/管理类论文模板骨架和证据不足问题处理。 |
 | `AIGC_REGRESSION_GUARD` | 防止改写后更正式、更顺滑、更抽象、更像 AI。 |
+| `FIRST_PASS_EFFECTIVENESS_GATE` | 首轮改写后的内部必经门禁，检查颜色迁移和 AIGC 阈值。非用户入口。 |
 | `FINAL_ACCEPTANCE_AUDIT` | 每次报告驱动或文件副本任务结束前的最终验收。 |
 
 ## 标准链路
@@ -77,6 +78,7 @@ FILE_INPUT_COPY_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> AIGC_REGRESSION_GUARD
+-> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
