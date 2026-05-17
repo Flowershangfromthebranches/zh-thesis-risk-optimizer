@@ -22,7 +22,7 @@ The Skill does not promise any external detection-platform result. It does not c
 
 Every matching task starts with `RISK_INTAKE_GATE` and `INTAKE_WIZARD_PRECHECK`.
 
-Before rewriting, you must provide:
+必填项。Before rewriting, you must provide:
 
 - current_similarity_rate: 当前查重总体相似度；
 - current_aigc_rate: 当前 AIGC 总体疑似率；
@@ -118,7 +118,6 @@ Required chain:
 
 ```text
 RISK_INTAKE_GATE
--> INTAKE_WIZARD_PRECHECK
 -> FILE_INPUT_COPY_WORKFLOW
 -> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
@@ -183,7 +182,6 @@ Required chain:
 
 ```text
 RISK_INTAKE_GATE
--> INTAKE_WIZARD_PRECHECK
 -> FILE_INPUT_COPY_WORKFLOW
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW

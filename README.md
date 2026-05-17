@@ -77,9 +77,9 @@
 DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保持原格式。
 ```
 
-## 支持模式
+## 工作流组件
 
-用户入口和内部必经引擎如下。旧提示词文件仍可保留，但不得作为用户命令直接调用。
+以下是当前主工作流组件。旧提示词文件仍可保留，但不得作为用户命令直接调用；模型应按“标准链路”执行，而不是让用户手动挑旧入口。
 
 | 入口模式 | 用途 |
 |---|---|
@@ -108,7 +108,6 @@ DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保
 
 ```text
 RISK_INTAKE_GATE
--> INTAKE_WIZARD_PRECHECK
 -> FILE_INPUT_COPY_WORKFLOW
 -> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
@@ -129,7 +128,6 @@ RISK_INTAKE_GATE
 
 ```text
 RISK_INTAKE_GATE
--> INTAKE_WIZARD_PRECHECK
 -> FILE_INPUT_COPY_WORKFLOW
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW

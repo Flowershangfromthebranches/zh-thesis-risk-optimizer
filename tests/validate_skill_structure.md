@@ -124,7 +124,6 @@ quick_current_chain = section_between(quickstart, "Current-Report Workflow", "DO
 
 required_chain_tokens = [
     "RISK_INTAKE_GATE",
-    "INTAKE_WIZARD_PRECHECK",
     "FILE_INPUT_COPY_WORKFLOW",
     "DOCX_COLOR_REPORT_EXTRACTION",
     "THREE_MODE_COLOR_BAND_WORKFLOW",
@@ -145,6 +144,30 @@ for token in required_chain_tokens:
         fail(errors, f"SKILL.md current-report chain missing {token}")
     if token not in quickstart:
         fail(errors, f"QUICKSTART.md missing {token}")
+    if token not in readme:
+        fail(errors, f"README.md missing workflow node {token}")
+
+main_workflow_order = [
+    "RISK_INTAKE_GATE",
+    "FILE_INPUT_COPY_WORKFLOW",
+    "DOCX_COLOR_REPORT_EXTRACTION",
+    "THREE_MODE_COLOR_BAND_WORKFLOW",
+    "CONTROLLED_HUMANIZATION_ENGINE",
+    "LOCAL_ESCALATED_HUMANIZATION",
+    "REWRITE_APPLICATION_GATE",
+    "TEMPLATE_RESIDUE_DETECTOR",
+    "THESIS_REGISTER_GUARD",
+    "AIGC_REGRESSION_GUARD",
+    "FIRST_PASS_EFFECTIVENESS_GATE",
+    "FINAL_ACCEPTANCE_AUDIT",
+]
+if not ordered(first_chain, main_workflow_order):
+    fail(errors, "SKILL.md mandatory first-pass chain does not match the required main workflow order")
+if not ordered(quick_first_chain, main_workflow_order):
+    fail(errors, "QUICKSTART.md first-pass Required chain does not match the required main workflow order")
+readme_first_chain = section_between(readme, "原文 + 原版 AIGC", "当前稿 + 当前 AIGC")
+if not ordered(readme_first_chain, main_workflow_order):
+    fail(errors, "README.md first-pass standard chain does not match the required main workflow order")
 
 critical_order = [
     "CONTROLLED_HUMANIZATION_ENGINE",
@@ -175,6 +198,12 @@ for token in ["current_similarity_rate", "current_aigc_rate"]:
         fail(errors, f"QUICKSTART.md does not explicitly require {token}")
     if token not in intake_prompt:
         fail(errors, f"mode_intake_wizard.md does not include {token}")
+
+for token in ["当前查重率", "当前 AIGC", "目标查重率", "目标 AIGC"]:
+    if token not in quickstart:
+        fail(errors, f"QUICKSTART.md does not clearly list required field: {token}")
+    if token not in readme:
+        fail(errors, f"README.md does not clearly document required field: {token}")
 
 for token in [
     "selected_strategy",

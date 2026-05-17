@@ -28,7 +28,7 @@ When integrity or technical correctness conflicts with risk reduction, integrity
 ## 3. Core Workflow
 
 1. Run `RISK_INTAKE_GATE` before any rewrite route.
-2. Run `INTAKE_WIZARD_PRECHECK`.
+2. Use `INTAKE_WIZARD_PRECHECK` only to display and complete the intake template when the user has not supplied the required fields.
 3. On first contact for a new task, show `workflow/intake_request_template.md` and wait for the user's completed intake reply.
 4. If `current_similarity_rate` or `current_aigc_rate` is missing, output `INTAKE_INCOMPLETE`; file reading and report parsing may continue, but rewriting must not start.
 5. Create a file copy for file input; never edit the original file directly.
@@ -71,7 +71,6 @@ the mandatory chain is:
 
 ```text
 RISK_INTAKE_GATE
--> INTAKE_WIZARD_PRECHECK
 -> FILE_INPUT_COPY_WORKFLOW
 -> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
@@ -96,7 +95,6 @@ When the intake says the report is from a revised/current draft, use:
 
 ```text
 RISK_INTAKE_GATE
--> INTAKE_WIZARD_PRECHECK
 -> FILE_INPUT_COPY_WORKFLOW
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
