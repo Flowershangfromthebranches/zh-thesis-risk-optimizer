@@ -87,6 +87,10 @@ Conclusion: 失败，需要二轮
 - ❌ "有效" in any summary text.
 - ❌ "红橙均已处理" — because red→orange migration means processing was incomplete.
 - ❌ "可通过" or "可交付".
+- "完成" or "COMPLETED" in final status.
+- "有效" in any summary text.
+- "红橙均已处理" — because red→orange migration means processing was incomplete.
+- "可通过" or "可交付".
 
 ### 3. Must Route To
 
@@ -124,6 +128,7 @@ At minimum, the following gaps should be identified:
 | next_required_route | AIGC_PLATEAU_BREAKER |
 | priority_sections | 摘要、理论基础、第五章、结论 |
 | material_gap_table_required | yes |
+| final_delivery_status | FIRST_PASS_FAILURE |
 | conclusion text | 失败，需要二轮 |
 
 ## Testing Steps

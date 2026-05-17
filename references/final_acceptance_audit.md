@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`FINAL_ACCEPTANCE_AUDIT` is the final gate for report-driven and file-copy tasks. It prevents the Skill from claiming completion when the forced chain, color extraction, red/orange coverage, social-science evidence handling, or regression checks were skipped.
+`FINAL_ACCEPTANCE_AUDIT` is the final gate for report-driven and file-copy tasks. It prevents the Skill from claiming completion when the forced chain, color extraction, red/orange coverage, social-science evidence handling, regression checks, academic tone checks, or format preservation checks were skipped.
 
 This audit is a workflow acceptance check. It does not promise any external detection result.
 
@@ -21,6 +21,9 @@ The final output must report:
 9. Author evidence still needed.
 10. **Color migration check**: original vs. post-first-pass color distribution comparison.
 11. **First-pass effectiveness gate result**: whether `FIRST_PASS_EFFECTIVENESS_GATE` conditions were checked and passed.
+12. **Academic tone guard result**: whether `ACADEMIC_TONE_GUARD` found and corrected over-humanization.
+13. **Format preservation result**: whether `OOXML_DOCX_PATCH_WORKFLOW` preserved the DOCX structure.
+14. **Duplicate insertion guard result**: whether paragraph duplication was detected.
 
 This audit absorbs the older post-rewrite self-audit, anti-shallow-rewrite, and effectiveness-evaluation gates. These checks are no longer separate entry modes; completion depends on this final gate.
 
@@ -41,6 +44,10 @@ The task can be marked `COMPLETED` only when:
 - no protected content was damaged;
 - no fabricated data, interviews, citations, company facts, forms, systems, indicators, or report facts were introduced;
 - if both `original_report_distribution` and `post_first_pass_report_distribution` exist, `FIRST_PASS_EFFECTIVENESS_GATE` was executed and passed.
+- if both `original_report_distribution` and `post_first_pass_report_distribution` exist, `FIRST_PASS_EFFECTIVENESS_GATE` was executed and passed;
+- `academic_tone_guard_result` is PASSED or NOT_APPLICABLE;
+- `duplicate_insertion_guard_result` is PASSED or NOT_APPLICABLE;
+- `format_preservation_result` is PASSED or NOT_APPLICABLE.
 
 The task must not be marked `COMPLETED` when:
 
@@ -50,6 +57,9 @@ The task must not be marked `COMPLETED` when:
 - social-science red/orange paragraphs still use generic "体系、机制、能力、价值、保障" prose without local evidence;
 - missing author evidence was silently invented or ignored;
 - `FIRST_PASS_EFFECTIVENESS_GATE` returned any `FAIL` verdict.
+- `FIRST_PASS_EFFECTIVENESS_GATE` returned any `FAIL` verdict;
+- `ACADEMIC_TONE_GUARD` found violations that were not corrected;
+- `DOCX_DUPLICATE_INSERTION_GUARD` detected duplicate insertions.
 
 If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, but the paragraph should be marked as needing author input rather than rewritten as complete.
 
@@ -94,6 +104,20 @@ The final status row's "result" column must include the color migration conclusi
 - "有效降低" only when red, orange, and combined risk all decreased.
 - Do not write "有效" in any output when red decreased but orange accumulated.
 
+## Delivery Status Rules
+
+The `final_delivery_status` field replaces the simpler `final status` when format and tone checks are active:
+
+| condition | final_delivery_status |
+|---|---|
+| AIGC risk reduced, all checks pass | COMPLETED |
+| AIGC risk reduced but academic_tone_guard failed | NEEDS_ACADEMIC_TONE_REPAIR |
+| AIGC risk reduced but duplicate_insertion_guard failed | FORMAT_FAILURE |
+| AIGC risk reduced but ooxml_patch not used and user requires DOCX format | FORMAT_RISK_REVIEW_REQUIRED |
+| First-pass effectiveness gate failed | FIRST_PASS_FAILURE |
+| Mandatory chain step missing | BLOCKED |
+| Author evidence missing | NEEDS_AUTHOR_EVIDENCE |
+
 ## Required Output
 
 | item | result | evidence |
@@ -116,6 +140,13 @@ The final status row's "result" column must include the color migration conclusi
 | priority_sections | 摘要、理论基础、第五章、结论 / not_applicable |  |
 | material_gap_table_required | yes / no / not_applicable |  |
 | final status | COMPLETED / BLOCKED / NEEDS_AUTHOR_EVIDENCE / FIRST_PASS_FAILURE |  |
+| controlled_humanization_level | 1 / 2 / 3 / not_applicable |  |
+| academic_tone_guard_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| ooxml_patch_result | USED_AND_PASSED / USED_AND_FAILED / NOT_USED |  |
+| duplicate_insertion_guard_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| format_preservation_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| over_humanization_regression_found | yes / no / not_applicable |  |
+| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
 
 ## First-Pass Failure
 
@@ -133,5 +164,7 @@ Check:
 - Was author evidence missing but not requested?
 - Was the color migration assessed? (See Color Migration Check section.)
 - Does the color migration show red-to-orange transfer?
+- Was academic tone guard applied and passed?
+- Was format preservation verified?
 
 Output a failure-cause table and a next repair plan. The next repair plan must reference `AIGC_PLATEAU_BREAKER` as the next step.

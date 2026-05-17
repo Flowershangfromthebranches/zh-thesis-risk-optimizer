@@ -1,6 +1,6 @@
 ---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, first-pass effectiveness gate, and final acceptance audit.
+description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, controlled humanization, first-pass effectiveness gate, and final acceptance audit.
 license: MIT
 ---
 
@@ -66,6 +66,7 @@ FILE_INPUT_COPY_WORKFLOW
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
+-> CONTROLLED_HUMANIZATION_ENGINE when AIGC remains high or discipline is template-heavy
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -84,7 +85,9 @@ FILE_INPUT_COPY_WORKFLOW
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
 -> AIGC_PLATEAU_BREAKER when orange accumulation or multi-round slowdown exists
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
+-> CONTROLLED_HUMANIZATION_ENGINE when AIGC remains high or discipline is template-heavy
 -> AIGC_REGRESSION_GUARD
+-> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
@@ -111,20 +114,32 @@ Check:
 
 Then output a failure-cause table and next repair plan.
 
+### 4.6 DOCX Format Preservation
+
+When input is DOCX and the user requires format preservation, use `OOXML_DOCX_PATCH_WORKFLOW` as the default writeback method. Only modify confirmed `w:t` text nodes in `word/document.xml`. Do not rebuild the entire DOCX. Preserve styles, numbering, headers, footers, footnotes, endnotes, comments, media, and rels.
+
+Run `DOCX_DUPLICATE_INSERTION_GUARD` after every DOCX patch to prevent the failure mode where the same paragraph is inserted multiple times.
+
+### 4.7 Academic Tone Guard
+
+When `CONTROLLED_HUMANIZATION_ENGINE` is active, run `ACADEMIC_TONE_GUARD` to prevent over-humanization. The thesis must remain in formal academic register — no diary-like, chat-like, or social-media-like expressions.
+
 ## 5. Minimal Mode Router
 
 | Mode | Use When | Load |
 |---|---|---|
 | `INTAKE_WIZARD_PRECHECK` | Start of every matching task. | prompts/mode_intake_wizard.md, workflow/intake_request_template.md |
 | `FILE_INPUT_COPY_WORKFLOW` | User provides DOCX/TXT/Markdown/LaTeX file input. | references/file_input_copy_workflow.md |
+| `OOXML_DOCX_PATCH_WORKFLOW` | DOCX format preservation required; default writeback method. | references/ooxml_docx_patch_workflow.md, workflow/ooxml_patch_checklist.md |
 | `DOCX_COLOR_REPORT_EXTRACTION` | User provides Word/DOCX color report. | references/docx_color_report_extraction.md |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | Any AIGC/similarity/dual task with color bands. | prompts/mode_three_mode_color_band.md, references/three_mode_color_band_workflow.md |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC color report. | prompts/mode_first_pass_red_orange.md, references/first_pass_red_orange_engine.md |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current thesis plus current AIGC color report. | prompts/mode_current_report_red_orange.md, references/current_report_red_orange_engine.md |
 | `AIGC_PLATEAU_BREAKER` | Multi-round slowdown or orange accumulation. | prompts/mode_aigc_plateau_breaker.md, references/aigc_plateau_breaker.md |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | HR/management/social-science red-orange template risk. | prompts/mode_social_science_aigc_bottleneck.md, references/social_science_template_bottleneck.md, workflow/author_evidence_pack_template.md |
-| `AIGC_REGRESSION_GUARD` | Rewrite becomes smoother, more formal, or more AI-like. | references/aigc_regression_guard.md |
-| `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration and AIGC thresholds. | references/first_pass_effectiveness_gate.md |
+| `CONTROLLED_HUMANIZATION_ENGINE` | Internal engine for controlled de-AIGC humanization of social-science text. | prompts/mode_controlled_humanization.md, references/controlled_humanization_engine.md, references/academic_tone_guard.md |
+| `AIGC_REGRESSION_GUARD` | Rewrite becomes smoother/more AI-like OR too colloquial/casual. | references/aigc_regression_guard.md, references/academic_tone_guard.md |
+| `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration, AIGC thresholds, tone, and format. | references/first_pass_effectiveness_gate.md |
 | `FINAL_ACCEPTANCE_AUDIT` | End of every report-driven or file-copy task. | prompts/mode_final_acceptance_audit.md, references/final_acceptance_audit.md |
 
 Internal sub-rules such as burstiness audit, orange-zone repair, conservative repair, structure rebuilding, evidence injection, paragraph strategies, second-pass rewrite, and effectiveness evaluation are not entry modes. Load them only through the main modes above when needed.
@@ -191,12 +206,21 @@ Allowed `action_type` values:
 | character change |  |  |
 | unprocessed paragraphs |  |  |
 | author evidence needed |  |  |
+| color migration assessment |  |  |
+| first-pass effectiveness gate |  |  |
+| controlled_humanization_level |  |  |
+| academic_tone_guard_result |  |  |
+| ooxml_patch_result |  |  |
+| duplicate_insertion_guard_result |  |  |
+| format_preservation_result |  |  |
+| over_humanization_regression_found |  |  |
+| final_delivery_status |  |  |
 
 ## 7. File Layout
 
 - `SKILL.md`: slim routing and hard chain only.
-- `prompts/`: executable prompts for the 10 entry modes.
-- `references/`: detailed rules used by entry modes.
-- `workflow/`: intake, author evidence pack, file-copy, and project templates.
+- `prompts/`: executable prompts for entry modes and internal engines.
+- `references/`: detailed rules used by entry modes and internal engines.
+- `workflow/`: intake, author evidence pack, file-copy, OOXML patch, and project templates.
 - `tests/`: acceptance and regression checklists.
 - `NOTICE` and `THIRD_PARTY_NOTICES.md`: attribution and license notes.

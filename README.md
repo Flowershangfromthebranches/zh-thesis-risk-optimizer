@@ -4,7 +4,7 @@
 
 `zh-thesis-risk-optimizer` 是面向中文论文的文本质量与风险优化 Skill。它用于辅助处理 AIGC 写作风险、查重相似风险、报告颜色定位、引用完整性保护、文件副本处理和最终验收。
 
-当前版本采用瘦路由设计：`SKILL.md` 只保留 11 个入口模式（含内部必经门禁 `FIRST_PASS_EFFECTIVENESS_GATE`）。旧模式和历史提示词只作为内部子规则或兼容资料保留，不再建议用户直接调用。
+当前版本采用瘦路由设计：`SKILL.md` 包含用户入口模式和内部必经引擎。旧模式和历史提示词只作为内部子规则或兼容资料保留，不再建议用户直接调用。
 
 本项目不承诺任何外部检测平台结果，不破解、模拟、逆向或伪造检测系统，不伪造报告、数据、实验、引用、访谈、案例、代码、接口或运行结果，不删除必要引用，也不把他人观点伪装成原创。
 
@@ -12,13 +12,18 @@
 
 - Intake 预检：所有匹配任务先进入 `INTAKE_WIZARD_PRECHECK`，避免信息不足时直接改写。
 - 文件副本处理：文件输入默认创建副本，不直接改原文件。
+- OOXML DOCX 补丁：用 OOXML 方式修改 DOCX，最大限度保留格式，不重建全文。
+- 重复插入防护：防止同一段落在 DOCX 中被重复插入。
 - DOCX 颜色报告提取：先读取颜色元数据，再做红橙紫黑风险带映射。
 - 三任务类型颜色分级：在 `THREE_MODE_COLOR_BAND_WORKFLOW` 内处理只降 AIGC、只降查重、双降三类任务。
 - 首轮红橙联合处理：原文和原版 AIGC 报告进入 `FIRST_PASS_RED_ORANGE_ENGINE`，红色和橙色一起作为主处理区。
 - 当前报告红橙验收：复检稿进入 `CURRENT_REPORT_RED_ORANGE_ENGINE`，当前红橙必须全部进入任务表。
 - 社科/管理类模板瓶颈处理：人力资源管理、工商管理、市场营销、教育管理、行政管理等论文启用 `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`。
-- AIGC 回归防线：识别更正式、更顺滑、更抽象、更像 AI 的改写回归。
-- 最终验收：`FINAL_ACCEPTANCE_AUDIT` 检查链路、红橙覆盖率、字数变化、证据缺口和格式风险。
+- 受控人类化引擎：吸收老版本强降 AIGC 能力（去模板化、句长变化、作者判断），但通过学术语体守卫防止口语化过头。
+- 学术语体守卫：防止受控人类化过度，禁止日记式、自媒体式、聊天式表达。
+- AIGC 回归防线：同时防两种回归——更正式更像 AI，或太口语太不像论文。
+- 首轮效果门禁：检查颜色迁移、AIGC 阈值、语体质量和格式完整性。
+- 最终验收：`FINAL_ACCEPTANCE_AUDIT` 检查链路、红橙覆盖率、字数变化、证据缺口、语体质量、格式完整性和交付状态。
 
 ## 快速开始
 
@@ -49,22 +54,34 @@
 【特殊要求】跳过
 ```
 
+## 受控人类化：安全吸收老版本降 AIGC 能力
+
+如果想吸收老版本 bff6860 的强降 AIGC 能力，但不想失去学术规范，应使用 `CONTROLLED_HUMANIZATION_ENGINE` level 2 或 level 3，而不是 aggressive 口语化。
+
+```text
+请使用新版受控人类化策略：吸收 bff6860 的去模板化、句长变化和作者判断能力，
+但必须通过 ACADEMIC_TONE_GUARD，不能出现日记式、自媒体式或聊天式表达；
+DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保持原格式。
+```
+
 ## 支持模式
 
-用户只需要使用下面 11 个入口（含内部必经门禁）。旧提示词文件仍可保留，但不得作为用户命令直接调用。
+用户入口和内部必经引擎如下。旧提示词文件仍可保留，但不得作为用户命令直接调用。
 
 | 入口模式 | 用途 |
 |---|---|
 | `INTAKE_WIZARD_PRECHECK` | 所有匹配任务的入口，先收集必填、强烈建议和可选信息。 |
 | `FILE_INPUT_COPY_WORKFLOW` | 用户提供 DOCX/TXT/Markdown/LaTeX 文件时，先创建副本再处理。 |
+| `OOXML_DOCX_PATCH_WORKFLOW` | 内部引擎：OOXML 方式修改 DOCX，最大限度保留格式。 |
 | `DOCX_COLOR_REPORT_EXTRACTION` | 用户提供 Word/DOCX 颜色标记报告时，先提取颜色元数据。 |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | 按红橙紫黑风险带处理 AIGC、查重或双目标任务。 |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | 原文加原版 AIGC 报告的首轮红橙联合处理。 |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | 当前稿加当前 AIGC 报告的红橙覆盖处理。 |
 | `AIGC_PLATEAU_BREAKER` | 多轮后红色下降但橙色堆积、AIGC 下降变慢时使用。 |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | 社科/管理类论文模板骨架和证据不足问题处理。 |
-| `AIGC_REGRESSION_GUARD` | 防止改写后更正式、更顺滑、更抽象、更像 AI。 |
-| `FIRST_PASS_EFFECTIVENESS_GATE` | 首轮改写后的内部必经门禁，检查颜色迁移和 AIGC 阈值。非用户入口。 |
+| `CONTROLLED_HUMANIZATION_ENGINE` | 内部引擎：受控去 AIGC 人类化，打破 AI 模板但保持学术语体。 |
+| `AIGC_REGRESSION_GUARD` | 防止改写后更正式更像 AI，或太口语太不像论文。 |
+| `FIRST_PASS_EFFECTIVENESS_GATE` | 内部必经门禁：检查颜色迁移、AIGC 阈值、语体质量和格式完整性。 |
 | `FINAL_ACCEPTANCE_AUDIT` | 每次报告驱动或文件副本任务结束前的最终验收。 |
 
 ## 标准链路
@@ -77,6 +94,7 @@ FILE_INPUT_COPY_WORKFLOW
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
+-> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -91,11 +109,24 @@ FILE_INPUT_COPY_WORKFLOW
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
 -> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
+-> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> AIGC_REGRESSION_GUARD
+-> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
 任一步缺失，都不能标记完成。
+
+## DOCX 格式保护
+
+DOCX 写回默认使用 OOXML patch：
+
+- 不直接改原文件，先创建副本。
+- 只修改 `word/document.xml` 中已确认映射的 `w:t` 文本节点。
+- 不重建 styles.xml、numbering.xml、页眉页脚、脚注、尾注、批注、图片、目录。
+- 低置信度映射不写回。
+- 重复匹配立即停止写回。
+- 写回后验证：zip 完整性、无重复插入、资源保留、页数稳定。
 
 ## 专业适配说明
 
@@ -105,34 +136,13 @@ FILE_INPUT_COPY_WORKFLOW
 - 对工科/计算机类论文有专项保护：公式、代码、接口、路径、表名、字段名、参数、实验数据、运行结果默认保护。
 - 其他专业必须先填写专业保护项、数据边界和证据来源；信息不足时应输出作者补充清单，而不是编造内容。
 
-## DOCX 文件格式保护
-
-文件输入默认执行 `FILE_INPUT_COPY_WORKFLOW`：
-
-- 默认创建原文件副本，不直接修改原文件。
-- 只替换已经确认映射的目标文本。
-- 不重建全文，不重新排版全文。
-- 低置信度映射不写回文件，只输出人工确认项。
-- 复杂 Word 格式、批注、域、脚注、尾注、表格、图片和公式需要人工复核。
-- 本项目不承诺所有 Word 格式 100% 不变。
-
-## 不适用场景
-
-- 编造数据、实验、案例、访谈、问卷或图表。
-- 编造引用、参考文献、相似源、报告百分比或风险等级。
-- 删除必要引用。
-- 伪造检测结果或报告内容。
-- 承诺外部检测系统结果。
-- 反向工程或攻击检测系统。
-- 替作者完成不存在的研究主体内容。
-
 ## 项目结构
 
 - [SKILL.md](SKILL.md)：瘦路由和强制链路。
-- [QUICKSTART.md](QUICKSTART.md)：只面向 10 个入口的使用指南。
-- [references/](references)：入口模式使用的详细规则。
+- [QUICKSTART.md](QUICKSTART.md)：使用指南。
+- [references/](references)：入口模式和内部引擎使用的详细规则。
 - [prompts/](prompts)：入口提示词和历史兼容提示词。
-- [workflow/](workflow)：intake、作者材料包和文件/项目模板。
+- [workflow/](workflow)：intake、作者材料包、OOXML 补丁清单和文件/项目模板。
 - [tests/](tests)：结构和安全验收清单。
 - [NOTICE](NOTICE) 与 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)：第三方致谢和许可证说明。
 

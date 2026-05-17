@@ -34,6 +34,16 @@ Always:
 - Do not flatten a DOCX into plain text unless the user explicitly asks for plain-text output.
 - If visual QA is required and LibreOffice is available, render the copied DOCX and inspect it.
 
+#### DOCX Writeback Priority
+
+When the input is DOCX and format preservation is required, use this priority:
+
+1. **OOXML confirmed paragraph patch** (via `OOXML_DOCX_PATCH_WORKFLOW`): directly edit `word/document.xml` text nodes while preserving all styles, numbering, headers, footers, footnotes, endnotes, comments, media, and rels. This is the default and preferred method.
+2. **python-docx run-level patch**: only for simple files where OOXML approach is not available. Limited to simple formatting.
+3. **Full-document regeneration**: ONLY if the user explicitly requests it AND accepts format risk. Must warn: "全文重建可能导致格式丢失，包括样式、页眉页脚、脚注、批注、目录、图片和编号。"
+
+Never use full-document regeneration as the default. Always attempt OOXML patch first.
+
 ### LaTeX
 
 - Create a copied `.tex` file.

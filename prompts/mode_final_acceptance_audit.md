@@ -14,16 +14,22 @@ Do not mark a task complete until this audit passes.
 - Character delta table.
 - Protected item review.
 - Author evidence requests, if any.
+- Controlled humanization report (if applicable).
+- Academic tone guard report (if applicable).
+- OOXML patch log (if applicable).
+- Duplicate insertion guard report (if applicable).
 
 ## 1. Mandatory Chain Trace
 
 | step | required | executed | evidence |
 |---|---|---|---|
 | FILE_INPUT_COPY_WORKFLOW |  |  |  |
+| OOXML_DOCX_PATCH_WORKFLOW when DOCX |  |  |  |
 | DOCX_COLOR_REPORT_EXTRACTION |  |  |  |
 | THREE_MODE_COLOR_BAND_WORKFLOW |  |  |  |
 | FIRST_PASS_RED_ORANGE_ENGINE or CURRENT_REPORT_RED_ORANGE_ENGINE |  |  |  |
 | SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable |  |  |  |
+| CONTROLLED_HUMANIZATION_ENGINE when applicable |  |  |  |
 | AIGC_REGRESSION_GUARD |  |  |  |
 | FIRST_PASS_EFFECTIVENESS_GATE |  |  |  |
 | FINAL_ACCEPTANCE_AUDIT | yes | yes | current table |
@@ -66,6 +72,7 @@ When the paper is human resource management, business administration, marketing,
 | synonym-only rewrite found |  |  |
 | more formal / smoother / more AI-like |  |  |
 | abstract management jargon increased |  |  |
+| over-humanization (too colloquial/casual) |  |  |
 | A/B/C/D action missing |  |  |
 | protected content damaged |  |  |
 | fabricated evidence found |  |  |
@@ -73,7 +80,32 @@ When the paper is human resource management, business administration, marketing,
 
 If any red/orange paragraph only replaces words, preserves the same template skeleton, or becomes more formal without local evidence, final status is not `COMPLETED`.
 
-## 6. First-Pass Failure Branch
+If any paragraph is too colloquial, diary-like, or social-media-like, final status is not `COMPLETED`.
+
+## 6. Controlled Humanization Review
+
+When `CONTROLLED_HUMANIZATION_ENGINE` was active:
+
+| item | result | evidence |
+|---|---|---|
+| intensity level used | 1 / 2 / 3 / N/A |  |
+| academic_tone_guard_result | PASSED / FAILED / N/A |  |
+| over_humanization_regression_found | yes / no |  |
+| level_3_warning_issued | yes / no |  |
+
+## 7. Format Preservation Review
+
+When DOCX input was used:
+
+| item | result | evidence |
+|---|---|---|
+| ooxml_patch_result | USED_AND_PASSED / USED_AND_FAILED / NOT_USED |  |
+| duplicate_insertion_guard_result | PASSED / FAILED / N/A |  |
+| format_preservation_result | PASSED / FAILED / N/A |  |
+| page_count_change | +N / -N / 0 |  |
+| resource_preservation | OK / FAIL |  |
+
+## 8. First-Pass Failure Branch
 
 If the user says original first-pass testing barely changed AIGC risk, output:
 
@@ -84,17 +116,25 @@ If the user says original first-pass testing barely changed AIGC risk, output:
 | synonym-only rewrite avoided |  |  |  |
 | social-science bottleneck enabled |  |  |  |
 | author evidence pack requested when needed |  |  |  |
+| controlled humanization applied |  |  |  |
+| academic tone guard passed |  |  |  |
+| format preservation verified |  |  |  |
 
 Final status should be `FIRST_PASS_FAILURE` unless all checks pass and a new repair plan is ready.
 
-## 7. Final Status
+## 9. Final Status and Delivery Status
 
-Use one:
+Use `final_delivery_status` as the primary status:
 
-- `COMPLETED`
-- `BLOCKED`
-- `NEEDS_AUTHOR_EVIDENCE`
-- `FIRST_PASS_FAILURE`
+| status | meaning |
+|---|---|
+| `COMPLETED` | All checks pass; ready to deliver |
+| `FIRST_PASS_FAILURE` | First-pass effectiveness gate failed |
+| `NEEDS_ACADEMIC_TONE_REPAIR` | AIGC reduced but academic tone guard failed |
+| `FORMAT_FAILURE` | Duplicate insertion or format corruption detected |
+| `FORMAT_RISK_REVIEW_REQUIRED` | OOXML patch not used but user requires DOCX format |
+| `BLOCKED` | Mandatory chain step missing |
+| `NEEDS_AUTHOR_EVIDENCE` | Author evidence missing |
 
 Never promise external detector results.
 
@@ -104,9 +144,33 @@ The final output table must include these additional rows:
 
 | item | result | evidence |
 |---|---|---|
+## 10. Required Output Table
+
+The final output table must include all these rows:
+
+| item | result | evidence |
+|---|---|---|
+| DOCX color read | yes/no/not_applicable |  |
+| red total / processed |  |  |
+| orange total / processed |  |  |
+| social-science bottleneck enabled | yes/no/not_applicable |  |
+| synonym-only rewrite found | yes/no |  |
+| formalization regression found | yes/no |  |
+| character change | pass/fail |  |
+| unprocessed paragraphs | count/list |  |
+| author evidence needed | count/list |  |
+| color migration assessment | 红转橙未突破 / 有效降低 / 无原版对比 |  |
+| first-pass effectiveness gate | PASSED / FIRST_PASS_FAILURE / NOT_APPLICABLE |  |
 | first_pass_effectiveness_gate_result | PASSED / FIRST_PASS_FAILURE / NOT_APPLICABLE |  |
 | color_migration_conclusion | 有效降低 / 红转橙未突破 / 无原版对比 |  |
 | red_to_orange_migration_detected | yes / no / not_applicable |  |
 | next_required_route | FINAL_ACCEPTANCE_AUDIT / AIGC_PLATEAU_BREAKER / not_applicable |  |
 | priority_sections | 摘要、理论基础、第五章、结论 / not_applicable |  |
 | material_gap_table_required | yes / no / not_applicable |  |
+| controlled_humanization_level | 1 / 2 / 3 / not_applicable |  |
+| academic_tone_guard_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| ooxml_patch_result | USED_AND_PASSED / USED_AND_FAILED / NOT_USED |  |
+| duplicate_insertion_guard_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| format_preservation_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| over_humanization_regression_found | yes / no / not_applicable |  |
+| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |

@@ -9,6 +9,8 @@ Use `zh-thesis-risk-optimizer` when you need a Chinese thesis revision workflow 
 - DOCX/file-copy handling without editing the original file.
 - Character-change control.
 - Social-science and management-template bottleneck repair.
+- Controlled humanization that preserves academic register.
+- OOXML-based DOCX format preservation.
 - Final acceptance auditing before delivery.
 
 The Skill does not promise any external detection-platform result. It does not crack, simulate, reverse engineer, or forge detection systems or reports.
@@ -44,23 +46,25 @@ If you already know the inputs, fill the template directly:
 【特殊要求】跳过
 ```
 
-## 3. The 10 Entry Modes
+## 3. Entry Modes and Internal Engines
 
-The current slim router exposes only these entry modes:
+The current slim router exposes these entry modes and internal mandatory engines:
 
 | mode | use when |
 |---|---|
 | `INTAKE_WIZARD_PRECHECK` | Start every matching task and collect required, recommended, and optional fields. |
 | `FILE_INPUT_COPY_WORKFLOW` | The user provides DOCX/TXT/Markdown/LaTeX files; create a copy before editing. |
+| `OOXML_DOCX_PATCH_WORKFLOW` | DOCX format preservation required; default writeback method. Internal, not a user entry. |
 | `DOCX_COLOR_REPORT_EXTRACTION` | The user provides a Word/DOCX color-marked AIGC report. |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | A task uses red/orange/purple/black color bands for AIGC, similarity, or dual-risk handling. |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC report before any rewrite. |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current draft plus its current AIGC report. |
 | `AIGC_PLATEAU_BREAKER` | Multiple rounds slow down, red decreases but orange remains, or user reports a plateau after revision. |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | Human resource management, business administration, marketing, education management, public administration, or similar template-heavy papers. |
-| `AIGC_REGRESSION_GUARD` | A rewrite becomes smoother, more formal, more abstract, or more AI-like. |
-| `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration and AIGC thresholds. Not a user-facing entry. |
-| `FINAL_ACCEPTANCE_AUDIT` | End every report-driven or file-copy task with coverage, evidence, regression, and character-change checks. |
+| `CONTROLLED_HUMANIZATION_ENGINE` | Internal engine for controlled de-AIGC humanization; breaks AI templates while preserving academic register. Not a user entry. |
+| `AIGC_REGRESSION_GUARD` | A rewrite becomes smoother/more AI-like OR too colloquial/casual. |
+| `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration, AIGC thresholds, tone, and format. Not a user entry. |
+| `FINAL_ACCEPTANCE_AUDIT` | End every report-driven or file-copy task with coverage, evidence, regression, tone, format, and character-change checks. |
 
 Other historical rules are internal sub-rules only. Do not invoke them as user-facing entry modes.
 
@@ -74,6 +78,7 @@ Use this when you have the original paper and original AIGC color report.
 颜色规则：红色>70%，橙色60%-70%，紫色50%-60%，黑色<50%。
 请同时处理红色和橙色，黑色/低风险/封面/目录/承诺书/参考文献/附录冻结。
 全文字符数控制在 ±10%。
+DOCX 写回使用 OOXML patch，只替换确认映射的正文段落，保持原格式。
 请按强制链路执行，并在最后输出 FINAL_ACCEPTANCE_AUDIT。
 ```
 
@@ -85,6 +90,7 @@ FILE_INPUT_COPY_WORKFLOW
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
+-> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -92,7 +98,27 @@ FILE_INPUT_COPY_WORKFLOW
 
 If any required step is skipped, the task is not complete.
 
-## 5. Current-Report Workflow
+## 5. Controlled Humanization: Absorbing Old Version Strength Safely
+
+If you want to absorb the strong de-AIGC ability of older Skill versions (template-breaking, varied rhythm, author judgment) without losing academic standards, use the controlled humanization strategy:
+
+```text
+请使用新版受控人类化策略：吸收 bff6860 的去模板化、句长变化和作者判断能力，
+但必须通过 ACADEMIC_TONE_GUARD，不能出现日记式、自媒体式或聊天式表达；
+DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保持原格式。
+```
+
+The engine supports 3 intensity levels:
+
+| level | AIGC range | behavior |
+|---|---|---|
+| 1 (light) | < 50% | Only reduce template sentences; strong academic register |
+| 2 (medium, default) | 50%-75% | Break templates, add author judgment, vary sentence length, maintain thesis register |
+| 3 (strong) | > 75% | Significantly increase human-interpretation feel; constrained by academic tone guard; requires manual review |
+
+There is NO unlimited aggressive colloquialization mode. Level 3 always includes a warning that academic formality may be reduced.
+
+## 6. Current-Report Workflow
 
 Use this when the paper has already been revised once or more and you provide the current draft plus current AIGC report.
 
@@ -112,13 +138,29 @@ FILE_INPUT_COPY_WORKFLOW
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
--> AIGC_PLATEAU_BREAKER when orange accumulation or multi-round slowdown exists
+-> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
+-> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> AIGC_REGRESSION_GUARD
+-> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
-## 6. Social-Science Evidence Pack
+## 7. DOCX Format Protection
+
+For DOCX file input, the default writeback method is OOXML patch:
+
+- Copy the original DOCX; never modify the original.
+- Unzip the copy; only modify `word/document.xml`.
+- Replace only confirmed `w:t` text nodes.
+- Preserve styles, numbering, headers, footers, footnotes, endnotes, comments, media, and rels.
+- Low-confidence mappings are NOT written back.
+- Duplicate matches stop writeback immediately.
+- After patching, verify: zip integrity, no duplicate insertion, resource preservation, page count stability.
+
+Do NOT rebuild the entire DOCX unless the user explicitly requests it and accepts format risk.
+
+## 8. Social-Science Evidence Pack
 
 For human resource management and similar management papers, red/orange paragraphs must not be repaired by polished management jargon alone.
 
@@ -130,7 +172,7 @@ workflow/author_evidence_pack_template.md
 
 Do not fabricate missing interviews, questionnaire results, company systems, indicators, forms, or operational facts.
 
-## 7. Professional Fit
+## 9. Professional Fit
 
 This Skill supports general Chinese thesis text-risk optimization, but it does not claim to fit every discipline automatically.
 
@@ -138,18 +180,7 @@ This Skill supports general Chinese thesis text-risk optimization, but it does n
 - Engineering and computer-science papers have special protection for formulas, code, API paths, table names, field names, parameters, experiment data, and running results.
 - Other disciplines should provide discipline-specific protected terms, data boundaries, and evidence sources before revision.
 
-## 8. DOCX Format Protection
-
-For file input, the default behavior is conservative:
-
-- Create a copy of the original file before editing.
-- Replace only target text with confirmed mapping.
-- Do not rebuild or reformat the whole document.
-- Do not write back low-confidence mappings.
-- Ask for human review when the file contains complex Word formatting, comments, fields, footnotes, endnotes, tables, images, or formulas.
-- Do not promise that every Word layout detail remains 100% unchanged.
-
-## 9. Final Acceptance
+## 10. Final Acceptance
 
 Every delivery should include:
 
@@ -162,5 +193,13 @@ Every delivery should include:
 - Character-change result.
 - Unprocessed red/orange paragraphs.
 - Author evidence still needed.
+- Color migration assessment.
+- First-pass effectiveness gate result.
+- Controlled humanization level used.
+- Academic tone guard result.
+- OOXML patch result.
+- Duplicate insertion guard result.
+- Format preservation result.
+- Final delivery status.
 
 If red/orange unprocessed count is not zero, or a required chain step is missing, the task must not be marked complete.

@@ -58,6 +58,39 @@ For human resource management, business administration, marketing, education man
 
 If any management red/orange paragraph fails these checks, do not continue with generic polishing. Route back to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`. If the needed company, questionnaire, interview, process, post, indicator, form, or cycle evidence is missing, request `workflow/author_evidence_pack_template.md`.
 
+## 7. Over-Humanization Regression
+
+The opposite of formalization regression: the rewrite makes text too colloquial, too diary-like, too casual, or too social-media-like in order to reduce AIGC score.
+
+Signals:
+
+- Text reads like a student diary or chat log rather than a thesis.
+- Prohibited colloquial expressions appear (see `ACADEMIC_TONE_GUARD`).
+- Sentence fragmentation is extreme (all sentences under 10 chars).
+- Author judgment is not anchored to evidence.
+- Casual connectors replace analytical transitions ("说白了", "其实吧", "我觉得吧").
+- Emotional or exaggerated language appears ("一塌糊涂", "彻底失败", "惨不忍睹").
+- Social-media style enters the text ("家人们", "格局打开", "干货").
+
+If any over-humanization signal is found:
+
+1. Mark `OVER_HUMANIZATION_FAIL`.
+2. Route to `ACADEMIC_TONE_GUARD` for correction.
+3. Preserve the sentence-length variation and evidence anchoring from the humanization.
+4. Remove only the diary-feel, chat-feel, or social-media-feel words.
+5. Restore to undergraduate-thesis acceptable formality.
+
+## 8. Dual Regression Model
+
+`AIGC_REGRESSION_GUARD` now checks for both directions:
+
+| regression type | direction | detection | correction |
+|---|---|---|---|
+| `FORMAL_AI_REGRESSION` | Too formal, too abstract, too AI-like | Abstract noun inflation, smoothness, template retention | Route to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` or evidence injection |
+| `OVER_HUMANIZATION_REGRESSION` | Too colloquial, too casual, too diary-like | Prohibited expressions, extreme fragmentation, emotional language | Route to `ACADEMIC_TONE_GUARD` for correction |
+
+Both regressions must be absent for the text to pass this guard.
+
 ## Mandatory Rules
 
 - If a paragraph has three or more regression categories, mark `AIGC_REGRESSION_FAIL`.

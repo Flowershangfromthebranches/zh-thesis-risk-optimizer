@@ -61,6 +61,19 @@ If the output does not include a complete red/orange paragraph processing record
 
 If any processed red/orange paragraph lacks a documented action type (A/B/C/D), the processing record is incomplete and the paragraph may have been only synonym-polished.
 
+### Condition 9: Academic Tone Guard Failed
+
+If `ACADEMIC_TONE_GUARD` reports violations that were not corrected, the text has been over-humanized. Even if AIGC dropped, the thesis is no longer academically appropriate.
+
+### Condition 10: Format Preservation Failed
+
+If `OOXML_DOCX_PATCH_WORKFLOW` was required but:
+- `ooxml_patch_result` = NOT_USED and user required DOCX format preservation; or
+- `duplicate_insertion_guard_result` = FAILED; or
+- `format_preservation_result` = FAILED;
+
+...the deliverable is not acceptable regardless of AIGC score.
+
 ## Output: Required Fields
 
 The gate output must include all of the following:
@@ -73,6 +86,10 @@ The gate output must include all of the following:
 | `gate_result` | PASSED or FIRST_PASS_FAILURE |
 | `failure_reasons` | List of which conditions failed (empty if PASSED) |
 | `next_required_route` | FINAL_ACCEPTANCE_AUDIT if PASSED; AIGC_PLATEAU_BREAKER if FAILED |
+| `academic_tone_guard_result` | PASSED / FAILED / NOT_APPLICABLE |
+| `format_preservation_result` | PASSED / FAILED / NOT_APPLICABLE |
+| `duplicate_insertion_guard_result` | PASSED / FAILED / NOT_APPLICABLE |
+| `ooxml_patch_result` | USED_AND_PASSED / USED_AND_FAILED / NOT_USED |
 
 ## Output: Gate Verdict Table
 
@@ -88,6 +105,10 @@ The gate output must include all of the following:
 | 8. Action type per paragraph | — | to be checked | ? | CHECK |
 
 If **any** condition is met → `FIRST_PASS_FAILURE` → route to `AIGC_PLATEAU_BREAKER`.
+| 9. Academic tone guard failed | — | to be checked | ? | CHECK |
+| 10. Format preservation failed | — | to be checked | ? | CHECK |
+
+If **any** condition is met → `FIRST_PASS_FAILURE` → route to `AIGC_PLATEAU_BREAKER` (or `ACADEMIC_TONE_GUARD` for condition 9, or `FORMAT_FAILURE` for condition 10).
 
 ## Output: Color Migration Table
 
@@ -118,6 +139,7 @@ This gate runs after `AIGC_REGRESSION_GUARD` and before `FINAL_ACCEPTANCE_AUDIT`
 ```text
 FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK
+-> CONTROLLED_HUMANIZATION_ENGINE when applicable
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE       ← here
 -> FINAL_ACCEPTANCE_AUDIT
