@@ -360,6 +360,20 @@ Accepted rewrites must, when source evidence exists, connect the statement to at
 If the source does not provide enough evidence, output `HUMAN_EVIDENCE_REQUEST`. Do not invent company facts, questionnaire results, interviews, forms, systems, owners, indicators, review cycles, or boundaries.
 Use `workflow/author_evidence_pack_template.md` for the request.
 
+### Anti-Fabrication Enforcement
+
+If a material gap is detected (data needed but not available in source), output a `material_gap_table` and stop. Do NOT fabricate:
+
+- Industry average data (行业平均水平)
+- Budget ratios (预算比例)
+- Growth rates (增速)
+- Turnover rates (流失率)
+- Employee headcount (员工规模)
+- System launch years (系统上线年份)
+- Competitor case studies (竞品企业案例)
+
+Unless these values already exist in the original thesis, the report, the questionnaire, the interview, the user-provided material, or a cited source. When in doubt, mark the gap and request author input.
+
 ## Social-Science Acceptance Gate
 
 A red/orange social-science paragraph fails acceptance when:

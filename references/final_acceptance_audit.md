@@ -64,7 +64,8 @@ When both `original_report_distribution` and `post_first_pass_report_distributio
    - output **must not** contain "有效", "完成", "可交付", or any completion-affirming language;
    - output **must** include the Color Migration Table from the gate;
    - output **must** route to `AIGC_PLATEAU_BREAKER`;
-   - output **must** list priority sections for the next pass: 摘要, 理论基础, 第五章, 结论.
+   - output **must** list priority sections for the next pass: 摘要, 理论基础, 第五章, 结论;
+   - output **must** include a `material_gap_table` if evidence is insufficient, and must not continue rewriting without author input.
 
 ## Color Migration Check (First-Pass Only)
 
@@ -108,6 +109,12 @@ The final status row's "result" column must include the color migration conclusi
 | author evidence needed | count/list |  |
 | color migration assessment | 红转橙未突破 / 有效降低 / 无原版对比 |  |
 | first-pass effectiveness gate | PASSED / FIRST_PASS_FAILURE / NOT_APPLICABLE |  |
+| first_pass_effectiveness_gate_result | PASSED / FIRST_PASS_FAILURE / NOT_APPLICABLE |  |
+| color_migration_conclusion | 有效降低 / 红转橙未突破 / 无原版对比 |  |
+| red_to_orange_migration_detected | yes / no / not_applicable |  |
+| next_required_route | FINAL_ACCEPTANCE_AUDIT / AIGC_PLATEAU_BREAKER / not_applicable |  |
+| priority_sections | 摘要、理论基础、第五章、结论 / not_applicable |  |
+| material_gap_table_required | yes / no / not_applicable |  |
 | final status | COMPLETED / BLOCKED / NEEDS_AUTHOR_EVIDENCE / FIRST_PASS_FAILURE |  |
 
 ## First-Pass Failure

@@ -118,6 +118,12 @@ At minimum, the following gaps should be identified:
 | final status | FIRST_PASS_FAILURE |
 | color migration assessment | 红转橙，未突破 |
 | first-pass effectiveness gate | FIRST_PASS_FAILURE |
+| first_pass_effectiveness_gate_result | FIRST_PASS_FAILURE |
+| color_migration_conclusion | 红转橙，未突破 |
+| red_to_orange_migration_detected | yes |
+| next_required_route | AIGC_PLATEAU_BREAKER |
+| priority_sections | 摘要、理论基础、第五章、结论 |
+| material_gap_table_required | yes |
 | conclusion text | 失败，需要二轮 |
 
 ## Testing Steps

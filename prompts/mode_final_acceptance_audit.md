@@ -108,3 +108,5 @@ The final output table must include these additional rows:
 | color_migration_conclusion | 有效降低 / 红转橙未突破 / 无原版对比 |  |
 | red_to_orange_migration_detected | yes / no / not_applicable |  |
 | next_required_route | FINAL_ACCEPTANCE_AUDIT / AIGC_PLATEAU_BREAKER / not_applicable |  |
+| priority_sections | 摘要、理论基础、第五章、结论 / not_applicable |  |
+| material_gap_table_required | yes / no / not_applicable |  |

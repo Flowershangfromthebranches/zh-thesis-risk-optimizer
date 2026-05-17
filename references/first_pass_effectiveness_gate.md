@@ -6,6 +6,8 @@
 
 This gate is not a rewriter. It is a diagnostic gate that evaluates the first-pass result and decides whether the task can proceed to acceptance or must enter `AIGC_PLATEAU_BREAKER` for a second pass.
 
+**Core principle**: Red-to-orange migration is NOT success. If red decreased but orange accumulated, the first pass demoted risk levels but did not eliminate them. This is `FIRST_PASS_FAILURE`, not a plateau.
+
 ## Input Required
 
 To evaluate the gate, the following must be available:
@@ -58,6 +60,19 @@ If the output does not include a complete red/orange paragraph processing record
 ### Condition 8: No Action Type Per Paragraph
 
 If any processed red/orange paragraph lacks a documented action type (A/B/C/D), the processing record is incomplete and the paragraph may have been only synonym-polished.
+
+## Output: Required Fields
+
+The gate output must include all of the following:
+
+| field | description |
+|---|---|
+| `original_color_distribution` | Red, orange, purple, black char counts and percentages from the original report |
+| `post_first_pass_color_distribution` | Red, orange, purple, black char counts and percentages from the post-first-pass report |
+| `color_migration_table` | Per-band delta and assessment (see below) |
+| `gate_result` | PASSED or FIRST_PASS_FAILURE |
+| `failure_reasons` | List of which conditions failed (empty if PASSED) |
+| `next_required_route` | FINAL_ACCEPTANCE_AUDIT if PASSED; AIGC_PLATEAU_BREAKER if FAILED |
 
 ## Output: Gate Verdict Table
 

@@ -1,6 +1,6 @@
 ---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, and final acceptance audit.
+description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, first-pass effectiveness gate, and final acceptance audit.
 license: MIT
 ---
 

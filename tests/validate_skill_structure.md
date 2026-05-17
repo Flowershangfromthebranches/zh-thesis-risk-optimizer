@@ -9,8 +9,8 @@ Use this check before publishing or syncing the Skill.
 - Every `prompts/*.md` path declared by `SKILL.md` exists.
 - Every `references/*.md` path declared by `SKILL.md` exists.
 - Every `workflow/*.md` path declared by `SKILL.md` exists.
-- `QUICKSTART.md` recommends only the 10 slim-router entry modes.
-- `README.md` recommends only the 10 slim-router entry modes.
+- `QUICKSTART.md` recommends only the 11 slim-router entry modes (including internal mandatory gate).
+- `README.md` recommends only the 11 slim-router entry modes (including internal mandatory gate).
 - Retired historical modes are not recommended as public-document entry modes.
 - `SKILL.md` has the expected legal YAML frontmatter.
 - `prompts/mode_intake_wizard.md` does not route no-report work to a retired entry mode.
@@ -112,7 +112,7 @@ errors = []
 
 expected_frontmatter = """---
 name: zh-thesis-risk-optimizer
-description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, and final acceptance audit.
+description: Chinese thesis AIGC and similarity-risk optimization skill with forced intake, DOCX color-report extraction, red-orange coverage, social-science evidence reconstruction, first-pass effectiveness gate, and final acceptance audit.
 license: MIT
 ---"""
 
@@ -151,6 +151,28 @@ for mode in expected_modes:
 
 if 'Completed intake template without report | `NO_REPORT_FALLBACK_WORKFLOW`' in intake_prompt:
     errors.append('mode_intake_wizard.md still routes no-report intake to retired NO_REPORT_FALLBACK_WORKFLOW')
+
+# Check QUICKSTART first-pass chain contains FIRST_PASS_EFFECTIVENESS_GATE
+first_pass_chain_section = quickstart[quickstart.index('First-Pass AIGC'):quickstart.index('Current-Report')]
+if 'FIRST_PASS_EFFECTIVENESS_GATE' not in first_pass_chain_section:
+    errors.append('QUICKSTART.md first-pass Required chain does not contain FIRST_PASS_EFFECTIVENESS_GATE')
+
+# Check mode_first_pass_red_orange.md contains red-to-orange not success rule
+fpro_prompt = (root / 'prompts/mode_first_pass_red_orange.md').read_text(encoding='utf-8')
+fpro_ref = (root / 'references/first_pass_red_orange_engine.md').read_text(encoding='utf-8')
+combined_fpro = fpro_prompt + fpro_ref
+if 'Red→orange' not in combined_fpro and 'red to orange' not in combined_fpro.lower() and '红转橙' not in combined_fpro and 'UNPASSED' not in combined_fpro:
+    errors.append('prompts/mode_first_pass_red_orange.md or references/first_pass_red_orange_engine.md missing red-to-orange not success rule')
+
+# Check first_pass_effectiveness_gate.md contains core principle
+fpeg = (root / 'references/first_pass_effectiveness_gate.md').read_text(encoding='utf-8')
+if 'Red-to-orange migration is NOT success' not in fpeg:
+    errors.append('references/first_pass_effectiveness_gate.md missing core principle: Red-to-orange migration is NOT success')
+
+# Check final_acceptance_audit.md has material_gap_table requirement
+faa = (root / 'references/final_acceptance_audit.md').read_text(encoding='utf-8')
+if 'material_gap_table' not in faa:
+    errors.append('references/final_acceptance_audit.md missing material_gap_table requirement')
 
 for rel in archived_prompt_files:
     path = root / rel
@@ -196,3 +218,8 @@ PY
 - [ ] Historical mode files may remain for archive/compatibility, but they are not routed as entry modes.
 - [ ] `skill_slimming_rules.md` remains a maintenance rule only.
 - [ ] Missing author evidence routes to `workflow/author_evidence_pack_template.md`.
+- [ ] `FIRST_PASS_EFFECTIVENESS_GATE` is between `AIGC_REGRESSION_GUARD` and `FINAL_ACCEPTANCE_AUDIT` in the mandatory first-pass chain.
+- [ ] `references/first_pass_effectiveness_gate.md` contains the core principle that red-to-orange migration is NOT success.
+- [ ] `references/final_acceptance_audit.md` outputs `material_gap_table` when evidence is missing.
+- [ ] `references/social_science_template_bottleneck.md` contains anti-fabrication enforcement for specific data types.
+- [ ] `tests/first_pass_failure_color_migration_case.md` exists and uses the real failure case data.
