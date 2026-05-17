@@ -19,15 +19,17 @@ Do not use this mode when the user provides a revised/current draft and the curr
 
 ## Band Policy
 
-| report_band | role in first pass | action |
-|---|---|---|
-| red/high | primary target | strong reconstruction with protection checks |
-| orange/medium | primary target | structural repair, rhythm repair, evidence placement |
-| purple/light | secondary target | local cleanup only when safe |
-| black/white/low | frozen | do not rewrite unless user explicitly asks |
-| protected | no-edit or surrounding-edit only | preserve exact data, code, citations, terms, formulas, paths, parameters |
+| report_band | role in first pass | action | minimum_target |
+|---|---|---|---|
+| red/high | primary target | strong reconstruction with protection checks | must reach purple or below; red→orange is UNPASSED |
+| orange/medium | primary target | structural repair, rhythm repair, evidence placement | must reach black or near-black; orange→light-orange is UNPASSED |
+| purple/light | secondary target | local cleanup only when safe | black preferred |
+| black/white/low | frozen | do not rewrite unless user explicitly asks | — |
+| protected | no-edit or surrounding-edit only | preserve exact data, code, citations, terms, formulas, paths, parameters | — |
 
 Red and orange paragraphs must both enter the first-pass task table. Orange is not deferred to a later plateau stage.
+
+**Critical rule**: Demoting a red paragraph to orange is NOT a success. It is `UNPASSED`. The engine must not consider a paragraph "processed" or "passed" unless it reaches its minimum target band. Red→orange migration in aggregate is the primary signal of `FIRST_PASS_FAILURE`.
 
 ## First-Pass Workflow
 
@@ -64,24 +66,28 @@ The loop is finite and must not become uncontrolled rewriting.
 
 ```text
 for each red/orange task:
+  determine minimum_target based on original_band:
+    if original_band is RED:  minimum_target = PURPLE_OR_BLACK
+    if original_band is ORANGE: minimum_target = BLACK_OR_NEAR_BLACK
   diagnose sentence risks
   revise using at least two valid repair moves
   run self-audit
-  if target_band is purple_or_black_like:
+  if reached minimum_target:
     mark PASS
   else if protected_or_evidence_limited:
     mark STOP_WITH_REASON
-  else if retry_count < max_internal_passes:
-    retry with a different repair move
+  else if still_red_or_orange but retry_count < max_internal_passes:
+    retry with a different repair move (different from previous)
   else:
-    mark NEEDS_REPORT_RECHECK_OR_HUMAN_EVIDENCE
+    mark UNPASSED
 ```
 
 Default:
 
-- `max_internal_passes = 2`.
-- Do not run a third internal rewrite unless the user explicitly asks and the paragraph has enough evidence.
+- `max_internal_passes = 2` for red paragraphs; `max_internal_passes = 3` for orange paragraphs (orange is harder to shift to black).
+- Do not run additional internal rewrites unless the user explicitly asks and the paragraph has enough evidence.
 - Do not use the same repair move twice.
+- If a paragraph exits with `UNPASSED`, the aggregate output must include it in the `unprocessed_or_partially_processed` list with reason "only_demoted_one_band" or "cannot_reach_minimum_target".
 
 ## Allowed Repair Moves
 
@@ -113,14 +119,15 @@ If red/orange repair would exceed this range:
 
 ## Exit States
 
-- `RED_ORANGE_FIRST_PASS_COMPLETED`: red/orange tasks were safely handled and self-audit passed.
+- `RED_ORANGE_FIRST_PASS_COMPLETED`: red/orange tasks were safely handled, minimum targets reached, and self-audit passed.
 - `PURPLE_BLACK_HEURISTIC_TARGET_REACHED`: the paragraph is heuristically reduced to light/low risk.
 - `PROTECTED_STOP`: risk remains but protected content prevents deeper rewriting.
 - `EVIDENCE_LIMITED_STOP`: risk remains because the paragraph lacks author-provided evidence.
 - `AUTHOR_MATERIAL_REQUIRED`: risk remains because the paragraph needs `workflow/author_evidence_pack_template.md`.
 - `CHARACTER_DELTA_FAIL`: revision exceeds the allowed whole-thesis character-change range.
 - `NO_PROGRESS_INTERNAL_LOOP`: internal retries did not materially change the risk pattern.
-- `FIRST_PASS_FAILURE`: original-thesis first-pass testing barely changed AIGC risk.
+- `UNPASSED`: a red paragraph was only demoted to orange, or an orange paragraph could not reach black/near-black. Must be recorded in the unprocessed list.
+- `FIRST_PASS_FAILURE`: original-thesis first-pass testing barely changed AIGC risk, or color migration shows red→orange transfer.
 
 ## First-Pass Failure Handling
 
@@ -136,6 +143,19 @@ Check:
 | shallow rewrite | many paragraphs are synonym replacement or smoother formal prose |
 | social-science overlay | HR/management paper did not enable social-science bottleneck rules |
 | evidence pack | missing company/questionnaire/interview/process evidence was not requested |
+| **red→orange migration** | red decreased but orange increased; red paragraphs only dropped one band to orange |
+| **minimum target not reached** | red paragraphs still orange, orange paragraphs still not black/near-black |
+
+### Red→Orange Migration Handling
+
+If a red paragraph was only demoted to orange (not to purple or black):
+
+1. Mark that paragraph `UNPASSED` in the processing record.
+2. Include it in the `unprocessed_or_partially_processed` list with reason `only_demoted_one_band`.
+3. In the aggregate color migration table, note the total number of paragraphs that fell into this category.
+4. Do NOT count these paragraphs as "processed" for coverage reporting. Coverage counts only paragraphs that reached their minimum target.
+
+If aggregate red→orange migration exceeds 10% of the original red paragraphs, the entire first pass must enter `FIRST_PASS_FAILURE` handling, regardless of individual paragraph successes.
 
 Output the failure-cause table and next repair plan. Do not pretend the first pass was complete.
 

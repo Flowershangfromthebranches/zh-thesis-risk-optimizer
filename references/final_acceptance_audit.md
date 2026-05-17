@@ -19,6 +19,8 @@ The final output must report:
 7. Character change and whether it passed the user constraint.
 8. Unprocessed paragraphs.
 9. Author evidence still needed.
+10. **Color migration check**: original vs. post-first-pass color distribution comparison.
+11. **First-pass effectiveness gate result**: whether `FIRST_PASS_EFFECTIVENESS_GATE` conditions were checked and passed.
 
 This audit absorbs the older post-rewrite self-audit, anti-shallow-rewrite, and effectiveness-evaluation gates. These checks are no longer separate entry modes; completion depends on this final gate.
 
@@ -49,6 +51,33 @@ The task must not be marked `COMPLETED` when:
 
 If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, but the paragraph should be marked as needing author input rather than rewritten as complete.
 
+## Color Migration Check (First-Pass Only)
+
+When both the original report and the post-first-pass report are available, the audit must produce a color migration comparison table.
+
+| band | original_share | post_first_pass_share | delta | assessment |
+|---|---|---|---|---|
+| red (high risk) | % | % | ±pp |  |
+| orange (medium risk) | % | % | ±pp |  |
+| purple (light risk) | % | % | ±pp |  |
+| black (low risk) | % | % | ±pp |  |
+
+### Migration Assessment Rules
+
+- If red decreased AND orange also decreased → assessment is "有效降低" (effective reduction).
+- If red decreased AND orange increased → assessment is **"红转橙，未突破"** (red-to-orange, not resolved). The audit must NOT write "有效" in any summary text.
+- If red decreased, orange increased, and the orange increase exceeds 10 percentage points → assessment is "红转橙，橙色平台期" (red-to-orange, orange plateau formed).
+- If the combined red+orange share is still above 40% → assessment must note "风险集中度仍过高".
+- If black coverage is below 25% → assessment must note "黑色占比不足".
+
+### Color Migration Conclusion
+
+The final status row's "result" column must include the color migration conclusion:
+
+- "红转橙，未突破" when Condition 3 or 4 of `FIRST_PASS_EFFECTIVENESS_GATE` is met.
+- "有效降低" only when red, orange, and combined risk all decreased.
+- Do not write "有效" in any output when red decreased but orange accumulated.
+
 ## Required Output
 
 | item | result | evidence |
@@ -62,11 +91,15 @@ If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, bu
 | character change | pass/fail |  |
 | unprocessed paragraphs | count/list |  |
 | author evidence needed | count/list |  |
+| color migration assessment | 红转橙未突破 / 有效降低 / 无原版对比 |  |
+| first-pass effectiveness gate | PASSED / FIRST_PASS_FAILURE / NOT_APPLICABLE |  |
 | final status | COMPLETED / BLOCKED / NEEDS_AUTHOR_EVIDENCE / FIRST_PASS_FAILURE |  |
 
 ## First-Pass Failure
 
-If the user reports that an original-thesis first-pass test barely changed AIGC risk, mark `FIRST_PASS_FAILURE`, not plateau.
+If the user reports that an original-thesis first-pass test barely changed AIGC risk, or if `FIRST_PASS_EFFECTIVENESS_GATE` returns any `FAIL` verdict, mark `FIRST_PASS_FAILURE`, not plateau.
+
+**Final conclusion rule**: When FIRST_PASS_FAILURE is triggered, the `final status` must be `FIRST_PASS_FAILURE` and the conclusion text must read **"失败，需要二轮"**. Do NOT write "完成", "成功", "有效", "可通过", or any completion-affirming language.
 
 Check:
 
@@ -76,5 +109,7 @@ Check:
 - Was the rewrite mostly synonym replacement?
 - Was social-science bottleneck handling skipped?
 - Was author evidence missing but not requested?
+- Was the color migration assessed? (See Color Migration Check section.)
+- Does the color migration show red-to-orange transfer?
 
-Output a failure-cause table and a next repair plan.
+Output a failure-cause table and a next repair plan. The next repair plan must reference `AIGC_PLATEAU_BREAKER` as the next step.

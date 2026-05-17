@@ -274,6 +274,65 @@ After every red/orange social-science paragraph revision, check:
 
 If any red/orange paragraph fails this audit, it cannot be marked as completed. Retry once with a different action type, or output `D_AUTHOR_MATERIAL_REQUEST`.
 
+### 9. 反咨询腔规则 (Anti-Consulting-Speak Rule)
+
+Management thesis paragraphs frequently use consulting-style vocabulary that is a strong AIGC signal. This section defines an explicit prohibition.
+
+#### 9.1 Prohibited High-Frequency Words
+
+The following words are not automatically banned (they may appear naturally in context), but **if 2 or more appear in the same paragraph**, that paragraph must be rewritten:
+
+1. **构建体系** — "构建招聘体系"、"构建培训体系"
+2. **提升效率** — "提升招聘效率"、"提升管理效率"
+3. **优化路径** — "优化招聘路径"、"优化发展路径"
+4. **赋能** — "技术赋能"、"数据赋能"、"组织赋能"
+5. **协同** — "部门协同"、"内外协同"、"协同机制"
+6. **动态调整** — "根据实际情况动态调整"
+7. **精细化运营** — "精细化招聘运营"
+8. **智能引擎** — "招聘智能引擎"、"数据智能引擎"
+9. **数据驱动** — "数据驱动决策"、"数据驱动招聘"
+10. **生态** — "招聘生态"、"人才生态"
+11. **漏斗** — "招聘漏斗"、"转化漏斗"
+12. **闭环** — "招聘闭环"、"管理闭环"
+13. **雇主品牌** — "提升雇主品牌"
+14. **可复制范式** — "可复制的招聘范式"
+15. **提供参考与借鉴** — "为同类企业提供参考与借鉴"
+
+#### 9.2 Trigger Rule
+
+If a single paragraph contains **2 or more** of the above terms (including variants), it is automatically classified as `CONSULTING_SPEAK_PLATEAU` and must be rewritten.
+
+Counting rule:
+- Count exact matches and stem variants. Example: "赋能" matches "技术赋能" and "数据赋能" separately but counts as only one match type. However, "构建招聘体系" and "优化招聘路径" in the same paragraph = 2 matches → trigger.
+- The same word used twice in one paragraph counts as 1, not 2. Different words are counted separately.
+- "提供参考" without "借鉴" does not count. "提供参考与借鉴" counts as 1 match.
+
+#### 9.3 Rewrite Direction: From Consulting-Speak to Author-Observation
+
+When a paragraph triggers `CONSULTING_SPEAK_PLATEAU`, the rewrite must follow this structure:
+
+```
+consulting-speak original:
+"A公司应构建科学的招聘体系，优化招聘流程，提升招聘效率。"
+
+rewrite direction (not consulting-speak):
+"A公司的招聘目前有三个具体环节出现积压：简历筛选平均耗时5天、面试安排需要跨3个部门协调、offer审批流程没有时间节点。以下分别讨论每个环节的现状和调整空间。"
+```
+
+The rewrite must:
+1. **Start with an author-observed problem** — "在访谈中，HR反馈……" or "根据问卷数据，……出现……" or "在流程跟踪中发现……"
+2. **Include specific evidence** — a number, a frequency, a person's role, a form name, a duration
+3. **Propose limited adjustment, not a full solution** — "可以缩短的环节是……，但需要平衡……" not "应构建科学的体系"
+4. **State the boundary** — "这一调整仅适用于……，不适用于……" or "但实施前提是……"
+
+#### 9.4 Consulting-Speak ≠ Protected Term
+
+These are NOT protected terms. They can be deleted, replaced, or restructured freely. The only rule is: if 2+ appear in one paragraph, rewrite.
+
+#### 9.5 Relationship to Hard Evidence Rule
+
+The Hard Evidence Rule (next section) lists a subset of these terms as "unacceptable alone." This section extends that rule: even if evidence is present, a paragraph with 2+ consulting-speak terms must still be rewritten to reduce AIGC signal density.
+
 ## Hard Evidence Rule For HR And Management Papers
 
 For human resource management paragraphs about current situation, problems, countermeasures, or conclusions, do not accept a rewrite that only says:
