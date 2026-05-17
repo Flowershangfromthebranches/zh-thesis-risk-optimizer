@@ -4,11 +4,28 @@ Copy this template when starting any `zh-thesis-risk-optimizer` task. Replace th
 
 All sections should be returned to the model before processing starts. Required fields must be filled. Strongly recommended and optional fields may be filled, or explicitly marked as `无`, `跳过`, or `请自动判断`.
 
+Important: `current_similarity_rate` and `current_aigc_rate` are required before rewriting. If either is unknown, the Skill may read files or parse reports to complete intake, but it must not enter the rewrite chain.
+
 ## Required
 
 ```text
 【任务目标】
 只降 AIGC / 只降查重 / 双降 / 只诊断不改写 / 报告映射 / 文件副本处理 / 全文项目管理 / 请自动判断
+
+【当前查重率 current_similarity_rate】
+例如：11% / 未检测
+
+【当前 AIGC 疑似率 current_aigc_rate】
+例如：68.6% / 未检测
+
+【目标查重率 target_similarity_rate】
+例如：15% / 10% / 请自动判断
+
+【目标 AIGC 疑似率 target_aigc_rate】
+例如：30% / 20% / 请自动判断
+
+【任务类型 task_type】
+aigc_only / similarity_only / dual_optimization
 
 【论文输入】
 粘贴正文 / 单章文本 / 原文 DOCX 路径 / Markdown 或 TXT 路径 / LaTeX 路径
@@ -35,8 +52,14 @@ All sections should be returned to the model before processing starts. Required 
 无 / AIGC 报告 DOCX 路径 / PDF 复制文本 / 截图 OCR 文本 / 手动复制红橙片段
 示例：/path/to/aigc_report.docx
 
+【是否有 AIGC 颜色报告 has_aigc_color_report】
+true / false
+
 【查重报告】
 无 / 查重报告 DOCX 路径 / HTML 报告 / PDF 复制文本 / 手动复制标红片段
+
+【是否有查重报告 has_similarity_report】
+true / false
 
 【报告颜色规则】
 默认：红色 >70%，橙色 60%-70%，紫色 50%-60%，黑色 <50%
@@ -47,6 +70,12 @@ All sections should be returned to the model before processing starts. Required 
 
 【当前状态】
 原文未改 / 第一次改写后 / 第二次改写后 / AIGC 反升 / 查重已够用但 AIGC 仍高
+
+【阶段 stage】
+original / first_pass / second_pass / current_report_pass / first_pass_failure
+
+【是否要求保持 DOCX 原格式 preserve_docx_format_required】
+true / false
 ```
 
 If a strongly recommended item is unavailable, write `无`, `跳过`, or `请自动判断`. Do not leave it implicit.
@@ -89,6 +118,21 @@ If an optional item is unavailable, write `无`, `跳过`, or `请自动判断`.
 【任务目标】
 只降 AIGC
 
+【当前查重率 current_similarity_rate】
+11%
+
+【当前 AIGC 疑似率 current_aigc_rate】
+68.6%
+
+【目标查重率 target_similarity_rate】
+15%
+
+【目标 AIGC 疑似率 target_aigc_rate】
+30%
+
+【任务类型 task_type】
+aigc_only
+
 【论文输入】
 原文 DOCX：/Users/leaf/Desktop/论文/原版.docx
 
@@ -107,8 +151,14 @@ If an optional item is unavailable, write `无`, `跳过`, or `请自动判断`.
 【AIGC 报告】
 /Users/leaf/Desktop/论文/原版查AIGC.docx
 
+【是否有 AIGC 颜色报告 has_aigc_color_report】
+true
+
 【查重报告】
 无
+
+【是否有查重报告 has_similarity_report】
+false
 
 【报告颜色规则】
 红色 >70%，橙色 60%-70%，紫色 50%-60%，黑色 <50%
@@ -118,6 +168,12 @@ If an optional item is unavailable, write `无`, `跳过`, or `请自动判断`.
 
 【当前状态】
 原文未改
+
+【阶段 stage】
+original
+
+【是否要求保持 DOCX 原格式 preserve_docx_format_required】
+true
 
 【历史版本】
 无

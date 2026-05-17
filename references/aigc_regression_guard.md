@@ -75,7 +75,7 @@ Signals:
 If any over-humanization signal is found:
 
 1. Mark `OVER_HUMANIZATION_FAIL`.
-2. Route to `ACADEMIC_TONE_GUARD` for correction.
+2. Route to `THESIS_REGISTER_GUARD` and `ACADEMIC_TONE_GUARD` for correction.
 3. Preserve the sentence-length variation and evidence anchoring from the humanization.
 4. Remove only the diary-feel, chat-feel, or social-media-feel words.
 5. Restore to undergraduate-thesis acceptable formality.
@@ -87,7 +87,7 @@ If any over-humanization signal is found:
 | regression type | direction | detection | correction |
 |---|---|---|---|
 | `FORMAL_AI_REGRESSION` | Too formal, too abstract, too AI-like | Abstract noun inflation, smoothness, template retention | Route to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` or evidence injection |
-| `OVER_HUMANIZATION_REGRESSION` | Too colloquial, too casual, too diary-like | Prohibited expressions, extreme fragmentation, emotional language | Route to `ACADEMIC_TONE_GUARD` for correction |
+| `OVER_HUMANIZATION_REGRESSION` | Too colloquial, too casual, too diary-like | Prohibited expressions, extreme fragmentation, emotional language | Route to `THESIS_REGISTER_GUARD` and `ACADEMIC_TONE_GUARD` for correction |
 
 Both regressions must be absent for the text to pass this guard.
 
@@ -96,10 +96,11 @@ Both regressions must be absent for the text to pass this guard.
 - If a paragraph has three or more regression categories, mark `AIGC_REGRESSION_FAIL`.
 - `AIGC_REGRESSION_FAIL` must not be accepted as final text.
 - The paragraph must return to the appropriate reconstruction path in the slim router. For management/social-science papers, return to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` or request the author evidence pack.
+- If `LOCAL_ESCALATED_HUMANIZATION` caused the regression, lower the local level or rerun `THESIS_REGISTER_GUARD`; do not continue Level 4 in strict sections.
 - Do not repair regression by adding more formal words.
 - Prefer concrete objects already present in the source.
 - If there is not enough concrete information, output `建议作者补充：...`.
 
 ## Relation To SKILL.md
 
-Use this guard after any dual optimization, report-driven rewrite, or target-driven rewrite when AIGC risk rises or the text becomes more formalized.
+Use this guard after `TEMPLATE_RESIDUE_DETECTOR` and `THESIS_REGISTER_GUARD`, especially when `LOCAL_ESCALATED_HUMANIZATION` was used or the text becomes more formalized.

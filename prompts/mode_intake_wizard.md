@@ -2,7 +2,7 @@
 
 Use this prompt whenever a task is routed to `zh-thesis-risk-optimizer`.
 
-Do not rewrite, diagnose, parse reports, or read files until the user completes the intake reply.
+Run `RISK_INTAKE_GATE` before rewrite routing. Do not rewrite until the user provides `current_similarity_rate` and `current_aigc_rate`.
 
 ## Inputs
 
@@ -12,14 +12,16 @@ The user may provide any combination of:
 - AIGC report, similarity report, report screenshot transcription, color-marked text, or report fragments.
 - Historical drafts and previous report metrics.
 - Desired target, such as "继续降 AIGC" or "查重已经够了".
+- Current and target risk rates.
 - Character budget or output preference.
 - Protected terms, citations, technical identifiers, data, tables, fields, paths, formulas, or school format rules.
 
 ## Decision Rules
 
-1. Always run intake precheck before selecting a revision mode.
+1. Always run `RISK_INTAKE_GATE` and intake precheck before selecting a revision mode.
 2. On first contact for a new task, show the full copyable intake template from `workflow/intake_request_template.md`.
 3. Required fields must be filled before processing.
+3a. `current_similarity_rate` and `current_aigc_rate` are mandatory before rewriting. If either is missing, output `INTAKE_INCOMPLETE`; file reading and report parsing may continue only to complete intake.
 4. Strongly recommended and optional fields must also be shown. The user may fill them, write `无`, write `跳过`, or write `请自动判断`.
 5. If the user submits only required fields, do not proceed yet; ask them to fill or explicitly skip the strongly recommended and optional sections.
 6. If the user submits a completed intake template, output `Intake Confirmation`, state the selected route, and proceed.
@@ -43,6 +45,21 @@ On first contact or incomplete intake, output:
 【任务目标】
 只降 AIGC / 只降查重 / 双降 / 只诊断不改写 / 报告映射 / 文件副本处理 / 全文项目管理 / 请自动判断
 
+【当前查重率 current_similarity_rate】
+例如：11% / 未检测
+
+【当前 AIGC 疑似率 current_aigc_rate】
+例如：68.6% / 未检测
+
+【目标查重率 target_similarity_rate】
+例如：15% / 10% / 请自动判断
+
+【目标 AIGC 疑似率 target_aigc_rate】
+例如：30% / 20% / 请自动判断
+
+【任务类型 task_type】
+aigc_only / similarity_only / dual_optimization
+
 【论文输入】
 粘贴正文 / 单章文本 / 原文 DOCX 路径 / Markdown 或 TXT 路径 / LaTeX 路径
 
@@ -62,8 +79,14 @@ On first contact or incomplete intake, output:
 【AIGC 报告】可选但强烈建议
 无 / AIGC 报告 DOCX 路径 / PDF 复制文本 / 截图 OCR 文本 / 手动复制红橙片段
 
+【是否有 AIGC 颜色报告 has_aigc_color_report】
+true / false
+
 【查重报告】可选
 无 / 查重报告 DOCX 路径 / HTML 报告 / PDF 复制文本 / 手动复制标红片段
+
+【是否有查重报告 has_similarity_report】
+true / false
 
 【论文专业和题目】强烈建议
 例如：人力资源管理，《数智化时代A电商公司招聘管理优化研究》
@@ -88,6 +111,10 @@ When required fields are filled but strongly recommended or optional fields are 
 【论文专业和题目】
 
 【当前状态】
+stage = original / first_pass / second_pass / current_report_pass / first_pass_failure
+
+【是否要求保持 DOCX 原格式 preserve_docx_format_required】
+true / false
 
 【历史版本】
 
@@ -109,6 +136,18 @@ When a few required fields are missing after the user has already submitted an i
 可选项也请填写，或写“无 / 跳过 / 请自动判断”。
 ```
 
+If risk rates are missing, output:
+
+```text
+INTAKE_INCOMPLETE
+还缺少当前风险率，不能进入改写链路。
+请补充：
+- current_similarity_rate：当前查重总体相似度
+- current_aigc_rate：当前 AIGC 总体疑似率
+
+说明：可以继续读取文件或解析报告来补全 intake，但不能直接改写。
+```
+
 When enough information is present, output:
 
 ```text
@@ -117,6 +156,11 @@ When enough information is present, output:
 | field | value | status |
 |---|---|---|
 | 任务目标 |  | OK |
+| current_similarity_rate |  | OK / MISSING |
+| current_aigc_rate |  | OK / MISSING |
+| target_similarity_rate |  | OK / MISSING |
+| target_aigc_rate |  | OK / MISSING |
+| task_type |  | OK / MISSING |
 | 论文输入 |  | OK |
 | 报告输入 |  | OK / MISSING / NOT NEEDED |
 | 处理范围 |  | OK |
@@ -126,6 +170,9 @@ When enough information is present, output:
 
 模式判断：
 - 进入模式：
+- risk_intake_strategy:
+- max_humanization_level:
+- level_4_allowed:
 - 理由：
 - 需要加载：
 - 默认约束：
@@ -141,6 +188,7 @@ When enough information is present, output:
 | "帮我降 AIGC" | Show the full intake template and wait. |
 | "这是原文和原版 AIGC 报告，先处理红橙" | If optional fields are not acknowledged, ask for optional fields or skip/auto-judge before routing. |
 | "查重够了，继续降 AIGC，别扩太多" | Ask for the remaining intake fields unless the completed template is present. |
+| Completed intake with current rates and AIGC 68.6%, similarity already below target | Run `RISK_INTAKE_GATE`, set `high_risk_controlled_humanization`, and allow local-only escalation where eligible. |
 | "这是 DOCX 和报告，改完给我文件" | Ask for remaining intake fields before file reading or writeback. |
 | Completed intake template with original thesis and original AIGC report | `FIRST_PASS_RED_ORANGE_ENGINE`; output `Intake Confirmation` and proceed. |
 | Completed intake template with revised/current thesis and current AIGC report | `THREE_MODE_COLOR_BAND_WORKFLOW` plus `CURRENT_REPORT_RED_ORANGE_ENGINE`; output `Intake Confirmation` and proceed. |

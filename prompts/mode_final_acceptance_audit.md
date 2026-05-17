@@ -7,6 +7,7 @@ Do not mark a task complete until this audit passes.
 ## Inputs
 
 - Intake confirmation.
+- Risk intake decision from `RISK_INTAKE_GATE`.
 - Mandatory chain trace.
 - DOCX color extraction summary.
 - Red-orange task table.
@@ -15,6 +16,8 @@ Do not mark a task complete until this audit passes.
 - Protected item review.
 - Author evidence requests, if any.
 - Controlled humanization report (if applicable).
+- Local escalated humanization report (if applicable).
+- Thesis register guard report (if applicable).
 - Academic tone guard report (if applicable).
 - OOXML patch log (if applicable).
 - Duplicate insertion guard report (if applicable).
@@ -26,6 +29,8 @@ Do not mark a task complete until this audit passes.
 
 | step | required | executed | evidence |
 |---|---|---|---|
+| RISK_INTAKE_GATE | yes |  |  |
+| INTAKE_WIZARD_PRECHECK | yes |  |  |
 | FILE_INPUT_COPY_WORKFLOW |  |  |  |
 | OOXML_DOCX_PATCH_WORKFLOW when DOCX |  |  |  |
 | DOCX_COLOR_REPORT_EXTRACTION |  |  |  |
@@ -33,8 +38,10 @@ Do not mark a task complete until this audit passes.
 | FIRST_PASS_RED_ORANGE_ENGINE or CURRENT_REPORT_RED_ORANGE_ENGINE |  |  |  |
 | SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable |  |  |  |
 | CONTROLLED_HUMANIZATION_ENGINE when applicable |  |  |  |
+| LOCAL_ESCALATED_HUMANIZATION when triggered |  |  |  |
 | REWRITE_APPLICATION_GATE when DOCX writeback or patch verification is required |  |  |  |
 | TEMPLATE_RESIDUE_DETECTOR |  |  |  |
+| THESIS_REGISTER_GUARD |  |  |  |
 | AIGC_REGRESSION_GUARD |  |  |  |
 | FIRST_PASS_EFFECTIVENESS_GATE |  |  |  |
 | FINAL_ACCEPTANCE_AUDIT | yes | yes | current table |
@@ -87,18 +94,51 @@ If any red/orange paragraph only replaces words, preserves the same template ske
 
 If any paragraph is too colloquial, diary-like, or social-media-like, final status is not `COMPLETED`.
 
-## 6. Controlled Humanization Review
+## 6. Risk Intake Review
+
+| item | result | evidence |
+|---|---|---|
+| current_similarity_rate |  |  |
+| current_aigc_rate |  |  |
+| target_similarity_rate |  |  |
+| target_aigc_rate |  |  |
+| selected_strategy |  |  |
+| max_humanization_level |  |  |
+| level_4_allowed | false / local_only |  |
+| similarity_status |  |  |
+
+If either current rate is missing, set `final_delivery_status = BLOCKED`.
+
+## 7. Controlled Humanization Review
 
 When `CONTROLLED_HUMANIZATION_ENGINE` was active:
 
 | item | result | evidence |
 |---|---|---|
-| intensity level used | 1 / 2 / 3 / N/A |  |
+| intensity level used | 1 / 2 / 3 / 3.5 / N/A |  |
+| level_4_self_selected | yes/no | must be no |
 | academic_tone_guard_result | PASSED / FAILED / N/A |  |
+| thesis_register_guard_result | PASSED / PASSED_AFTER_REPAIR / FAILED / N/A |  |
 | over_humanization_regression_found | yes / no |  |
 | level_3_warning_issued | yes / no |  |
 
-## 7. Format Preservation Review
+## 8. Local Escalation Review
+
+When `LOCAL_ESCALATED_HUMANIZATION` was active or required:
+
+| item | result | evidence |
+|---|---|---|
+| local_escalation_applied | yes/no/not_applicable |  |
+| local_escalation_sections | none/list |  |
+| level_4_forbidden_section_found | yes/no |  |
+| thesis_register_guard_result | PASSED / PASSED_AFTER_REPAIR / FAILED / N/A |  |
+| style_risk_warning_issued | yes/no/not_applicable |  |
+| academic_tone_repair_plan | present/missing/not_applicable |  |
+
+If local escalation was required but skipped, set `final_delivery_status = LOCAL_ESCALATION_SKIPPED`.
+If Level 4 was used in 摘要, 英文摘要, 理论基础, or 结论, set `final_delivery_status = LEVEL_4_SECTION_BLOCKED`.
+
+## 9. Format Preservation Review
 
 When DOCX input was used:
 
@@ -110,7 +150,7 @@ When DOCX input was used:
 | page_count_change | +N / -N / 0 |  |
 | resource_preservation | OK / FAIL |  |
 
-## 8. Rewrite Application Review
+## 10. Rewrite Application Review
 
 When generated rewrites are written back to DOCX, confirm the rewrite was applied to the actual body text.
 
@@ -125,7 +165,7 @@ When generated rewrites are written back to DOCX, confirm the rewrite was applie
 
 If `rewrite_application_gate_result = FAILED`, set `final_delivery_status = REWRITE_NOT_APPLIED_FAILURE`.
 
-## 9. Template Residue Review
+## 11. Template Residue Review
 
 | item | result | evidence |
 |---|---|---|
@@ -135,7 +175,7 @@ If `rewrite_application_gate_result = FAILED`, set `final_delivery_status = REWR
 
 If `template_residue_detector_result = FAILED`, set `final_delivery_status = TEMPLATE_RESIDUE_FAILURE`.
 
-## 10. First-Pass Failure Branch
+## 12. First-Pass Failure Branch
 
 If the user says original first-pass testing barely changed AIGC risk, output:
 
@@ -147,15 +187,19 @@ If the user says original first-pass testing barely changed AIGC risk, output:
 | social-science bottleneck enabled |  |  |  |
 | author evidence pack requested when needed |  |  |  |
 | controlled humanization applied |  |  |  |
+| local escalation applied when triggered |  |  |  |
+| thesis register guard passed |  |  |  |
 | academic tone guard passed |  |  |  |
 | format preservation verified |  |  |  |
 | rewrite application gate passed |  |  |  |
 | template residue detector passed |  |  |  |
 | red+orange below 40% |  |  |  |
 
+If current AIGC was above 50 and remains above 50, do not only output "retest later"; route eligible residual targets to `LOCAL_ESCALATED_HUMANIZATION`.
+
 Final status should be `FIRST_PASS_FAILURE` unless all checks pass and a new repair plan is ready.
 
-## 11. Final Status and Delivery Status
+## 13. Final Status and Delivery Status
 
 Use `final_delivery_status` as the primary status:
 
@@ -165,6 +209,8 @@ Use `final_delivery_status` as the primary status:
 | `FIRST_PASS_FAILURE` | First-pass effectiveness gate failed |
 | `REWRITE_NOT_APPLIED_FAILURE` | Generated rewrite was not actually written into DOCX body text |
 | `TEMPLATE_RESIDUE_FAILURE` | Patched output still contains high-risk template residue |
+| `LOCAL_ESCALATION_SKIPPED` | Local Level 4 repair was required but not executed |
+| `LEVEL_4_SECTION_BLOCKED` | Level 4 was used in a forbidden strict section |
 | `NEEDS_ACADEMIC_TONE_REPAIR` | AIGC reduced but academic tone guard failed |
 | `FORMAT_FAILURE` | Duplicate insertion or format corruption detected |
 | `FORMAT_RISK_REVIEW_REQUIRED` | OOXML patch not used but user requires DOCX format |
@@ -173,18 +219,29 @@ Use `final_delivery_status` as the primary status:
 
 Never promise external detector results.
 
-## 12. Required Output Table (Extended)
+## 14. Required Output Table (Extended)
 
 The final output table must include these additional rows:
 
 | item | result | evidence |
 |---|---|---|
-## 13. Required Output Table
+## 15. Required Output Table
 
 The final output table must include all these rows:
 
 | item | result | evidence |
 |---|---|---|
+| current_similarity_rate |  |  |
+| current_aigc_rate |  |  |
+| target_similarity_rate |  |  |
+| target_aigc_rate |  |  |
+| selected_strategy |  |  |
+| max_humanization_level |  |  |
+| level_4_allowed | false / local_only |  |
+| similarity_status |  |  |
+| local_escalation_applied | yes / no / not_applicable |  |
+| local_escalation_sections | none / list |  |
+| thesis_register_guard_result | PASSED / PASSED_AFTER_REPAIR / FAILED / NOT_APPLICABLE |  |
 | DOCX color read | yes/no/not_applicable |  |
 | red total / processed |  |  |
 | orange total / processed |  |  |
@@ -214,4 +271,4 @@ The final output table must include all these rows:
 | unchanged_high_risk_sections | none / list |  |
 | template_residue_sections | none / list |  |
 | over_humanization_regression_found | yes / no / not_applicable |  |
-| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
+| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / LOCAL_ESCALATION_SKIPPED / LEVEL_4_SECTION_BLOCKED / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |

@@ -10,6 +10,7 @@ Use `zh-thesis-risk-optimizer` when you need a Chinese thesis revision workflow 
 - Character-change control.
 - Social-science and management-template bottleneck repair.
 - Controlled humanization that preserves academic register.
+- Risk intake that selects conservative, controlled, or local escalated humanization from current rates.
 - OOXML-based DOCX format preservation.
 - Rewrite application verification: generated rewrites must be actually patched into DOCX body text.
 - Template residue detection after patching.
@@ -19,12 +20,27 @@ The Skill does not promise any external detection-platform result. It does not c
 
 ## 2. Start With Intake
 
-Every matching task starts with `INTAKE_WIZARD_PRECHECK`.
+Every matching task starts with `RISK_INTAKE_GATE` and `INTAKE_WIZARD_PRECHECK`.
+
+Before rewriting, you must provide:
+
+- current_similarity_rate: 当前查重总体相似度；
+- current_aigc_rate: 当前 AIGC 总体疑似率；
+- target_similarity_rate: 目标查重率；
+- target_aigc_rate: 目标 AIGC 疑似率；
+- task_type: `aigc_only` / `similarity_only` / `dual_optimization`；
+- has_similarity_report: 是否有查重报告；
+- has_aigc_color_report: 是否有 AIGC 颜色报告；
+- preserve_docx_format_required: 是否要求保持 DOCX 原格式；
+- discipline: 论文专业；
+- stage: `original` / `first_pass` / `second_pass` / `current_report_pass` / `first_pass_failure`。
+
+If `current_similarity_rate` or `current_aigc_rate` is missing, the Skill outputs `INTAKE_INCOMPLETE`. It may read files or parse reports to complete intake, but it must not rewrite.
 
 Copy this instruction when you want to use the Skill:
 
 ```text
-请使用 zh-thesis-risk-optimizer。先执行 INTAKE_WIZARD_PRECHECK。
+请使用 zh-thesis-risk-optimizer。先执行 RISK_INTAKE_GATE 和 INTAKE_WIZARD_PRECHECK。
 请展示 workflow/intake_request_template.md 的完整模板，等我填写后再继续。
 ```
 
@@ -32,16 +48,25 @@ If you already know the inputs, fill the template directly:
 
 ```text
 【任务目标】只降 AIGC
+【当前查重率 current_similarity_rate】11%
+【当前 AIGC 疑似率 current_aigc_rate】68.6%
+【目标查重率 target_similarity_rate】15%
+【目标 AIGC 疑似率 target_aigc_rate】30%
+【任务类型 task_type】aigc_only
 【论文输入】原文 DOCX：/path/to/original.docx
 【处理范围】全文；只处理报告红橙片段
 【输出形式】创建副本并回写；同时输出诊断表和验收表
 【字数约束】全文 ±10%
 【保护项】引用、数据、图表编号、参考文献、学校声明、代码、路径、参数
 【AIGC 报告】/path/to/aigc_report.docx
+【是否有 AIGC 颜色报告 has_aigc_color_report】true
 【论文专业和题目】人力资源管理，《……》
 【查重报告】无
+【是否有查重报告 has_similarity_report】false
 【报告颜色规则】红色>70%；橙色60%-70%；紫色50%-60%；黑色<50%
 【当前状态】原文未改
+【阶段 stage】original
+【是否要求保持 DOCX 原格式 preserve_docx_format_required】true
 【历史版本】无
 【用户目标】红橙一起处理；不全文大改；不承诺检测结果
 【可用证据】问卷、访谈、流程、岗位、指标等材料；没有则写无
@@ -54,6 +79,7 @@ The current slim router exposes these entry modes and internal mandatory engines
 
 | mode | use when |
 |---|---|
+| `RISK_INTAKE_GATE` | Before every rewrite route; collects current/target rates and decides strategy, max level, and local Level 4 permission. |
 | `INTAKE_WIZARD_PRECHECK` | Start every matching task and collect required, recommended, and optional fields. |
 | `FILE_INPUT_COPY_WORKFLOW` | The user provides DOCX/TXT/Markdown/LaTeX files; create a copy before editing. |
 | `OOXML_DOCX_PATCH_WORKFLOW` | DOCX format preservation required; default writeback method. Internal, not a user entry. |
@@ -64,8 +90,10 @@ The current slim router exposes these entry modes and internal mandatory engines
 | `AIGC_PLATEAU_BREAKER` | Multiple rounds slow down, red decreases but orange remains, or user reports a plateau after revision. |
 | `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` | Human resource management, business administration, marketing, education management, public administration, or similar template-heavy papers. |
 | `CONTROLLED_HUMANIZATION_ENGINE` | Internal engine for controlled de-AIGC humanization; breaks AI templates while preserving academic register. Not a user entry. |
+| `LOCAL_ESCALATED_HUMANIZATION` | Internal local-only Level 4 engine for eligible residual red/orange/template paragraphs. Never full-text. |
 | `REWRITE_APPLICATION_GATE` | Internal gate that verifies generated rewrites were actually patched into DOCX body text. Not a user entry. |
 | `TEMPLATE_RESIDUE_DETECTOR` | Internal gate that detects residual high-risk template sentences after patching. Not a user entry. |
+| `THESIS_REGISTER_GUARD` | Internal section-aware guard that repairs over-humanized text back to thesis register. |
 | `AIGC_REGRESSION_GUARD` | A rewrite becomes smoother/more AI-like OR too colloquial/casual. |
 | `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration, AIGC thresholds, tone, and format. Not a user entry. |
 | `FINAL_ACCEPTANCE_AUDIT` | End every report-driven or file-copy task with coverage, evidence, regression, tone, format, and character-change checks. |
@@ -89,15 +117,19 @@ DOCX 写回使用 OOXML patch，只替换确认映射的正文段落，保持原
 Required chain:
 
 ```text
-FILE_INPUT_COPY_WORKFLOW
+RISK_INTAKE_GATE
+-> INTAKE_WIZARD_PRECHECK
+-> FILE_INPUT_COPY_WORKFLOW
 -> OOXML_DOCX_PATCH_WORKFLOW when DOCX format preservation is required
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
+-> LOCAL_ESCALATED_HUMANIZATION when triggered
 -> REWRITE_APPLICATION_GATE
 -> TEMPLATE_RESIDUE_DETECTOR
+-> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -115,15 +147,24 @@ If you want to absorb the strong de-AIGC ability of older Skill versions (templa
 DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保持原格式。
 ```
 
-The engine supports 3 intensity levels:
+The engine supports controlled levels selected by `RISK_INTAKE_GATE`:
 
 | level | AIGC range | behavior |
 |---|---|---|
-| 1 (light) | < 50% | Only reduce template sentences; strong academic register |
-| 2 (medium, default) | 50%-75% | Break templates, add author judgment, vary sentence length, maintain thesis register |
-| 3 (strong) | > 75% | Significantly increase human-interpretation feel; constrained by academic tone guard; requires manual review |
+| 1-2 | <30% | Conservative local repair only |
+| 3 | 30%-50% | Moderate controlled humanization |
+| 3.5 | 50%-70% | High-risk controlled repair; strict sections max at 3.5 |
+| 4 local-only | >=70% or hard second-pass/failure cases | Only through `LOCAL_ESCALATED_HUMANIZATION`; never full-text; strict sections still max at 3.5 |
 
-There is NO unlimited aggressive colloquialization mode. Level 3 always includes a warning that academic formality may be reduced.
+There is NO unlimited aggressive colloquialization mode. Level 4 cannot be selected by `CONTROLLED_HUMANIZATION_ENGINE` alone and is never allowed in 摘要, 英文摘要, 理论基础, or 结论.
+
+Example with risk intake:
+
+```text
+当前查重率 11%，AIGC 疑似率 68.6%，目标查重率不高于 15%，AIGC 目标低于 30%。
+有 AIGC 颜色报告，要求保持 DOCX 原格式。
+请只降 AIGC，并根据红橙残留决定是否局部启用 LOCAL_ESCALATED_HUMANIZATION。
+```
 
 ## 6. Current-Report Workflow
 
@@ -141,15 +182,19 @@ Use this when the paper has already been revised once or more and you provide th
 Required chain:
 
 ```text
-FILE_INPUT_COPY_WORKFLOW
+RISK_INTAKE_GATE
+-> INTAKE_WIZARD_PRECHECK
+-> FILE_INPUT_COPY_WORKFLOW
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
 -> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
+-> LOCAL_ESCALATED_HUMANIZATION when triggered
 -> REWRITE_APPLICATION_GATE
 -> TEMPLATE_RESIDUE_DETECTOR
+-> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
 -> FINAL_ACCEPTANCE_AUDIT
@@ -204,7 +249,11 @@ Every delivery should include:
 - Author evidence still needed.
 - Color migration assessment.
 - First-pass effectiveness gate result.
+- Current similarity/AIGC rates and target rates.
+- Selected strategy, maximum humanization level, and Level 4 permission.
 - Controlled humanization level used.
+- Local escalation applied and sections used.
+- Thesis register guard result.
 - Academic tone guard result.
 - OOXML patch result.
 - Rewrite application gate result.

@@ -6,6 +6,8 @@
 
 This engine is NOT a "colloquialization engine." It is a controlled humanization engine that breaks AI statistical patterns while preserving formal thesis standards.
 
+It must not decide Level 4 by itself. Level 4 requires `RISK_INTAKE_GATE`, `FIRST_PASS_EFFECTIVENESS_GATE`, and `TEMPLATE_RESIDUE_DETECTOR` to jointly trigger `LOCAL_ESCALATED_HUMANIZATION`.
+
 ## Activation
 
 This engine activates automatically when:
@@ -19,7 +21,7 @@ Do NOT activate for engineering, computer-science, medical, or natural-science t
 
 ## Style Intensity Levels
 
-The engine supports three intensity levels:
+The engine supports Levels 1-3 and the Level 3.5 ceiling. Level 4 is not executed here.
 
 ### Level 1: Light
 
@@ -45,6 +47,29 @@ The engine supports three intensity levels:
 - Output must include a warning: "高强度人类化可能降低学术正式度，需要人工复核。"
 
 There is NO unlimited aggressive colloquialization mode.
+
+### Level 3.5: Strict-Section Ceiling
+
+- Used when AIGC is high but the section is strict: 摘要, 英文摘要, 理论基础, or 结论.
+- Allows stronger template removal than Level 3.
+- Does not permit chat-like expressions, rhetorical questions, diary narration, or Level 4 local looseness.
+- Must pass `THESIS_REGISTER_GUARD`.
+
+### Level 4: Not This Engine
+
+`CONTROLLED_HUMANIZATION_ENGINE` must not run Level 4 directly.
+
+Level 4 is allowed only through `LOCAL_ESCALATED_HUMANIZATION`, only locally, and only when all are true:
+
+1. `RISK_INTAKE_GATE` sets `level_4_allowed = local_only`;
+2. `FIRST_PASS_EFFECTIVENESS_GATE` or current-report diagnosis confirms unresolved high-risk residuals;
+3. `TEMPLATE_RESIDUE_DETECTOR` identifies a remaining template skeleton or red/orange target;
+4. the section allows Level 4 under `references/local_escalated_humanization.md`;
+5. `THESIS_REGISTER_GUARD` runs after the local rewrite.
+
+Full-text Level 4 is blocked.
+
+Level 4 is never allowed in 摘要, 英文摘要, 理论基础, or 结论.
 
 ## Core Strategies
 
@@ -165,8 +190,10 @@ When this engine is active, output:
 |---|---|---|---|---|---|---|
 
 ### Style Intensity Used
-- level: 1 / 2 / 3
+- level: 1 / 2 / 3 / 3.5
 - warning (if level 3): 高强度人类化可能降低学术正式度，需要人工复核。
+- level_4_allowed: false / local_only
+- level_4_route: none / LOCAL_ESCALATED_HUMANIZATION
 
 ### Academic Tone Guard Summary
 - total_paragraphs_checked:
@@ -181,6 +208,8 @@ When this engine is active, output:
 - Do not produce text that reads like a student diary, social media post, or chat log.
 - Every humanization move must be anchored to source evidence or author judgment, not invented casualness.
 - If `ACADEMIC_TONE_GUARD` flags a violation, correct before proceeding.
+- Do not use chat-like expression in 摘要, 英文摘要, 理论基础, or 结论.
+- Do not apply full-text Level 4.
 
 ## Relation To SKILL.md
 

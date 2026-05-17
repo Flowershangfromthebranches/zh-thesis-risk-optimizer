@@ -4,7 +4,7 @@
 
 `FIRST_PASS_EFFECTIVENESS_GATE` is the quality checkpoint between `FIRST_PASS_RED_ORANGE_ENGINE` and `FINAL_ACCEPTANCE_AUDIT`. It prevents the common failure mode where a first pass reduces red text but produces an orange plateau — the AIGC score drops only a few points while color distribution shifts from red to orange rather than red to black.
 
-This gate is not a rewriter. It is a diagnostic gate that evaluates the first-pass result and decides whether the task can proceed to acceptance or must enter `AIGC_PLATEAU_BREAKER` for a second pass.
+This gate is not a rewriter. It is a diagnostic gate that evaluates the first-pass result and decides whether the task can proceed to acceptance or must enter `AIGC_PLATEAU_BREAKER` and, when triggered, `LOCAL_ESCALATED_HUMANIZATION` for local residual repair.
 
 **Core principle**: Red-to-orange migration is NOT success. If red decreased but orange accumulated, the first pass demoted risk levels but did not eliminate them. This is `FIRST_PASS_FAILURE`, not a plateau.
 
@@ -21,6 +21,7 @@ To evaluate the gate, the following must be available:
 - `REWRITE_APPLICATION_GATE` report proving that generated rewrites were actually patched into DOCX body text.
 - `TEMPLATE_RESIDUE_DETECTOR` report showing whether template residue remains after patching.
 - Minimum diff-ratio results for every red/orange target paragraph.
+- `RISK_INTAKE_GATE` decision, especially `current_aigc_rate`, `selected_strategy`, `max_humanization_level`, and `level_4_allowed`.
 
 ## Gate Conditions
 
@@ -111,6 +112,20 @@ For red/orange paragraphs:
 
 If facts or protected content prevent a safe rewrite at the threshold, the output must include `material_gap_table` and cannot mark the paragraph complete.
 
+### Condition 14: Current AIGC Still Above 50% After First Pass
+
+If `current_aigc_rate > 50` before the first pass and the post-first-pass AIGC rate is still above 50, do not only tell the user to retest later. Route high-risk residual paragraphs to `LOCAL_ESCALATED_HUMANIZATION` when `RISK_INTAKE_GATE` allows `level_4_allowed = local_only`.
+
+### Condition 15: Orange Or Red+Orange Residue Still High
+
+If orange count/share remains high:
+
+- `orange_count > 25`, or
+- `red_count + orange_count > 40`, or
+- red/orange share remains concentrated in key sections,
+
+then enter `LOCAL_ESCALATED_HUMANIZATION` for high-risk residual targets only. Do not rewrite black/low-risk text.
+
 ## Output: Required Fields
 
 The gate output must include all of the following:
@@ -133,6 +148,9 @@ The gate output must include all of the following:
 | `patch_status_summary` | all_applied / patch_not_applied / patch_mismatch / patch_ineffective / not_applicable |
 | `unchanged_high_risk_sections` | none or list |
 | `template_residue_sections` | none or list |
+| `local_escalation_required` | yes / no |
+| `local_escalation_sections` | list of eligible sections or none |
+| `thesis_register_guard_required` | yes / no |
 
 ## Output: Gate Verdict Table
 
@@ -175,6 +193,7 @@ The gate must produce a color migration table showing how each band's character 
 |---|---|
 | ALL conditions clear | proceed to `FINAL_ACCEPTANCE_AUDIT` |
 | Any condition met | enter `AIGC_PLATEAU_BREAKER`; output FIRST_PASS_FAILURE diagnosis |
+| Condition 14 or 15 met and Level 4 is locally allowed | enter `LOCAL_ESCALATED_HUMANIZATION` for eligible residual sections; do not say only "retest and see" |
 | Processing records missing | return to `FIRST_PASS_RED_ORANGE_ENGINE` to complete records first |
 | Author evidence missing | output material gap table and request `workflow/author_evidence_pack_template.md` |
 
@@ -186,8 +205,10 @@ This gate runs after `AIGC_REGRESSION_GUARD` and before `FINAL_ACCEPTANCE_AUDIT`
 FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
+-> LOCAL_ESCALATED_HUMANIZATION when triggered
 -> REWRITE_APPLICATION_GATE
 -> TEMPLATE_RESIDUE_DETECTOR
+-> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE       ← here
 -> FINAL_ACCEPTANCE_AUDIT

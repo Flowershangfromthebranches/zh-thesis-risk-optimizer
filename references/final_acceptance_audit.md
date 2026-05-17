@@ -10,6 +10,7 @@ This audit is a workflow acceptance check. It does not promise any external dete
 
 The final output must report:
 
+0. `RISK_INTAKE_GATE` result: current rates, target rates, selected strategy, humanization ceiling, and Level 4 permission.
 1. Whether DOCX color metadata was read.
 2. Red paragraph/fragment total and processed count.
 3. Orange paragraph/fragment total and processed count.
@@ -30,6 +31,8 @@ The final output must report:
 18. **Patch status summary**: whether any target produced `patch_not_applied`, `patch_mismatch`, or `patch_ineffective`.
 19. **Unchanged high-risk sections**: whether 摘要, 理论基础, 第五章, or 结论 still preserve their original high-risk skeleton.
 20. **Template residue sections**: where residual template patterns remain.
+21. **Local escalation result**: whether `LOCAL_ESCALATED_HUMANIZATION` was triggered, which sections it touched, and whether it stayed within section ceilings.
+22. **Thesis register guard result**: whether `THESIS_REGISTER_GUARD` passed after controlled or local humanization.
 
 This audit absorbs the older post-rewrite self-audit, anti-shallow-rewrite, and effectiveness-evaluation gates. These checks are no longer separate entry modes; completion depends on this final gate.
 
@@ -38,6 +41,7 @@ This audit absorbs the older post-rewrite self-audit, anti-shallow-rewrite, and 
 The task can be marked `COMPLETED` only when:
 
 - all mandatory chain steps were executed;
+- `current_similarity_rate`, `current_aigc_rate`, `target_similarity_rate`, and `target_aigc_rate` were collected before rewriting;
 - DOCX color extraction was performed when a DOCX color report exists;
 - every red/orange paragraph has a processing record;
 - red/orange unprocessed count is zero;
@@ -56,6 +60,9 @@ The task can be marked `COMPLETED` only when:
 - `format_preservation_result` is PASSED or NOT_APPLICABLE;
 - `rewrite_application_gate_result` is PASSED or NOT_APPLICABLE;
 - `template_residue_detector_result` is PASSED or NOT_APPLICABLE;
+- `thesis_register_guard_result` is PASSED, PASSED_AFTER_REPAIR, or NOT_APPLICABLE;
+- `LOCAL_ESCALATED_HUMANIZATION` was used only when `level_4_allowed = local_only`;
+- no Level 4 rewrite was applied in 摘要, 英文摘要, 理论基础, or 结论;
 - `min_diff_ratio_passed` is yes or NOT_APPLICABLE;
 - no target has `patch_not_applied`, `patch_mismatch`, or `patch_ineffective`;
 - the post-patch red+orange share is not above 40% when a post-patch AIGC report is available.
@@ -76,6 +83,10 @@ The task must not be marked `COMPLETED` when:
 - any required red/orange target failed the minimum diff-ratio threshold;
 - post-patch text still contains the original high-risk paragraph skeleton in 摘要, 理论基础, 第五章, or 结论;
 - red+orange remains above 40% in the post-patch report.
+- `current_similarity_rate` or `current_aigc_rate` was missing before rewriting;
+- Level 4 was applied without `RISK_INTAKE_GATE` approval;
+- Level 4 was applied outside local eligible sections;
+- `THESIS_REGISTER_GUARD` failed and the result was not repaired.
 
 If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, but the paragraph should be marked as needing author input rather than rewritten as complete.
 
@@ -101,6 +112,8 @@ When DOCX writeback is involved:
 4. If `template_residue_detector_result = failed`, final delivery status must be `TEMPLATE_RESIDUE_FAILURE`.
 5. If red+orange remains above 40%, final delivery status must be `FIRST_PASS_FAILURE`.
 6. None of these failure states may be described as completed, effective, or ready to deliver.
+7. If `local_escalation_required = yes`, `LOCAL_ESCALATED_HUMANIZATION` must be attempted on eligible residual sections or the audit must mark `LOCAL_ESCALATION_SKIPPED`.
+8. If `THESIS_REGISTER_GUARD` fails, final delivery status must be `NEEDS_ACADEMIC_TONE_REPAIR`.
 
 ## Color Migration Check (First-Pass Only)
 
@@ -141,6 +154,8 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 | AIGC risk reduced but ooxml_patch not used and user requires DOCX format | FORMAT_RISK_REVIEW_REQUIRED |
 | Generated rewrites were not actually patched into DOCX text | REWRITE_NOT_APPLIED_FAILURE |
 | Post-patch text still contains high-risk template residue | TEMPLATE_RESIDUE_FAILURE |
+| Local escalation was required but not run | LOCAL_ESCALATION_SKIPPED |
+| Level 4 applied in forbidden section | LEVEL_4_SECTION_BLOCKED |
 | Red+orange remains above 40% in the post-patch report | FIRST_PASS_FAILURE |
 | First-pass effectiveness gate failed | FIRST_PASS_FAILURE |
 | Mandatory chain step missing | BLOCKED |
@@ -150,6 +165,17 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 
 | item | result | evidence |
 |---|---|---|
+| current_similarity_rate |  |  |
+| current_aigc_rate |  |  |
+| target_similarity_rate |  |  |
+| target_aigc_rate |  |  |
+| selected_strategy |  |  |
+| max_humanization_level |  |  |
+| level_4_allowed | false / local_only |  |
+| similarity_status |  |  |
+| local_escalation_applied | yes / no / not_applicable |  |
+| local_escalation_sections | none / list |  |
+| thesis_register_guard_result | PASSED / PASSED_AFTER_REPAIR / FAILED / NOT_APPLICABLE |  |
 | DOCX color read | yes/no/not_applicable |  |
 | red total / processed |  |  |
 | orange total / processed |  |  |
@@ -180,7 +206,7 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 | unchanged_high_risk_sections | none / list |  |
 | template_residue_sections | none / list |  |
 | over_humanization_regression_found | yes / no / not_applicable |  |
-| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
+| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / LOCAL_ESCALATION_SKIPPED / LEVEL_4_SECTION_BLOCKED / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
 
 ## First-Pass Failure
 

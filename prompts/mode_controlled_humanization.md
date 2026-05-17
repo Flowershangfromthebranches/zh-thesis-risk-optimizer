@@ -9,6 +9,7 @@ This is an internal engine, not a user-facing entry mode. Route through `SKILL.m
 - Red/orange paragraph list after `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` processing.
 - Discipline type (must be social-science or management).
 - Current AIGC risk level.
+- `RISK_INTAKE_GATE` output, including `selected_strategy`, `max_humanization_level`, and `level_4_allowed`.
 - Author evidence availability.
 - Protected items list.
 
@@ -18,14 +19,19 @@ This is an internal engine, not a user-facing entry mode. Route through `SKILL.m
 controlled_humanization:
   discipline: HR_management / business_admin / marketing / education_admin / public_admin
   current_aigc_level: <percentage>
-  selected_intensity: 1 / 2 / 3
+  selected_intensity: 1 / 2 / 3 / 3.5
+  level_4_allowed: false / local_only
   reason: <why this level>
 ```
 
 Selection rules:
-- AIGC < 50% → level 1
-- AIGC 50%-75% → level 2 (default)
-- AIGC > 75% → level 3 (with warning)
+- AIGC < 30% → max level 2, conservative repair.
+- AIGC 30%-50% → max level 3, controlled humanization.
+- AIGC 50%-70% → max level 3.5; local Level 4 may only be handed to `LOCAL_ESCALATED_HUMANIZATION`.
+- AIGC >= 70% → max level 4 only through `LOCAL_ESCALATED_HUMANIZATION`; this prompt still uses max 3.5 in strict sections.
+- AIGC >= 75% and `stage = second_pass` or `first_pass_failure` → output style risk warning and hand eligible Chapter 4/5 residuals to `LOCAL_ESCALATED_HUMANIZATION`.
+
+This prompt must not self-select Level 4. It can only output `level_4_candidate: yes` and route the paragraph to `LOCAL_ESCALATED_HUMANIZATION`.
 
 ## 2. Per-Paragraph Processing
 
@@ -35,10 +41,12 @@ For each red/orange paragraph:
 paragraph_id:
   original_template_type: four_problem_four_solution / definition_significance_countermeasure / enumeration_chain / policy_style / encyclopedia_theory / other
   humanization_strategy: A / B / C / D / E / F
-  intensity_level: 1 / 2 / 3
+  intensity_level: 1 / 2 / 3 / 3.5
+  level_4_candidate: yes / no
   evidence_anchor: <what evidence supports the rewrite>
   academic_tone_guard_pre_check: pass / fail
   academic_tone_guard_post_check: pass / fail
+  thesis_register_guard_required: yes
 ```
 
 ## 3. Strategy Application
@@ -63,6 +71,7 @@ After each paragraph revision, run `ACADEMIC_TONE_GUARD`:
 - Check for social-media style.
 - If violation found → correct before proceeding.
 - If correction would undo the humanization → try a different strategy.
+- Also run `THESIS_REGISTER_GUARD` when section is 摘要, 英文摘要, 理论基础, 结论, 第四章, or 第五章.
 
 ## 5. Output
 
@@ -73,8 +82,11 @@ After each paragraph revision, run `ACADEMIC_TONE_GUARD`:
 |---|---|---|---|---|---|---|---|
 
 ### Intensity Summary
-- level_used: <1/2/3>
+- level_used: <1/2/3/3.5>
 - level_3_warning: yes/no
+- level_4_allowed: false/local_only
+- level_4_candidates: <paragraph list or none>
+- next_route_for_level_4_candidates: LOCAL_ESCALATED_HUMANIZATION / none
 
 ### Tone Guard Summary
 - checked: <count>
@@ -93,3 +105,5 @@ After each paragraph revision, run `ACADEMIC_TONE_GUARD`:
 - Never produce diary-like, chat-like, or social-media-like text.
 - If evidence is missing, request `workflow/author_evidence_pack_template.md`.
 - Level 3 output must include the academic-formality warning.
+- Never use Level 4 directly in this prompt.
+- Never use chat-like expression in 摘要, 英文摘要, 理论基础, or 结论.
