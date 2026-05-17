@@ -62,8 +62,10 @@ If the report uses different colors, record the raw hex values and ask the user 
 4. Count characters by color band.
 5. Build a red/orange task table before rewriting.
 6. Map each colored fragment back to the original thesis text.
-7. Apply `REPORT_AIGC_ONLY`, `FIRST_PASS_RED_ORANGE_ENGINE`, or `REPORT_SIMILARITY_ONLY` only after mapping confidence is assigned.
-8. Freeze black, gray, white, reference, declaration, and school-template areas unless the user explicitly asks otherwise.
+7. After mapping confidence is assigned, route through `THREE_MODE_COLOR_BAND_WORKFLOW`.
+8. If the input is original thesis plus original report, overlay `FIRST_PASS_RED_ORANGE_ENGINE`.
+9. If the input is current draft plus current report, overlay `CURRENT_REPORT_RED_ORANGE_ENGINE`.
+10. Freeze black, gray, white, reference, declaration, and school-template areas unless the user explicitly asks otherwise.
 
 ## Failure Mode
 
@@ -87,4 +89,4 @@ Do not fabricate report colors, percentages, or risk bands. Use only the colors,
 
 ## Relation To SKILL.md
 
-Load this file before report-driven AIGC or similarity work when the input report is a color-marked DOCX.
+Load this file before color-band AIGC or similarity work when the input report is a color-marked DOCX. After extraction and mapping, continue through `THREE_MODE_COLOR_BAND_WORKFLOW` and the appropriate red-orange engine.

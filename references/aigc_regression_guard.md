@@ -46,11 +46,23 @@ Common wording is replaced with rarer but more AI-like formal phrases only to av
 
 Concrete class names, function names, parameters, test data, or running results are diluted into broad words such as "system capability", "detection mechanism", or "practical value".
 
+## 6. Management Thesis Regression
+
+For human resource management, business administration, marketing, education management, public administration, and similar social-science theses, run these extra checks:
+
+- Did the rewrite turn ordinary expressions into more abstract management words such as 机制, 体系, 路径, 赋能, 支撑, 协同?
+- Did it add empty value claims such as "提升效率", "优化流程", "强化能力", "提供参考", or "具有重要意义"?
+- Did it replace concrete posts, recruitment steps, questionnaire items, interview feedback, forms, review cycles, or responsible roles with broad summary language?
+- Did it lower similarity risk by sacrificing evidence density?
+- Did it keep the "现状 -> 问题 -> 原因 -> 对策" or "定义 -> 意义 -> 对策" skeleton while only polishing words?
+
+If any management red/orange paragraph fails these checks, do not continue with generic polishing. Route back to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`. If the needed company, questionnaire, interview, process, post, indicator, form, or cycle evidence is missing, request `workflow/author_evidence_pack_template.md`.
+
 ## Mandatory Rules
 
 - If a paragraph has three or more regression categories, mark `AIGC_REGRESSION_FAIL`.
 - `AIGC_REGRESSION_FAIL` must not be accepted as final text.
-- The paragraph must enter Evidence-Based Reconstruction.
+- The paragraph must return to the appropriate reconstruction path in the slim router. For management/social-science papers, return to `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK` or request the author evidence pack.
 - Do not repair regression by adding more formal words.
 - Prefer concrete objects already present in the source.
 - If there is not enough concrete information, output `建议作者补充：...`.

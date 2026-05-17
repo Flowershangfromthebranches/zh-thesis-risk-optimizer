@@ -35,6 +35,10 @@ These names may appear in historical tests or references, but `QUICKSTART.md` mu
 - `AIGC_DEEP_REWRITE_ENGINE`
 - `TARGETED_MULTIPASS_ENGINE`
 - `AIGC_FOCUSED_LENGTH_CONTROLLED`
+- `REPORT_SIMILARITY_ONLY`
+- `SECOND_PASS_REWRITE`
+- `FULL_THESIS_PROJECT_MODE`
+- `NO_REPORT_FALLBACK_WORKFLOW`
 
 ## Executable Check
 
@@ -70,6 +74,22 @@ retired_quickstart_entries = [
     'AIGC_DEEP_REWRITE_ENGINE',
     'TARGETED_MULTIPASS_ENGINE',
     'AIGC_FOCUSED_LENGTH_CONTROLLED',
+    'REPORT_SIMILARITY_ONLY',
+    'SECOND_PASS_REWRITE',
+    'FULL_THESIS_PROJECT_MODE',
+    'NO_REPORT_FALLBACK_WORKFLOW',
+]
+
+archived_prompt_files = [
+    'prompts/mode_aigc_only.md',
+    'prompts/mode_dual_optimization.md',
+    'prompts/mode_report_driven_aigc.md',
+    'prompts/mode_report_driven_similarity.md',
+    'prompts/mode_second_pass_rewrite.md',
+    'prompts/mode_targeted_multipass.md',
+    'prompts/mode_aigc_focused_length_controlled.md',
+    'prompts/mode_full_thesis_project.md',
+    'prompts/mode_no_report_dual_fallback.md',
 ]
 
 errors = []
@@ -97,6 +117,17 @@ for mode in expected_modes:
 for mode in retired_quickstart_entries:
     if mode in quickstart:
         errors.append(f'QUICKSTART.md still recommends retired entry mode: {mode}')
+
+for rel in archived_prompt_files:
+    path = root / rel
+    if not path.exists():
+        errors.append(f'Archived prompt file missing: {rel}')
+        continue
+    head = path.read_text(encoding='utf-8')[:200]
+    if 'ARCHIVED_COMPATIBILITY_ONLY' not in head:
+        errors.append(f'Archived prompt lacks compatibility header: {rel}')
+    if 'Do not call directly. Route through `SKILL.md` Minimal Mode Router.' not in head:
+        errors.append(f'Archived prompt lacks routing warning: {rel}')
 
 test_paths = []
 for test_file in sorted((root / 'tests').glob('*.md')):

@@ -1,3 +1,7 @@
+**ARCHIVED_COMPATIBILITY_ONLY**
+
+Do not call directly. Route through `SKILL.md` Minimal Mode Router.
+
 # Prompt: AIGC_ONLY
 
 Use this mode when the user explicitly asks to reduce AIGC-style risk without broad semantic rewriting.

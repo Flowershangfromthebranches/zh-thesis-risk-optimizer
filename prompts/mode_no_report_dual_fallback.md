@@ -1,3 +1,7 @@
+**ARCHIVED_COMPATIBILITY_ONLY**
+
+Do not call directly. Route through `SKILL.md` Minimal Mode Router.
+
 # Prompt: NO_REPORT_FALLBACK_WORKFLOW
 
 ## Purpose

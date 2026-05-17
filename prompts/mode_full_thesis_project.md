@@ -1,3 +1,7 @@
+**ARCHIVED_COMPATIBILITY_ONLY**
+
+Do not call directly. Route through `SKILL.md` Minimal Mode Router.
+
 # Prompt: FULL_THESIS_PROJECT_MODE
 
 Use this mode when the user provides a complete thesis or asks for whole-thesis planning.

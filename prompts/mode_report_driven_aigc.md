@@ -1,3 +1,7 @@
+**ARCHIVED_COMPATIBILITY_ONLY**
+
+Do not call directly. Route through `SKILL.md` Minimal Mode Router.
+
 # Prompt: REPORT_AIGC_ONLY
 
 Use this prompt when the user provides an AIGC report and wants targeted AIGC-risk optimization.

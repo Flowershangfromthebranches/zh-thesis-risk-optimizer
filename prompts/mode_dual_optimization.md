@@ -1,3 +1,7 @@
+**ARCHIVED_COMPATIBILITY_ONLY**
+
+Do not call directly. Route through `SKILL.md` Minimal Mode Router.
+
 # Prompt: DUAL_OPTIMIZATION
 
 Use this mode when the user asks to address both AIGC-style risk and similarity risk.

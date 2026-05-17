@@ -1,3 +1,7 @@
+**ARCHIVED_COMPATIBILITY_ONLY**
+
+Do not call directly. Route through `SKILL.md` Minimal Mode Router.
+
 # Prompt: AIGC_FOCUSED_LENGTH_CONTROLLED
 
 Use this prompt when similarity is already acceptable or similarity reduction is enough, but AIGC risk remains high and the user wants controlled length growth.

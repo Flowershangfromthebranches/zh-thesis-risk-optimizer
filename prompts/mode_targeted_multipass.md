@@ -1,3 +1,7 @@
+**ARCHIVED_COMPATIBILITY_ONLY**
+
+Do not call directly. Route through `SKILL.md` Minimal Mode Router.
+
 # Prompt: TARGETED_MULTIPASS_ENGINE
 
 Use this prompt when the user provides any combination of original text, current draft, reports, historical versions, and target thresholds.
