@@ -2,11 +2,11 @@
 
 ## Purpose
 
-This workflow defines the default user-facing operating model for thesis risk revision:
+This workflow defines the default user-facing operating model for thesis risk revision. It supports three internal task types:
 
-1. Similarity-only revision.
-2. AIGC-only revision.
-3. Dual revision.
+1. `task_type = similarity_only`
+2. `task_type = aigc_only`
+3. `task_type = dual_optimization`
 
 It supports plain-text input and file input. It uses report color bands when the user provides a similarity or AIGC report. It does not promise any external detection result.
 
@@ -19,7 +19,7 @@ When the completed intake satisfies all of the following, this workflow is manda
 3. The user provides or accepts red/orange/purple/black color rules.
 4. The user requests character control, file-copy output, or no broad full-text rewrite.
 
-Do not route this case to plain `AIGC_ONLY` or generic polishing.
+Do not route this case to any old standalone AIGC prompt or generic polishing.
 
 Additional overlays:
 
@@ -54,7 +54,7 @@ Default whole-thesis rule:
 
 If the revised draft exceeds the allowed range, mark `CHARACTER_DELTA_FAIL` and run compression before completion.
 
-## Mode 1: Similarity-Only
+## Task Type 1: similarity_only
 
 ### With Similarity Report
 
@@ -79,9 +79,9 @@ Use heuristic similarity revision:
 3. State that a similarity report would provide better localization.
 4. Do not claim precise report movement.
 
-## Mode 2: AIGC-Only
+## Task Type 2: aigc_only
 
-This is an internal color-band branch, not a separate entry mode. The old standalone AIGC-only and report-AIGC behavior is consolidated here and then handed to `FIRST_PASS_RED_ORANGE_ENGINE` or `CURRENT_REPORT_RED_ORANGE_ENGINE` when red/orange report bands exist.
+This is an internal color-band branch, not a separate entry mode. Old standalone AIGC report behavior is consolidated here and then handed to `FIRST_PASS_RED_ORANGE_ENGINE` or `CURRENT_REPORT_RED_ORANGE_ENGINE` when red/orange report bands exist.
 
 ### With AIGC Report
 
@@ -108,9 +108,9 @@ Use heuristic AIGC revision:
 3. State that an AIGC report would provide better localization.
 4. Do not claim precise report movement.
 
-## Mode 3: Dual Revision
+## Task Type 3: dual_optimization
 
-Dual revision combines the two modes above.
+Dual revision combines the two task types above.
 
 Default order:
 

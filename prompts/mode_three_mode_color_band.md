@@ -1,10 +1,14 @@
 # Prompt: THREE_MODE_COLOR_BAND_WORKFLOW
 
-Use this prompt as the default color-band workflow for similarity-only, AIGC-only, and dual revision. These are internal branches inside `THREE_MODE_COLOR_BAND_WORKFLOW`, not separate user-facing entry modes.
+Use this prompt as the default color-band workflow. It supports three internal task types inside `THREE_MODE_COLOR_BAND_WORKFLOW`, not separate user-facing entry modes:
+
+- `task_type = aigc_only`
+- `task_type = similarity_only`
+- `task_type = dual_optimization`
 
 ## Inputs
 
-- User mode request: similarity-only, AIGC-only, or dual.
+- User task type request: AIGC-only, similarity-only, or dual optimization.
 - Plain text or file path.
 - Similarity report, if provided.
 - AIGC report, if provided.
@@ -16,6 +20,7 @@ Use this prompt as the default color-band workflow for similarity-only, AIGC-onl
 
 ```yaml
 selected_mode:
+task_type: aigc_only_or_similarity_only_or_dual_optimization
 input_type: plain_text_or_file
 has_similarity_report:
 has_aigc_report:
@@ -33,7 +38,7 @@ overlay_social_science_template_bottleneck:
 
 Forced route:
 
-- If mode is AIGC-only, input includes a DOCX AIGC color report, red/orange/purple/black rules are provided, and the user requests character control or no broad full-text rewrite, set `selected_mode: THREE_MODE_COLOR_BAND_WORKFLOW`.
+- If `task_type = aigc_only`, input includes a DOCX AIGC color report, red/orange/purple/black rules are provided, and the user requests character control or no broad full-text rewrite, set `selected_mode: THREE_MODE_COLOR_BAND_WORKFLOW`.
 - Do not route to an old standalone AIGC entry or generic polishing.
 - If the report is for a revised/current draft, set `current_report_red_orange_engine: true`.
 - If the report is after a first rewrite and orange remains concentrated, set `overlay_aigc_plateau_breaker: true`.

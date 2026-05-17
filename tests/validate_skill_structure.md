@@ -8,7 +8,8 @@ Use this check before publishing or syncing the Skill.
 - Every `references/*.md` path declared by `SKILL.md` exists.
 - Every `workflow/*.md` path declared by `SKILL.md` exists.
 - `QUICKSTART.md` recommends only the 10 slim-router entry modes.
-- Retired historical modes are not recommended as QUICKSTART entry modes.
+- `README.md` recommends only the 10 slim-router entry modes.
+- Retired historical modes are not recommended as public-document entry modes.
 - Path references inside `tests/*.md` resolve to real files.
 - Failure on any missing path blocks release.
 
@@ -30,6 +31,7 @@ Use this check before publishing or syncing the Skill.
 These names may appear in historical tests or references, but `QUICKSTART.md` must not recommend them as user-facing entry modes:
 
 - `AIGC_ONLY`
+- `SIMILARITY_ONLY`
 - `REPORT_AIGC_ONLY`
 - `DUAL_OPTIMIZATION`
 - `AIGC_DEEP_REWRITE_ENGINE`
@@ -53,6 +55,7 @@ import sys
 root = Path('.')
 skill = (root / 'SKILL.md').read_text(encoding='utf-8')
 quickstart = (root / 'QUICKSTART.md').read_text(encoding='utf-8')
+readme = (root / 'README.md').read_text(encoding='utf-8')
 
 expected_modes = [
     'INTAKE_WIZARD_PRECHECK',
@@ -69,6 +72,7 @@ expected_modes = [
 
 retired_quickstart_entries = [
     'AIGC_ONLY',
+    'SIMILARITY_ONLY',
     'REPORT_AIGC_ONLY',
     'DUAL_OPTIMIZATION',
     'AIGC_DEEP_REWRITE_ENGINE',
@@ -117,6 +121,12 @@ for mode in expected_modes:
 for mode in retired_quickstart_entries:
     if mode in quickstart:
         errors.append(f'QUICKSTART.md still recommends retired entry mode: {mode}')
+    if mode in readme:
+        errors.append(f'README.md still recommends retired entry mode: {mode}')
+
+for mode in expected_modes:
+    if f'`{mode}`' not in readme:
+        errors.append(f'README.md does not list entry mode: {mode}')
 
 for rel in archived_prompt_files:
     path = root / rel

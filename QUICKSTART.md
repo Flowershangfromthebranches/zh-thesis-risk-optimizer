@@ -128,7 +128,26 @@ workflow/author_evidence_pack_template.md
 
 Do not fabricate missing interviews, questionnaire results, company systems, indicators, forms, or operational facts.
 
-## 7. Final Acceptance
+## 7. Professional Fit
+
+This Skill supports general Chinese thesis text-risk optimization, but it does not claim to fit every discipline automatically.
+
+- Social-science and management papers have special handling for template skeletons, management jargon, questionnaire/interview evidence, posts, processes, forms, indicators, owners, and review cycles.
+- Engineering and computer-science papers have special protection for formulas, code, API paths, table names, field names, parameters, experiment data, and running results.
+- Other disciplines should provide discipline-specific protected terms, data boundaries, and evidence sources before revision.
+
+## 8. DOCX Format Protection
+
+For file input, the default behavior is conservative:
+
+- Create a copy of the original file before editing.
+- Replace only target text with confirmed mapping.
+- Do not rebuild or reformat the whole document.
+- Do not write back low-confidence mappings.
+- Ask for human review when the file contains complex Word formatting, comments, fields, footnotes, endnotes, tables, images, or formulas.
+- Do not promise that every Word layout detail remains 100% unchanged.
+
+## 9. Final Acceptance
 
 Every delivery should include:
 
