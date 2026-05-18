@@ -25,6 +25,7 @@ To evaluate the gate, the following must be available:
 - `COLOR_BAND_ROUTER` decision, especially `purple_action`, `purple_targets_count`, and black/frozen targets.
 - `PURPLE_BAND_REBALANCER` report when `purple_action` is `light_rebalance` or `mandatory_rebalance`.
 - `GLOBAL_STYLE_VARIANCE_ENGINE` plan when purple remains high or full-text rhythm is uniform.
+- `RISK_BAND_COVERAGE_GATE` report with red/orange/purple coverage rates and skipped target lists.
 
 ## Gate Conditions
 
@@ -145,6 +146,18 @@ If `stage = second_pass`, `third_pass`, or `current_report_pass`, and `current_a
 
 If `purple_count` or `purple_ratio` remains high and no `global_style_variance_plan` exists, the gate fails.
 
+### Condition 20: Risk Band Coverage Failure
+
+If `RISK_BAND_COVERAGE_GATE` reports failure, the first pass fails.
+
+Specific failures include:
+
+- `red_coverage_rate < 100%`;
+- `orange_coverage_rate < 85%`;
+- `current_aigc_rate >= 70` and `orange_coverage_rate < 100%`;
+- `stage >= second_pass` and `purple_coverage_rate < 80%`;
+- `invalid_skips` is not empty.
+
 ## Output: Required Fields
 
 The gate output must include all of the following:
@@ -174,6 +187,12 @@ The gate output must include all of the following:
 | `purple_band_rebalancer_result` | PASSED / FAILED / NOT_RUN / NOT_REQUIRED |
 | `purple_deferred_reason` | reason or none |
 | `global_style_variance_result` | PASSED / FAILED / NOT_RUN |
+| `risk_band_coverage_gate_result` | PASSED / FAILED / NOT_RUN |
+| `red_coverage_rate` | percent |
+| `orange_coverage_rate` | percent |
+| `purple_coverage_rate` | percent |
+| `invalid_skips` | list or none |
+| `next_batch_plan` | plan or none |
 
 ## Output: Gate Verdict Table
 
@@ -198,6 +217,7 @@ If **any** condition is met → `FIRST_PASS_FAILURE` → route to `AIGC_PLATEAU_
 | 17. AIGC > 30% and purple skipped | — | to be checked | ? | CHECK |
 | 18. Required purple rebalance not run | — | to be checked | ? | CHECK |
 | 19. Purple high without global plan | — | to be checked | ? | CHECK |
+| 20. Risk band coverage failure | — | to be checked | ? | CHECK |
 
 If **any** condition is met → `FIRST_PASS_FAILURE` → route to `AIGC_PLATEAU_BREAKER` (or `ACADEMIC_TONE_GUARD` for condition 9, or `FORMAT_FAILURE` for condition 10).
 
@@ -222,6 +242,7 @@ The gate must produce a color migration table showing how each band's character 
 | Any condition met | enter `AIGC_PLATEAU_BREAKER`; output FIRST_PASS_FAILURE diagnosis |
 | Condition 14 or 15 met and Level 4 is locally allowed | enter `LOCAL_ESCALATED_HUMANIZATION` for eligible residual sections; do not say only "retest and see" |
 | Condition 16, 17, 18, or 19 met | enter `PURPLE_BAND_REBALANCER` and `GLOBAL_STYLE_VARIANCE_ENGINE`; do not mark completed |
+| Condition 20 met | return to `RISK_BAND_COVERAGE_GATE`; output skipped target list and `next_batch_plan`; do not mark completed |
 | Processing records missing | return to `FIRST_PASS_RED_ORANGE_ENGINE` to complete records first |
 | Author evidence missing | output material gap table and request `workflow/author_evidence_pack_template.md` |
 

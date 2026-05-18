@@ -6,6 +6,8 @@
 
 It performs low-intensity style rebalance, not deep rewriting.
 
+Purple is not ignored in the first pass. Every purple target must enter the task table with an action. First pass may observe low-volume purple targets, but it must still record `purple_action`, `purple_targets_count`, and `purple_coverage_rate`.
+
 ## Trigger Conditions
 
 Trigger from the first pass when one or more are true:
@@ -21,6 +23,10 @@ Trigger from the first pass when one or more are true:
 For `stage = second_pass`, `third_pass`, or `current_report_pass`, if `current_aigc_rate > target_aigc_rate`, `purple_action = mandatory_rebalance`.
 
 If a third pass has finished and AIGC is still above 30%, `purple_action = mandatory_rebalance` and `FINAL_ACCEPTANCE_AUDIT` must not ignore purple text.
+
+If `current_aigc_rate > 50`, purple targets must not all be `skip`.
+
+If red/orange handling lowers high-risk bands but the overall AIGC rate remains above 30%, purple must enter `mandatory_rebalance`.
 
 ## Allowed Actions
 
@@ -46,6 +52,7 @@ If a third pass has finished and AIGC is still above 30%, `purple_action = manda
 - `COLOR_BAND_ROUTER` must supply `purple_targets_count` and `purple_action`.
 - `FIRST_PASS_RED_ORANGE_ENGINE` must record purple targets even when it does not rewrite all of them.
 - `FINAL_ACCEPTANCE_AUDIT` must fail with `PURPLE_BAND_NOT_HANDLED_FAILURE` when `current_aigc_rate > target_aigc_rate` and `purple_action = skip`.
+- `RISK_BAND_COVERAGE_GATE` must fail when purple targets are missing from the task table or required purple coverage is below threshold.
 
 ## Example
 
@@ -73,6 +80,7 @@ Unacceptable:
 purple_band_rebalancer:
   purple_targets_count: <count>
   purple_rebalanced_count: <count>
+  purple_coverage_rate: <percent>
   purple_rewrite_intensity: low
   purple_action: skip | observe | light_rebalance | mandatory_rebalance
   purple_deferred_reason: <reason or none>

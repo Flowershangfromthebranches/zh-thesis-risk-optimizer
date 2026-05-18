@@ -69,6 +69,7 @@ expected_router_modes = [
     "DOCX_COLOR_REPORT_EXTRACTION",
     "THREE_MODE_COLOR_BAND_WORKFLOW",
     "COLOR_BAND_ROUTER",
+    "RISK_BAND_COVERAGE_GATE",
     "FIRST_PASS_RED_ORANGE_ENGINE",
     "CURRENT_REPORT_RED_ORANGE_ENGINE",
     "AIGC_PLATEAU_BREAKER",
@@ -106,6 +107,8 @@ required_files = [
     "tests/discipline_strategy_router_cases.md",
     "references/color_band_router.md",
     "tests/color_band_router_cases.md",
+    "references/risk_band_coverage_gate.md",
+    "tests/risk_band_coverage_gate_cases.md",
     "references/purple_band_rebalancer.md",
     "prompts/mode_purple_band_rebalancer.md",
     "tests/purple_band_rebalancer_cases.md",
@@ -145,6 +148,7 @@ required_chain_tokens = [
     "DOCX_COLOR_REPORT_EXTRACTION",
     "THREE_MODE_COLOR_BAND_WORKFLOW",
     "COLOR_BAND_ROUTER",
+    "RISK_BAND_COVERAGE_GATE",
     "CONTROLLED_HUMANIZATION_ENGINE",
     "LOCAL_ESCALATED_HUMANIZATION",
     "PURPLE_BAND_REBALANCER",
@@ -174,6 +178,7 @@ main_workflow_order = [
     "DOCX_COLOR_REPORT_EXTRACTION",
     "THREE_MODE_COLOR_BAND_WORKFLOW",
     "COLOR_BAND_ROUTER",
+    "RISK_BAND_COVERAGE_GATE",
     "CONTROLLED_HUMANIZATION_ENGINE",
     "LOCAL_ESCALATED_HUMANIZATION",
     "PURPLE_BAND_REBALANCER",
@@ -247,6 +252,14 @@ for token in [
     "selected_discipline_profile",
     "discipline_strategy_router_result",
     "color_band_router_result",
+    "risk_band_coverage_gate_result",
+    "red_targets_count",
+    "orange_targets_count",
+    "red_coverage_rate",
+    "orange_coverage_rate",
+    "purple_coverage_rate",
+    "invalid_skips",
+    "next_batch_plan",
     "purple_targets_count",
     "purple_action",
     "purple_band_rebalancer_result",
@@ -316,14 +329,30 @@ for rel in [
         fail(errors, f"Profile file missing: {rel}")
 
 color_router = read("references/color_band_router.md")
-for token in ["purple_action", "mandatory_rebalance", "red_count", "orange_count", "purple_count", "black_count"]:
+for token in ["purple_action", "mandatory_rebalance", "red_count", "orange_count", "purple_count", "black_count", "band_action_plan", "observe_with_reason", "freeze_with_reason"]:
     if token not in color_router:
         fail(errors, f"color_band_router.md missing {token}")
+
+risk_band_coverage = read("references/risk_band_coverage_gate.md")
+for token in [
+    "RISK_BAND_COVERAGE_GATE",
+    "red_coverage_rate < 100%",
+    "orange_coverage_rate < 85%",
+    "purple_coverage_rate < 80%",
+    "RISK_BAND_COVERAGE_FAILURE",
+    "next_batch_plan",
+]:
+    if token not in risk_band_coverage:
+        fail(errors, f"risk_band_coverage_gate.md missing {token}")
 
 purple_rebalancer = read("references/purple_band_rebalancer.md")
 for token in ["purple_action", "mandatory_rebalance", "Level 4", "current_aigc_rate > target_aigc_rate"]:
     if token not in purple_rebalancer:
         fail(errors, f"purple_band_rebalancer.md missing {token}")
+
+for token in ["red_coverage_rate", "orange_coverage_rate", "purple_coverage_rate"]:
+    if token not in quickstart:
+        fail(errors, f"QUICKSTART.md missing coverage field: {token}")
 
 retired_quickstart_entries = [
     "AIGC_ONLY",

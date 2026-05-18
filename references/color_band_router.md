@@ -6,6 +6,8 @@
 
 Purple is not a late-stage afterthought. Red, orange, purple, and black must all be counted, routed, and audited from the first color report. Their processing intensity differs, but their presence must be visible in the task table.
 
+The router must output `band_action_plan` for every red, orange, and purple target. A target list without a planned action is incomplete and must fail `RISK_BAND_COVERAGE_GATE`.
+
 ## Color Band Rules
 
 | band | threshold | objective | route |
@@ -17,6 +19,8 @@ Purple is not a late-stage afterthought. Red, orange, purple, and black must all
 
 ## Red Strategy
 
+- Every red target must receive an action.
+- Body red targets cannot use `observe_with_reason`.
 - Change argument order.
 - Delete high-frequency templates.
 - Put evidence before conclusion.
@@ -25,6 +29,9 @@ Purple is not a late-stage afterthought. Red, orange, purple, and black must all
 
 ## Orange Strategy
 
+- Every body orange target must receive an action or enter a batch plan.
+- Body orange targets cannot use `observe_with_reason` unless citation, format, or protected-element risk blocks rewriting.
+- Large orange blocks must be processed.
 - Vary sentence length.
 - Break mechanical enumeration.
 - Replace repeated connectors.
@@ -34,10 +41,34 @@ Purple is not a late-stage afterthought. Red, orange, purple, and black must all
 
 ## Purple Strategy
 
+- Every purple target must enter the task table.
+- Purple targets must receive `purple_light_rebalance`, `observe_with_reason`, or `freeze_with_reason`.
 - Do not perform large rewrites.
 - Preserve facts, terminology, citations, formulas, code, and data.
 - Apply low-intensity rhythm variation, transition changes, and repeated-opening reduction.
 - Route to `PURPLE_BAND_REBALANCER` from the first pass when `purple_action` requires it.
+
+## Band Action Plan
+
+`band_action_plan` must assign one action to every red/orange/purple target:
+
+| action | allowed for | notes |
+|---|---|---|
+| `rewrite` | red/orange | direct rewrite of body risk text |
+| `restructure` | red/orange | argument or paragraph skeleton reconstruction |
+| `evidence_rebuild` | red/orange | rebuild around provided evidence |
+| `local_escalated_humanization` | red/orange | local-only high-risk residual action when permitted |
+| `purple_light_rebalance` | purple | low-intensity rhythm or transition rebalance |
+| `observe_with_reason` | purple only by default | not valid for body red/orange unless protected risk blocks editing |
+| `freeze_with_reason` | protected/non-body targets | appendix, questionnaire appendix, references, declarations, cover, table of contents, code, formula, citation, data, path, parameter |
+
+Invalid plans:
+
+- body red target with `observe_with_reason`;
+- body orange target with `observe_with_reason` and no protected reason;
+- any red/orange/purple target without action;
+- using `freeze_with_reason` because the target list is long;
+- deferring risk targets to "after retest" without a batch plan.
 
 ## Purple Action Rules
 
@@ -98,8 +129,20 @@ color_band_router:
   black_ratio: <ratio>
   purple_action: skip | observe | light_rebalance | mandatory_rebalance
   band_action_plan:
-    red: <plan>
-    orange: <plan>
-    purple: <plan>
-    black: <plan>
+    red:
+      - target_id: <id>
+        action: rewrite | restructure | evidence_rebuild | local_escalated_humanization | freeze_with_reason
+        reason: <required>
+    orange:
+      - target_id: <id>
+        action: rewrite | restructure | evidence_rebuild | local_escalated_humanization | freeze_with_reason
+        reason: <required>
+    purple:
+      - target_id: <id>
+        action: purple_light_rebalance | observe_with_reason | freeze_with_reason
+        reason: <required>
+    black:
+      - target_id: <id>
+        action: freeze_with_reason
+        reason: <required>
 ```

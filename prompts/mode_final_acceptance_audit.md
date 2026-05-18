@@ -10,6 +10,7 @@ Do not mark a task complete until this audit passes.
 - Risk intake decision from `RISK_INTAKE_GATE`.
 - Discipline strategy router result.
 - Color band router result.
+- Risk band coverage gate result.
 - Purple band rebalancer result.
 - Global style variance result.
 - Mandatory chain trace.
@@ -41,6 +42,7 @@ Do not mark a task complete until this audit passes.
 | DOCX_COLOR_REPORT_EXTRACTION |  |  |  |
 | THREE_MODE_COLOR_BAND_WORKFLOW |  |  |  |
 | COLOR_BAND_ROUTER | yes when color report exists |  |  |
+| RISK_BAND_COVERAGE_GATE | yes when color report exists |  |  |
 | FIRST_PASS_RED_ORANGE_ENGINE or CURRENT_REPORT_RED_ORANGE_ENGINE |  |  |  |
 | SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable |  |  |  |
 | CONTROLLED_HUMANIZATION_ENGINE when applicable |  |  |  |
@@ -56,12 +58,20 @@ Do not mark a task complete until this audit passes.
 
 If a required step is missing, final status is `BLOCKED`.
 
-## 2. Red-Orange Coverage
+## 2. Risk Band Coverage
 
-| red_total | orange_total | processed_red | processed_orange | unprocessed_red_orange | completion_status |
-|---:|---:|---:|---:|---:|---|
+| red_targets_count | orange_targets_count | purple_targets_count | red_coverage_rate | orange_coverage_rate | purple_coverage_rate | invalid_skips | completion_status |
+|---:|---:|---:|---:|---:|---:|---|---|
 
-If `unprocessed_red_orange > 0`, final status is not `COMPLETED`.
+If `risk_band_coverage_gate_result = failed`, final status is `RISK_BAND_COVERAGE_FAILURE`.
+
+If `red_coverage_rate < 100%`, final status is not `COMPLETED`.
+
+If orange coverage is below the required threshold, final status is not `COMPLETED`.
+
+If required purple coverage is below threshold, final status is not `COMPLETED`.
+
+The output must include `skipped_red_targets`, `skipped_orange_targets`, `skipped_purple_targets`, `valid_freeze_reasons`, `invalid_skips`, and `next_batch_plan`.
 
 ## 3. Paragraph Action Verification
 
@@ -235,6 +245,7 @@ Use `final_delivery_status` as the primary status:
 | `LOCAL_ESCALATION_SKIPPED` | Local Level 4 repair was required but not executed |
 | `LEVEL_4_SECTION_BLOCKED` | Level 4 was used in a forbidden strict section |
 | `PURPLE_BAND_NOT_HANDLED_FAILURE` | Purple needed rebalance but was skipped |
+| `RISK_BAND_COVERAGE_FAILURE` | Red/orange/purple coverage gate failed |
 | `DISCIPLINE_PROFILE_MISSING_FAILURE` | Discipline profile was not selected |
 | `GLOBAL_VARIANCE_NOT_RUN_FAILURE` | Global style variance check was skipped |
 | `NEEDS_ACADEMIC_TONE_REPAIR` | AIGC reduced but academic tone guard failed |
@@ -265,6 +276,22 @@ The final output table must include all these rows:
 | selected_discipline_profile |  |  |
 | discipline_strategy_router_result | PASSED / FAILED / NOT_APPLICABLE |  |
 | color_band_router_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| risk_band_coverage_gate_result | PASSED / FAILED / NOT_RUN |  |
+| red_targets_count |  |  |
+| orange_targets_count |  |  |
+| purple_targets_count |  |  |
+| red_handled_count |  |  |
+| orange_handled_count |  |  |
+| purple_handled_count |  |  |
+| red_coverage_rate |  |  |
+| orange_coverage_rate |  |  |
+| purple_coverage_rate |  |  |
+| skipped_red_targets | none / list |  |
+| skipped_orange_targets | none / list |  |
+| skipped_purple_targets | none / list |  |
+| valid_freeze_reasons | none / list |  |
+| invalid_skips | none / list |  |
+| next_batch_plan | none / plan |  |
 | purple_targets_count |  |  |
 | purple_action | skip / observe / light_rebalance / mandatory_rebalance |  |
 | purple_band_rebalancer_result | PASSED / FAILED / NOT_RUN / NOT_REQUIRED |  |
@@ -309,4 +336,4 @@ The final output table must include all these rows:
 | unchanged_high_risk_sections | none / list |  |
 | template_residue_sections | none / list |  |
 | over_humanization_regression_found | yes / no / not_applicable |  |
-| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / LOCAL_ESCALATION_SKIPPED / LEVEL_4_SECTION_BLOCKED / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
+| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / RISK_BAND_COVERAGE_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / LOCAL_ESCALATION_SKIPPED / LEVEL_4_SECTION_BLOCKED / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |

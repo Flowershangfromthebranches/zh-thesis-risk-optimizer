@@ -18,6 +18,7 @@
 - DOCX 颜色报告提取：先读取颜色元数据，再做红橙紫黑风险带映射。
 - 专业策略路由：根据论文专业选择管理、计算机、工科、医学、法学、教育或人文 profile。
 - 颜色分层路由：红、橙、紫、黑从第一次颜色报告解析后全部统计、路由和验收。
+- 风险带覆盖率门禁：`RISK_BAND_COVERAGE_GATE` 强制检查红、橙、紫目标是否被处理、轻处理或有效冻结。
 - 三任务类型颜色分级：在 `THREE_MODE_COLOR_BAND_WORKFLOW` 内处理只降 AIGC、只降查重、双降三类任务。
 - 首轮红橙联合处理：原文和原版 AIGC 报告进入 `FIRST_PASS_RED_ORANGE_ENGINE`，红色和橙色一起作为主处理区。
 - 当前报告红橙验收：复检稿进入 `CURRENT_REPORT_RED_ORANGE_ENGINE`，当前红橙必须全部进入任务表。
@@ -31,7 +32,7 @@
 - 学术语体守卫：防止受控人类化过度，禁止日记式、自媒体式、聊天式表达。
 - AIGC 回归防线：同时防两种回归——更正式更像 AI，或太口语太不像论文。
 - 首轮效果门禁：检查颜色迁移、AIGC 阈值、语体质量和格式完整性。
-- 最终验收：`FINAL_ACCEPTANCE_AUDIT` 检查链路、红橙覆盖率、字数变化、证据缺口、语体质量、格式完整性和交付状态。
+- 最终验收：`FINAL_ACCEPTANCE_AUDIT` 检查链路、红橙紫覆盖率、字数变化、证据缺口、语体质量、格式完整性和交付状态。
 
 ## 快速开始
 
@@ -99,6 +100,7 @@ DOCX 写回必须使用 OOXML patch，只替换确认映射的正文段落，保
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | 按红橙紫黑风险带处理 AIGC、查重或双目标任务。 |
 | `DISCIPLINE_STRATEGY_ROUTER` | 根据专业选择 profile、保护项和允许的人化强度。 |
 | `COLOR_BAND_ROUTER` | 第一次颜色解析后立即统计和路由红橙紫黑。 |
+| `RISK_BAND_COVERAGE_GATE` | 检查红橙紫目标覆盖率、跳过原因、冻结理由和下一批处理计划。 |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | 原文加原版 AIGC 报告的首轮红橙联合处理。 |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | 当前稿加当前 AIGC 报告的红橙覆盖处理。 |
 | `AIGC_PLATEAU_BREAKER` | 多轮后红色下降但橙色堆积、AIGC 下降变慢时使用。 |
@@ -126,6 +128,7 @@ RISK_INTAKE_GATE
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> COLOR_BAND_ROUTER
+-> RISK_BAND_COVERAGE_GATE
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
@@ -137,6 +140,7 @@ RISK_INTAKE_GATE
 -> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
+-> RISK_BAND_COVERAGE_GATE final check
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
@@ -149,6 +153,7 @@ RISK_INTAKE_GATE
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> COLOR_BAND_ROUTER
+-> RISK_BAND_COVERAGE_GATE
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
 -> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
@@ -161,10 +166,11 @@ RISK_INTAKE_GATE
 -> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
+-> RISK_BAND_COVERAGE_GATE final check
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
-任一步缺失，都不能标记完成。
+任一步缺失，都不能标记完成。首轮不是只处理重点章节；只要报告识别出红橙紫风险段，最终必须输出 `red_coverage_rate`、`orange_coverage_rate`、`purple_coverage_rate`、跳过清单、有效冻结理由和 `next_batch_plan`。红色覆盖率低于 100% 或橙色覆盖率不足时，不得标记完成。
 
 Level 4 不是全文模式，只能局部用于符合专业 profile 和 section profile 的高风险残留段。摘要、理论基础、结论禁止聊天化表达。紫色处理用于降低全文统计一致性，不用于大幅改写。
 

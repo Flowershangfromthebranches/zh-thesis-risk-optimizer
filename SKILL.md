@@ -35,12 +35,14 @@ When integrity or technical correctness conflicts with risk reduction, integrity
 6. Create a file copy for file input; never edit the original file directly.
 7. If a DOCX color report is present, extract color metadata before plain text.
 8. Run `COLOR_BAND_ROUTER` after report-color extraction.
-9. Select the minimal hard route from the mode router.
-10. Build protected items and frozen zones before revision.
-11. Process red/orange report targets with paragraph records and acceptance checks.
-12. Run `PURPLE_BAND_REBALANCER` and `GLOBAL_STYLE_VARIANCE_ENGINE` when triggered.
-13. Run `FINAL_ACCEPTANCE_AUDIT`.
-14. Do not mark completion if any required chain step, risk intake field, discipline profile, color-band decision, or acceptance item is missing.
+9. Run `RISK_BAND_COVERAGE_GATE` after color routing to verify red/orange/purple coverage planning.
+10. Select the minimal hard route from the mode router.
+11. Build protected items and frozen zones before revision.
+12. Process red/orange report targets with paragraph records and acceptance checks.
+13. Run `PURPLE_BAND_REBALANCER` and `GLOBAL_STYLE_VARIANCE_ENGINE` when triggered.
+14. Run `RISK_BAND_COVERAGE_GATE` again before final acceptance.
+15. Run `FINAL_ACCEPTANCE_AUDIT`.
+16. Do not mark completion if any required chain step, risk intake field, discipline profile, color-band decision, coverage gate item, or acceptance item is missing.
 
 ## 4. Hard Routing Rules
 
@@ -87,6 +89,7 @@ RISK_INTAKE_GATE
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> COLOR_BAND_ROUTER
+-> RISK_BAND_COVERAGE_GATE
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
 -> CONTROLLED_HUMANIZATION_ENGINE when AIGC remains high or discipline is template-heavy
@@ -98,6 +101,7 @@ RISK_INTAKE_GATE
 -> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
+-> RISK_BAND_COVERAGE_GATE final check
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
@@ -114,6 +118,7 @@ RISK_INTAKE_GATE
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> COLOR_BAND_ROUTER
+-> RISK_BAND_COVERAGE_GATE
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
 -> AIGC_PLATEAU_BREAKER when orange accumulation or multi-round slowdown exists
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when discipline matches management/social-science types
@@ -126,6 +131,7 @@ RISK_INTAKE_GATE
 -> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
+-> RISK_BAND_COVERAGE_GATE final check
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
@@ -138,6 +144,8 @@ Do not use `FIRST_PASS_RED_ORANGE_ENGINE` for revised/current reports.
 - Purple may enter `PURPLE_BAND_REBALANCER` when global AIGC remains high or style distribution is too uniform.
 - Purple is counted and routed from the first color report, not after red/orange is cleared.
 - Black text is frozen by default.
+- `RISK_BAND_COVERAGE_GATE` verifies that every red/orange/purple target has valid handling, a valid low-intensity purple action, or a valid freeze reason.
+- If red coverage is below 100%, orange coverage is below the required threshold, purple targets lack actions, or invalid skips exist, the task cannot be marked complete.
 
 ### 4.7 Social-Science Hard Rule
 
@@ -182,6 +190,7 @@ When `CONTROLLED_HUMANIZATION_ENGINE` or `LOCAL_ESCALATED_HUMANIZATION` is activ
 | `DOCX_COLOR_REPORT_EXTRACTION` | User provides Word/DOCX color report. | references/docx_color_report_extraction.md |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | Any AIGC/similarity/dual task with color bands. | prompts/mode_three_mode_color_band.md, references/three_mode_color_band_workflow.md |
 | `COLOR_BAND_ROUTER` | Splits red/orange/purple/black bands into different actions. | references/color_band_router.md |
+| `RISK_BAND_COVERAGE_GATE` | Verifies red/orange/purple target coverage before and after rewrite. | references/risk_band_coverage_gate.md |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC color report. | prompts/mode_first_pass_red_orange.md, references/first_pass_red_orange_engine.md |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current thesis plus current AIGC color report. | prompts/mode_current_report_red_orange.md, references/current_report_red_orange_engine.md |
 | `AIGC_PLATEAU_BREAKER` | Multi-round slowdown or orange accumulation. | prompts/mode_aigc_plateau_breaker.md, references/aigc_plateau_breaker.md |
@@ -252,6 +261,27 @@ Internal sub-rules such as burstiness audit, orange-zone repair, conservative re
 | frozen_black_targets |  |
 | band_action_plan |  |
 
+### Risk Band Coverage Gate Output
+
+| field | value |
+|---|---|
+| risk_band_coverage_gate_result | passed / failed |
+| red_targets_count |  |
+| orange_targets_count |  |
+| purple_targets_count |  |
+| red_handled_count |  |
+| orange_handled_count |  |
+| purple_handled_count |  |
+| red_coverage_rate |  |
+| orange_coverage_rate |  |
+| purple_coverage_rate |  |
+| skipped_red_targets |  |
+| skipped_orange_targets |  |
+| skipped_purple_targets |  |
+| valid_freeze_reasons |  |
+| invalid_skips |  |
+| next_batch_plan |  |
+
 ### Mandatory Chain Trace
 
 | step | required | executed | evidence |
@@ -301,6 +331,15 @@ Allowed `action_type` values:
 | DOCX color read |  |  |
 | red total / processed |  |  |
 | orange total / processed |  |  |
+| risk_band_coverage_gate_result |  |  |
+| red_targets_count |  |  |
+| orange_targets_count |  |  |
+| purple_targets_count |  |  |
+| red_coverage_rate |  |  |
+| orange_coverage_rate |  |  |
+| purple_coverage_rate |  |  |
+| invalid_skips |  |  |
+| next_batch_plan |  |  |
 | social-science bottleneck enabled |  |  |
 | synonym-only rewrite found |  |  |
 | formalization regression found |  |  |

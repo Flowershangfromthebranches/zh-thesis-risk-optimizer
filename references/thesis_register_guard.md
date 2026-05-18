@@ -4,6 +4,8 @@
 
 `THESIS_REGISTER_GUARD` is a section-aware academic register gate. It is stricter than generic tone checking because local humanization can lower AIGC risk while damaging thesis style.
 
+This guard controls how a rewritten paragraph should read. It must not be used as a reason to skip required red/orange coverage. If a red/orange paragraph is high-risk but tone risk is also high, revise it first with a valid action and then pull it back to thesis register.
+
 ## Section Strictness
 
 ### Strict Sections
@@ -56,6 +58,13 @@ These sections may use stronger explanatory texture and local Level 4 when trigg
 
 | paragraph_id | section | strictness | violation | corrected_to | result |
 |---|---|---|---|---|---|
+
+## Coverage Interaction
+
+- Do not block `RISK_BAND_COVERAGE_GATE`.
+- Do not mark red/orange text as skipped only because the model is afraid of colloquial output.
+- If a target needs stronger humanization, run the rewrite and then apply this guard.
+- If the guard cannot repair tone without author evidence, mark the target as `AUTHOR_MATERIAL_REQUIRED`, not silently skipped.
 
 ## Verdicts
 

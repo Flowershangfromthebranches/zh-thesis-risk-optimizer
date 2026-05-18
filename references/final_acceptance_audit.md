@@ -35,8 +35,9 @@ The final output must report:
 22. **Thesis register guard result**: whether `THESIS_REGISTER_GUARD` passed after controlled or local humanization.
 23. **Discipline profile result**: whether `DISCIPLINE_STRATEGY_ROUTER` selected a profile and protected elements.
 24. **Color band router result**: whether red/orange/purple/black counts, ratios, and actions were recorded.
-25. **Purple band result**: whether `PURPLE_BAND_REBALANCER` ran when required, and why it was deferred if not.
-26. **Global style variance result**: whether full-thesis rhythm and repeated transitions were checked.
+25. **Risk band coverage gate result**: whether red/orange/purple targets met handling, light-treatment, or valid-freeze coverage thresholds.
+26. **Purple band result**: whether `PURPLE_BAND_REBALANCER` ran when required, and why it was deferred if not.
+27. **Global style variance result**: whether full-thesis rhythm and repeated transitions were checked.
 
 This audit absorbs the older post-rewrite self-audit, anti-shallow-rewrite, and effectiveness-evaluation gates. These checks are no longer separate entry modes; completion depends on this final gate.
 
@@ -48,6 +49,7 @@ The task can be marked `COMPLETED` only when:
 - `current_similarity_rate`, `current_aigc_rate`, `target_similarity_rate`, and `target_aigc_rate` were collected before rewriting;
 - selected discipline profile exists unless the task was extraction-only;
 - `COLOR_BAND_ROUTER` produced red/orange/purple/black counts and ratios when a color report exists;
+- `RISK_BAND_COVERAGE_GATE` passed, with red/orange/purple coverage rates and skipped target lists reported;
 - if `purple_action = light_rebalance` or `mandatory_rebalance`, `PURPLE_BAND_REBALANCER` executed and passed;
 - `GLOBAL_STYLE_VARIANCE_ENGINE` executed for AIGC risk work with a color report;
 - DOCX color extraction was performed when a DOCX color report exists;
@@ -100,6 +102,9 @@ The task must not be marked `COMPLETED` when:
 - protected elements were changed;
 - `GLOBAL_STYLE_VARIANCE_ENGINE` was skipped;
 - `current_aigc_rate > target_aigc_rate` and `purple_action = skip`.
+- `risk_band_coverage_gate_result = failed`;
+- red/orange/purple target coverage is insufficient;
+- `invalid_skips` is not empty.
 
 If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, but the paragraph should be marked as needing author input rather than rewritten as complete.
 
@@ -127,6 +132,8 @@ When DOCX writeback is involved:
 6. None of these failure states may be described as completed, effective, or ready to deliver.
 7. If `local_escalation_required = yes`, `LOCAL_ESCALATED_HUMANIZATION` must be attempted on eligible residual sections or the audit must mark `LOCAL_ESCALATION_SKIPPED`.
 8. If `THESIS_REGISTER_GUARD` fails, final delivery status must be `NEEDS_ACADEMIC_TONE_REPAIR`.
+9. If `risk_band_coverage_gate_result = failed`, final delivery status must be `RISK_BAND_COVERAGE_FAILURE`.
+10. If coverage fails, the audit must output skipped target lists and `next_batch_plan`.
 
 ## Color Migration Check (First-Pass Only)
 
@@ -170,6 +177,7 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 | Local escalation was required but not run | LOCAL_ESCALATION_SKIPPED |
 | Level 4 applied in forbidden section | LEVEL_4_SECTION_BLOCKED |
 | Purple required but not handled | PURPLE_BAND_NOT_HANDLED_FAILURE |
+| Red/orange/purple coverage gate failed | RISK_BAND_COVERAGE_FAILURE |
 | Professional profile missing | DISCIPLINE_PROFILE_MISSING_FAILURE |
 | Protected element changed | PROTECTED_ELEMENT_VIOLATION |
 | Global variance engine skipped | GLOBAL_VARIANCE_NOT_RUN_FAILURE |
@@ -190,6 +198,22 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 | selected_discipline_profile |  |  |
 | discipline_strategy_router_result | PASSED / FAILED / NOT_APPLICABLE |  |
 | color_band_router_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| risk_band_coverage_gate_result | PASSED / FAILED / NOT_RUN |  |
+| red_targets_count |  |  |
+| orange_targets_count |  |  |
+| purple_targets_count |  |  |
+| red_handled_count |  |  |
+| orange_handled_count |  |  |
+| purple_handled_count |  |  |
+| red_coverage_rate |  |  |
+| orange_coverage_rate |  |  |
+| purple_coverage_rate |  |  |
+| skipped_red_targets | none / list |  |
+| skipped_orange_targets | none / list |  |
+| skipped_purple_targets | none / list |  |
+| valid_freeze_reasons | none / list |  |
+| invalid_skips | none / list |  |
+| next_batch_plan | none / plan |  |
 | purple_targets_count |  |  |
 | purple_action | skip / observe / light_rebalance / mandatory_rebalance |  |
 | purple_band_rebalancer_result | PASSED / FAILED / NOT_RUN / NOT_REQUIRED |  |
@@ -235,7 +259,7 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 | unchanged_high_risk_sections | none / list |  |
 | template_residue_sections | none / list |  |
 | over_humanization_regression_found | yes / no / not_applicable |  |
-| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / PURPLE_BAND_NOT_HANDLED_FAILURE / DISCIPLINE_PROFILE_MISSING_FAILURE / PROTECTED_ELEMENT_VIOLATION / GLOBAL_VARIANCE_NOT_RUN_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / LOCAL_ESCALATION_SKIPPED / LEVEL_4_SECTION_BLOCKED / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
+| final_delivery_status | COMPLETED / FIRST_PASS_FAILURE / RISK_BAND_COVERAGE_FAILURE / PURPLE_BAND_NOT_HANDLED_FAILURE / DISCIPLINE_PROFILE_MISSING_FAILURE / PROTECTED_ELEMENT_VIOLATION / GLOBAL_VARIANCE_NOT_RUN_FAILURE / REWRITE_NOT_APPLIED_FAILURE / TEMPLATE_RESIDUE_FAILURE / LOCAL_ESCALATION_SKIPPED / LEVEL_4_SECTION_BLOCKED / NEEDS_ACADEMIC_TONE_REPAIR / FORMAT_FAILURE / FORMAT_RISK_REVIEW_REQUIRED / BLOCKED / NEEDS_AUTHOR_EVIDENCE |  |
 
 ## First-Pass Failure
 
@@ -258,5 +282,7 @@ Check:
 - Did `REWRITE_APPLICATION_GATE` prove that every generated rewrite was actually written back?
 - Did `TEMPLATE_RESIDUE_DETECTOR` confirm that the patched text no longer preserves the original high-risk template sentences?
 - Did every red/orange target meet the minimum diff-ratio threshold?
+- Did `RISK_BAND_COVERAGE_GATE` pass?
+- Are skipped red/orange/purple targets listed with reasons and next batch actions?
 
 Output a failure-cause table and a next repair plan. The next repair plan must reference `AIGC_PLATEAU_BREAKER` as the next step.

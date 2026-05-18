@@ -15,6 +15,8 @@ It may run only when all are true:
 5. the target paragraph is in an allowed section or is a confirmed report red/orange/template-residue target;
 6. `THESIS_REGISTER_GUARD` is scheduled after the rewrite.
 
+When `current_aigc_rate >= 70`, eligible body red/orange targets in 第四章问题分析 and 第五章对策分析 may enter controlled local Level 4 in the first pass. Do not wait for another retest when the current report already shows high-risk red/orange concentration. The output must still run `THESIS_REGISTER_GUARD` afterward.
+
 ## Allowed Targets
 
 Local escalation may apply to:

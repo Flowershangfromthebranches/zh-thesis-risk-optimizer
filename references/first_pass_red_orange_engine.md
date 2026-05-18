@@ -8,6 +8,8 @@ This engine treats red and orange report bands as the first-pass main work area,
 
 It does not promise that any external system will mark the result as purple, black, or low risk.
 
+It must not repeat the failure mode where 90 red/orange/purple risk paragraphs are identified but only 34 paragraphs are rewritten. First-pass work is coverage-driven: every risk target must have a valid action, a valid freeze reason, or an explicit batch plan.
+
 ## Activation Conditions
 
 Enter this mode when:
@@ -46,27 +48,51 @@ Red and orange paragraphs must both enter the first-pass task table. Orange is n
 
 1. Parse the user-provided report and record the meaning of each color/risk band.
 2. Call `COLOR_BAND_ROUTER` and receive `red_targets`, `orange_targets`, `purple_targets`, `black_targets`, counts, ratios, and `purple_action`.
-3. Map red and orange fragments back to the thesis source.
-3. Build a protected list before any rewrite.
-4. Create a red-orange task table.
-5. Run sentence-level localization inside each red/orange paragraph.
-6. For each red/orange paragraph, choose one required action type:
+3. Call `RISK_BAND_COVERAGE_GATE` to verify that every red/orange/purple target has a planned action or valid freeze reason.
+4. Map red and orange fragments back to the thesis source.
+5. Build a protected list before any rewrite.
+6. Create a red-orange task table.
+7. Run sentence-level localization inside each red/orange paragraph.
+8. For each red/orange paragraph, choose one required action type:
    - `A_EVIDENCE_RECONSTRUCTION`
    - `B_ARGUMENT_PATH_REWRITE`
    - `C_TEMPLATE_SKELETON_BREAK`
    - `D_AUTHOR_MATERIAL_REQUEST`
-7. Apply replacement-based reconstruction, not append-based expansion.
-8. Record the action type in the paragraph processing record.
-9. Run band-target self-audit.
-10. If red/orange risk remains in the heuristic self-audit, run one limited internal retry with a different repair move.
-11. Record purple handling:
+9. Apply replacement-based reconstruction, not append-based expansion.
+10. Record the action type in the paragraph processing record.
+11. Run band-target self-audit.
+12. If red/orange risk remains in the heuristic self-audit, run one limited internal retry with a different repair move.
+13. Record purple handling:
    - `purple_targets_count`;
    - `purple_action`;
    - `purple_deferred_reason`;
    - `next_purple_action_trigger`.
-12. Stop when the paragraph is heuristically reduced to purple/black, protected, evidence-limited, author-material-needed, or no-progress.
+14. Run `RISK_BAND_COVERAGE_GATE` again before first-pass exit.
+15. Stop when each target is handled, valid-frozen, evidence-limited, author-material-needed, batched, or no-progress.
 
 If a red/orange paragraph does not have one of the four action types, it is unprocessed.
+
+## Coverage Hard Rule
+
+- First pass must not only select 摘要、第四章、第五章、结论.
+- All body red targets must be handled.
+- All body orange targets must be handled or placed into the active batch queue.
+- If `current_aigc_rate >= 70`, orange targets must be 100% handled or explicitly frozen with a valid reason.
+- Purple targets must be listed in the task table and routed by `purple_action`.
+- If processing budget is insufficient, output `batch_plan`; do not mark `completed`.
+- Do not leave unhandled red/orange targets for "retest and see".
+
+## Batch Mode
+
+Use batch mode when the risk target count is too large for one response or one editing pass.
+
+| batch | required scope |
+|---|---|
+| Batch 1 | 摘要、绪论、理论基础、第四章、第五章、结论中的红橙 |
+| Batch 2 | 第三章、研究方法、企业概况中的红橙 |
+| Batch 3 | 剩余正文橙色与紫色轻处理 |
+
+Only after all batches pass `RISK_BAND_COVERAGE_GATE` can `first_pass_status` be `passed`.
 
 ## Required First-Pass Action Types
 
@@ -142,6 +168,8 @@ If red/orange repair would exceed this range:
 - `EVIDENCE_LIMITED_STOP`: risk remains because the paragraph lacks author-provided evidence.
 - `AUTHOR_MATERIAL_REQUIRED`: risk remains because the paragraph needs `workflow/author_evidence_pack_template.md`.
 - `CHARACTER_DELTA_FAIL`: revision exceeds the allowed whole-thesis character-change range.
+- `RISK_BAND_COVERAGE_FAILURE`: red/orange/purple targets were identified but coverage did not meet the gate.
+- `BATCH_INCOMPLETE`: valid batch plan exists but not all risk targets have been handled.
 - `NO_PROGRESS_INTERNAL_LOOP`: internal retries did not materially change the risk pattern.
 - `UNPASSED`: a red paragraph was only demoted to orange, or an orange paragraph could not reach black/near-black. Must be recorded in the unprocessed list.
 - `FIRST_PASS_FAILURE`: original-thesis first-pass testing barely changed AIGC risk, or color migration shows red→orange transfer.

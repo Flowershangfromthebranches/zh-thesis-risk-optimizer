@@ -14,6 +14,7 @@ Use `zh-thesis-risk-optimizer` when you need a Chinese thesis revision workflow 
 - OOXML-based DOCX format preservation.
 - Rewrite application verification: generated rewrites must be actually patched into DOCX body text.
 - Template residue detection after patching.
+- Risk-band coverage gating for red/orange/purple targets.
 - Final acceptance auditing before delivery.
 
 The Skill does not promise any external detection-platform result. It does not crack, simulate, reverse engineer, or forge detection systems or reports.
@@ -95,6 +96,7 @@ The current slim router exposes these entry modes and internal mandatory engines
 | `DOCX_COLOR_REPORT_EXTRACTION` | The user provides a Word/DOCX color-marked AIGC report. |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | A task uses red/orange/purple/black color bands for AIGC, similarity, or dual-risk handling. |
 | `COLOR_BAND_ROUTER` | Counts and routes red/orange/purple/black immediately after color extraction. |
+| `RISK_BAND_COVERAGE_GATE` | Verifies red/orange/purple targets are handled, light-treated, or valid-frozen. |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC report before any rewrite. |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current draft plus its current AIGC report. |
 | `AIGC_PLATEAU_BREAKER` | Multiple rounds slow down, red decreases but orange remains, or user reports a plateau after revision. |
@@ -136,6 +138,7 @@ RISK_INTAKE_GATE
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> COLOR_BAND_ROUTER
+-> RISK_BAND_COVERAGE_GATE
 -> FIRST_PASS_RED_ORANGE_ENGINE
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
 -> CONTROLLED_HUMANIZATION_ENGINE when applicable
@@ -147,10 +150,23 @@ RISK_INTAKE_GATE
 -> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
+-> RISK_BAND_COVERAGE_GATE final check
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
 If any required step is skipped, the task is not complete.
+
+First pass is not limited to "key chapters." If the report identifies red, orange, and purple risk targets, the output must include:
+
+- `red_targets_count`, `red_handled_count`, and `red_coverage_rate`;
+- `orange_targets_count`, `orange_handled_count`, and `orange_coverage_rate`;
+- `purple_targets_count`, `purple_handled_count`, and `purple_coverage_rate`;
+- skipped red/orange/purple lists;
+- valid freeze reasons;
+- invalid skips;
+- `next_batch_plan` when one response cannot cover all targets.
+
+If `red_coverage_rate < 100%` or orange coverage is below the required threshold, the task is not complete. It must continue in batch mode rather than waiting for "retest and see."
 
 ## 5. Controlled Humanization: Absorbing Old Version Strength Safely
 
@@ -211,6 +227,7 @@ RISK_INTAKE_GATE
 -> DOCX_COLOR_REPORT_EXTRACTION
 -> THREE_MODE_COLOR_BAND_WORKFLOW
 -> COLOR_BAND_ROUTER
+-> RISK_BAND_COVERAGE_GATE
 -> CURRENT_REPORT_RED_ORANGE_ENGINE
 -> AIGC_PLATEAU_BREAKER when applicable
 -> SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK when applicable
@@ -223,6 +240,7 @@ RISK_INTAKE_GATE
 -> THESIS_REGISTER_GUARD
 -> AIGC_REGRESSION_GUARD
 -> FIRST_PASS_EFFECTIVENESS_GATE
+-> RISK_BAND_COVERAGE_GATE final check
 -> FINAL_ACCEPTANCE_AUDIT
 ```
 
