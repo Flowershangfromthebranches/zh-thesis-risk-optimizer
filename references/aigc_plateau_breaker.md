@@ -19,6 +19,7 @@ Enter this mode when one or more signals appear:
 - Repeated rounds keep rewriting the same paragraphs without a clear report trend.
 - The remaining risky text is mostly enumerated, smooth, generic, or discipline-template prose.
 - The current method only demotes red to orange instead of reducing orange to low risk.
+- A near-threshold draft rises again after a word-count expansion or overly smooth "completion" pass.
 
 ## Case-Derived Observation
 
@@ -42,6 +43,7 @@ The failure was not lack of rewriting. The failure was that the strategy kept tr
 5. Protected facts and numerical survey data make the model too conservative.
 6. The rewrite changes words but not paragraph rhythm, evidence placement, or local perspective.
 7. Low-risk/white paragraphs are not frozen consistently, causing wasted edits.
+8. Word-count restoration adds new smooth explanatory paragraphs after high-risk text was already compressed.
 
 ## Required State Labels
 
@@ -62,6 +64,18 @@ For current reports after a first rewrite:
 - Do not mark a task complete when orange paragraphs remain unprocessed.
 - Do not run broad full-text polishing to "smooth" the paper.
 - Freeze black, low-risk, cover, table of contents, declaration, references, and appendices.
+- Freeze gray non-scored text such as too-short fragments, titles/headings, English text, references, and school-template pages.
+- If a previous expansion raised AIGC, remove the word-count restoration constraint and process residual orange/purple with replacement or compression.
+
+## Near-Threshold Rule
+
+When current AIGC is between `20%` and `30%` and the user target is `<=20%`, do not run a broad normal rewrite. Use `near_threshold_pushdown` from `references/one_pass_cross_discipline_strategy.md`:
+
+1. handle residual red/orange;
+2. apply mandatory purple light rebalance when the current rate is still above target;
+3. freeze black/gray;
+4. compress high-risk generic paragraphs instead of expanding them;
+5. stop when remaining risk is protected, gray, black, or evidence-limited.
 
 ## Completion Rule
 

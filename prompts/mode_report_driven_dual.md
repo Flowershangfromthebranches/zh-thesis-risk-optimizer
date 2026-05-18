@@ -7,7 +7,7 @@ Use this prompt when the user provides both similarity and AIGC reports, or one 
 ## Required Order
 
 1. Process high-contribution similarity fragments first.
-2. If reports use color bands, use the default legend unless the report states otherwise: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
+2. If reports use color bands, use the default legend unless the report states otherwise: red `>=70%`, orange `>=60%` and `<70%`, purple `>=50%` and `<60%`, black `<50%`, gray non-scored/excluded.
 3. Red and orange in either report are primary targets.
 4. Check whether similarity fragments also have AIGC risk.
 5. Prioritize fragments with both risks and safe rewrite conditions.

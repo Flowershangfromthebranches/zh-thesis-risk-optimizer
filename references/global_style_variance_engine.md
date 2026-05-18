@@ -24,6 +24,10 @@
 - Call `PURPLE_BAND_REBALANCER`, `SECTION_STYLE_PROFILES`, and `COLOR_BAND_ROUTER` to implement local adjustment.
 - Preserve DOCX format.
 - Do not change facts, data, citations, terminology, formulas, code, or identifiers.
+- Do not use black or gray text as general style-variance material.
+- Black text may only receive tiny connector edits when the selected sentence is non-protected and the edit does not change meaning.
+- Gray text remains frozen. Headings, English text, references, school-template pages, and too-short fragments must not be rewritten for style variance.
+- If the user target is below 20% and the document is near the target, prefer compressing or replacing residual orange/purple template text over expanding low-risk sections.
 
 ## Output
 
@@ -36,4 +40,6 @@ global_style_variance:
   paragraph_length_distribution_issue: yes | no
   global_variance_plan: <plan>
   sections_needing_variance: <list>
+  black_gray_freeze_result: passed | failed
+  expansion_risk: low | medium | high
 ```

@@ -41,7 +41,8 @@ Character control outranks non-essential detail expansion. It does not outrank:
 
 | paragraph_type | suggested_delta |
 |---|---:|
-| black/white low-risk | 0% |
+| black low-risk | 0% |
+| gray non-scored/excluded | 0% |
 | purple/light risk | -5% to +5% |
 | orange/medium risk | -10% to +10% |
 | red/high risk | -15% to +15% |
@@ -49,6 +50,8 @@ Character control outranks non-essential detail expansion. It does not outrank:
 | protected paragraph | surrounding text only |
 
 Single paragraph growth above 20% must be justified. Whole-thesis growth or shrinkage beyond 10% is `CHARACTER_DELTA_FAIL`.
+
+When the user target is AIGC `<=20%`, do not add text only to restore word count. If risk reduction requires compression, let the output shrink unless the user explicitly prioritizes length after being warned of the AIGC regression risk.
 
 ## Compression Pass
 

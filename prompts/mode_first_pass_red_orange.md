@@ -23,7 +23,8 @@ report_bands_detected:
 red_is_primary_target: true
 orange_is_primary_target: true
 purple_policy: local_cleanup_only
-white_policy: freeze
+black_policy: freeze
+gray_policy: freeze_non_scored
 ```
 
 Do not invent report percentages or color meanings. If the report meaning is unclear, ask the user or mark it uncertain.
@@ -51,8 +52,8 @@ If the user provides another allowed range, use the user's range.
 Rules:
 
 - Include both red and orange paragraphs.
-- Do not include black/white paragraphs unless they are directly connected to a red/orange fragment.
-- Purple paragraphs are optional low-intensity cleanup.
+- Do not include black/gray paragraphs unless they are directly connected to a red/orange fragment for context; do not rewrite them.
+- Purple paragraphs are low-intensity cleanup, mandatory when target AIGC is `<=20%` and current AIGC remains above target.
 - Every red/orange paragraph must use one action type:
   - `A_EVIDENCE_RECONSTRUCTION`
   - `B_ARGUMENT_PATH_REWRITE`
@@ -114,7 +115,7 @@ If evidence is missing, output an author material request using `workflow/author
 - orange_band_handled:
 - all_red_orange_have_action_type:
 - purple_black_heuristic_target:
-- white_freeze_respected:
+- black_gray_freeze_respected:
 - repeated_strategy_avoided:
 - synonym_only_rewrite_found:
 - social_science_bottleneck_enabled:

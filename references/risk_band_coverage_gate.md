@@ -17,6 +17,7 @@ The gate requires:
 - `COLOR_BAND_ROUTER` output;
 - red, orange, and purple target lists;
 - per-target `band_action_plan`;
+- black/gray freeze summaries when color data exists;
 - per-paragraph processing records from `FIRST_PASS_RED_ORANGE_ENGINE`, `CURRENT_REPORT_RED_ORANGE_ENGINE`, and `PURPLE_BAND_REBALANCER` when used;
 - frozen target list with reasons;
 - current `stage`;
@@ -39,7 +40,9 @@ Allowed purple actions:
 - `observe_with_reason` only when the purple rules permit observation;
 - `freeze_with_reason` only for valid protected or non-body content.
 
-Black text is frozen by default. It may only receive tiny connector edits when `GLOBAL_STYLE_VARIANCE_ENGINE` explicitly selects a few connector sentences.
+Black text is frozen by default. It may only receive tiny connector edits when `GLOBAL_STYLE_VARIANCE_ENGINE` explicitly selects a few non-protected connector sentences.
+
+Gray text is frozen by default. Gray is not a rewrite target: it covers too-short fragments, headings, English, references, declarations, cover pages, table of contents, school-template text, or other non-scored/excluded spans.
 
 ## Coverage Rules
 
@@ -63,12 +66,20 @@ Black text is frozen by default. It may only receive tiny connector edits when `
 - In first pass, purple can use `purple_light_rebalance` or `observe_with_reason`, but it must have an action.
 - If `stage >= second_pass` or `current_aigc_rate > 50`, at least 80% of purple targets must receive `purple_light_rebalance` or stronger low-intensity handling.
 - If `stage >= third_pass`, or `current_aigc_rate > target_aigc_rate` and red/orange already decreased, purple must use `mandatory_rebalance`.
+- If `target_aigc_rate <= 20%` and `current_aigc_rate > target_aigc_rate`, purple must use `mandatory_rebalance` unless every purple target has a valid protected/non-body freeze reason.
 
 ### Black Targets
 
 - Black targets are frozen by default.
 - `GLOBAL_STYLE_VARIANCE_ENGINE` may nominate a few connector sentences for tiny adjustment.
 - Protected black text must not be rewritten.
+
+### Gray Targets
+
+- Gray targets are frozen by default.
+- Gray targets do not count as handled risk text; they count as excluded/frozen text.
+- Gray targets must have a freeze category when they appear in the extraction summary: `too_short`, `heading`, `english`, `reference`, `declaration`, `cover`, `toc`, `school_template`, or `non_scored`.
+- Rewriting gray text to restore word count or increase style variance is invalid.
 
 ## Valid Freeze Reasons
 
@@ -88,6 +99,7 @@ Valid reasons include:
 - citation quotation;
 - data table;
 - protected technical identifier.
+- gray non-scored or excluded text category.
 
 Invalid reasons include:
 
@@ -148,9 +160,11 @@ when any condition is true:
 - `orange_coverage_rate < 85%`;
 - `current_aigc_rate >= 70` and `orange_coverage_rate < 100%`;
 - `stage >= second_pass` and `purple_coverage_rate < 80%`;
+- `target_aigc_rate <= 20%`, `current_aigc_rate > target_aigc_rate`, and `purple_action != mandatory_rebalance` without valid freeze reasons for all purple targets;
 - `invalid_skips` is not empty;
 - any red/orange body target is only observed;
 - any purple target is missing from the task table.
+- any gray target is rewritten without explicit user instruction and a valid non-protected reason.
 
 ## Output
 
@@ -170,6 +184,9 @@ risk_band_coverage_gate:
   skipped_orange_targets: <list>
   skipped_purple_targets: <list>
   valid_freeze_reasons: <list>
+  frozen_black_targets_count: <count>
+  frozen_gray_targets_count: <count>
+  black_gray_freeze_result: passed | failed
   invalid_skips: <list>
   next_batch_plan: <plan or none>
 ```

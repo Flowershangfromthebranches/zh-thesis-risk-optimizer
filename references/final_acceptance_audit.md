@@ -34,10 +34,12 @@ The final output must report:
 21. **Local escalation result**: whether `LOCAL_ESCALATED_HUMANIZATION` was triggered, which sections it touched, and whether it stayed within section ceilings.
 22. **Thesis register guard result**: whether `THESIS_REGISTER_GUARD` passed after controlled or local humanization.
 23. **Discipline profile result**: whether `DISCIPLINE_STRATEGY_ROUTER` selected a profile and protected elements.
-24. **Color band router result**: whether red/orange/purple/black counts, ratios, and actions were recorded.
+24. **Color band router result**: whether red/orange/purple/black/gray counts, ratios, actions, and freeze summaries were recorded.
 25. **Risk band coverage gate result**: whether red/orange/purple targets met handling, light-treatment, or valid-freeze coverage thresholds.
 26. **Purple band result**: whether `PURPLE_BAND_REBALANCER` ran when required, and why it was deferred if not.
 27. **Global style variance result**: whether full-thesis rhythm and repeated transitions were checked.
+28. **Black/gray freeze result**: whether low-risk black and non-scored gray text were frozen unless explicitly selected for a valid tiny non-protected connector edit.
+29. **One-pass strategy result**: whether `references/one_pass_cross_discipline_strategy.md` was applied when target AIGC was `<=20%`, the user requested one-pass handling, or cross-discipline routing was required.
 
 This audit absorbs the older post-rewrite self-audit, anti-shallow-rewrite, and effectiveness-evaluation gates. These checks are no longer separate entry modes; completion depends on this final gate.
 
@@ -48,7 +50,7 @@ The task can be marked `COMPLETED` only when:
 - all mandatory chain steps were executed;
 - `current_similarity_rate`, `current_aigc_rate`, `target_similarity_rate`, and `target_aigc_rate` were collected before rewriting;
 - selected discipline profile exists unless the task was extraction-only;
-- `COLOR_BAND_ROUTER` produced red/orange/purple/black counts and ratios when a color report exists;
+- `COLOR_BAND_ROUTER` produced red/orange/purple/black/gray counts, ratios, actions, and freeze summaries when a color report exists;
 - `RISK_BAND_COVERAGE_GATE` passed, with red/orange/purple coverage rates and skipped target lists reported;
 - if `purple_action = light_rebalance` or `mandatory_rebalance`, `PURPLE_BAND_REBALANCER` executed and passed;
 - `GLOBAL_STYLE_VARIANCE_ENGINE` executed for AIGC risk work with a color report;
@@ -105,6 +107,8 @@ The task must not be marked `COMPLETED` when:
 - `risk_band_coverage_gate_result = failed`;
 - red/orange/purple target coverage is insufficient;
 - `invalid_skips` is not empty.
+- target AIGC is `<=20%`, current AIGC remains above target, and purple was skipped without valid freeze reasons;
+- black or gray text was broadly rewritten to restore word count or create style variance.
 
 If evidence is missing, `D_AUTHOR_MATERIAL_REQUEST` is a valid action record, but the paragraph should be marked as needing author input rather than rewritten as complete.
 
@@ -220,6 +224,9 @@ The `final_delivery_status` field replaces the simpler `final status` when forma
 | purple_deferred_reason | none / reason |  |
 | purple_remaining_risk | low / medium / high / unknown |  |
 | global_style_variance_result | PASSED / FAILED / NOT_RUN / NOT_APPLICABLE |  |
+| black_gray_freeze_result | PASSED / FAILED / NOT_APPLICABLE |  |
+| one_pass_cross_discipline_strategy | APPLIED / NOT_TRIGGERED / REQUIRED_BUT_MISSING |  |
+| length_expansion_avoided | yes / no / not_applicable |  |
 | section_profile_violations | none / list |  |
 | protected_element_violations | none / list |  |
 | final_aigc_strategy_summary |  |  |

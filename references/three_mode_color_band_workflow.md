@@ -16,7 +16,7 @@ When the completed intake satisfies all of the following, this workflow is manda
 
 1. Mode is AIGC-only.
 2. Input includes a DOCX AIGC color report or equivalent color-marked AIGC report.
-3. The user provides or accepts red/orange/purple/black color rules.
+3. The user provides or accepts red/orange/purple/black/gray color rules.
 4. The user requests character control, file-copy output, or no broad full-text rewrite.
 
 Do not route this case to any old standalone AIGC prompt or generic polishing.
@@ -26,6 +26,7 @@ Additional overlays:
 - If the report is for the original thesis before any revision, use `FIRST_PASS_RED_ORANGE_ENGINE`.
 - If the report is for a revised/current draft, use `CURRENT_REPORT_RED_ORANGE_ENGINE`.
 - If the task includes a first/second/third-round report or orange accumulation after a prior revision, overlay `AIGC_PLATEAU_BREAKER`.
+- If the target AIGC rate is `<=20%`, the user asks for one-pass handling, or the task must generalize across disciplines, load `references/one_pass_cross_discipline_strategy.md`.
 - If the discipline is human resource management, business administration, marketing, education management, or public administration, overlay `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`.
 
 ## Color Band Definitions
@@ -34,13 +35,15 @@ Use these defaults unless the user provides another report legend:
 
 | color | risk meaning | default handling |
 |---|---|---|
-| red | AIGC or similarity suspicion above 70%, high risk | primary target |
-| orange | AIGC or similarity suspicion from 60% to 70%, medium risk | primary target |
-| purple | AIGC or similarity suspicion from 50% to 60%, light risk | optional light cleanup |
+| red | AIGC or similarity suspicion `>=70%`, high risk | primary target |
+| orange | AIGC or similarity suspicion `>=60%` and `<70%`, medium risk | primary target |
+| purple | AIGC or similarity suspicion `>=50%` and `<60%`, light risk | counted from first pass; light or mandatory rebalance depending on target/rate |
 | black | AIGC or similarity suspicion below 50%, low risk | freeze / no edit |
-| gray / white | low-risk, unmarked, or non-target area | ignore unless tied to red/orange context |
+| gray | too-short fragment, heading, English, reference, template, or non-scored/excluded area | freeze / no edit |
 
 Red and orange are both main work areas. Do not wait for orange to become a later plateau.
+When `target_aigc_rate <=20%` and the current AIGC rate is still above target, purple is not optional; route it to `PURPLE_BAND_REBALANCER` unless all purple targets are protected or non-body.
+Black and gray are not rewrite budget. They may be used as context for mapping, but final output must include a freeze summary.
 
 ## Global Character Control
 
@@ -67,7 +70,7 @@ Use report-driven similarity revision:
 5. Protect citations, source boundaries, formulas, code, data, table names, field names, and parameters.
 6. Revise red and orange fragments first.
 7. Aim heuristically to reduce red/orange fragments to purple or black style level when safe.
-8. Leave gray/white/black text unchanged.
+8. Leave gray and black text unchanged unless a tiny non-protected connector edit is explicitly selected by `GLOBAL_STYLE_VARIANCE_ENGINE`.
 9. Apply character delta guard.
 
 ### Without Similarity Report
@@ -94,8 +97,11 @@ Use report-driven AIGC revision:
 5. Run sentence-level localization for red/orange fragments.
 6. Rewrite red and orange fragments with replacement-based reconstruction.
 7. Internally self-audit whether revised text is closer to purple/black style level.
-8. Leave gray/white/black text unchanged.
-9. Apply character delta guard.
+8. Count purple targets from the start; if `target_aigc_rate <=20%`, apply mandatory low-intensity purple rebalance unless valid freeze reasons cover all purple targets.
+9. Leave gray and black text unchanged unless a tiny non-protected connector edit is explicitly selected by `GLOBAL_STYLE_VARIANCE_ENGINE`.
+10. Apply character delta guard.
+
+If word count and AIGC reduction conflict, prioritize risk-band repair. Do not expand high-risk paragraphs merely to restore word count; use replacement or compression first.
 
 If the AIGC report belongs to a revised/current draft, use `references/current_report_red_orange_engine.md` and `prompts/mode_current_report_red_orange.md`. Current-report mode must process all red and all orange fragments and output red-orange coverage acceptance.
 

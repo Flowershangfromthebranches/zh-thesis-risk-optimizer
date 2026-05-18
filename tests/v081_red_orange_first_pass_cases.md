@@ -14,7 +14,7 @@ Expected:
 - Enter `FIRST_PASS_RED_ORANGE_ENGINE`.
 - Red and orange both enter the primary task table.
 - Purple is local cleanup only.
-- Black/white text is frozen.
+- Black and gray text is frozen.
 
 ## Case 2: Orange Is Not Deferred
 

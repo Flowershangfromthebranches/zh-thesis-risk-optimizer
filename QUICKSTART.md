@@ -72,7 +72,7 @@ If you already know the inputs, fill the template directly:
 【论文专业和题目】人力资源管理，《……》
 【查重报告】无
 【是否有查重报告 has_similarity_report】false
-【报告颜色规则】红色>70%；橙色60%-70%；紫色50%-60%；黑色<50%
+【报告颜色规则】红色>=70%；橙色>=60%且<70%；紫色>=50%且<60%；黑色<50%；灰色为过短片段、标题、英文等不予检测文字
 【当前状态】原文未改
 【阶段 stage】original
 【是否要求保持 DOCX 原格式 preserve_docx_format_required】true
@@ -94,8 +94,8 @@ The current slim router exposes these entry modes and internal mandatory engines
 | `FILE_INPUT_COPY_WORKFLOW` | The user provides DOCX/TXT/Markdown/LaTeX files; create a copy before editing. |
 | `OOXML_DOCX_PATCH_WORKFLOW` | DOCX format preservation required; default writeback method. Internal, not a user entry. |
 | `DOCX_COLOR_REPORT_EXTRACTION` | The user provides a Word/DOCX color-marked AIGC report. |
-| `THREE_MODE_COLOR_BAND_WORKFLOW` | A task uses red/orange/purple/black color bands for AIGC, similarity, or dual-risk handling. |
-| `COLOR_BAND_ROUTER` | Counts and routes red/orange/purple/black immediately after color extraction. |
+| `THREE_MODE_COLOR_BAND_WORKFLOW` | A task uses red/orange/purple/black/gray color bands for AIGC, similarity, or dual-risk handling. |
+| `COLOR_BAND_ROUTER` | Counts and routes red/orange/purple/black/gray immediately after color extraction. |
 | `RISK_BAND_COVERAGE_GATE` | Verifies red/orange/purple targets are handled, light-treated, or valid-frozen. |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC report before any rewrite. |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current draft plus its current AIGC report. |
@@ -121,8 +121,8 @@ Use this when you have the original paper and original AIGC color report.
 ```text
 请使用 zh-thesis-risk-optimizer。我的任务是只降 AIGC。
 输入包括原文 DOCX 和原版 AIGC 颜色报告 DOCX。
-颜色规则：红色>70%，橙色60%-70%，紫色50%-60%，黑色<50%。
-请同时处理红色和橙色，黑色/低风险/封面/目录/承诺书/参考文献/附录冻结。
+颜色规则：红色>=70%，橙色>=60%且<70%，紫色>=50%且<60%，黑色<50%，灰色为过短片段、标题、英文等不予检测文字。
+请同时处理红色和橙色，紫色从第一轮开始统计和按需轻处理，黑色/灰色/低风险/封面/目录/承诺书/参考文献/附录冻结。
 全文字符数控制在 ±10%。
 DOCX 写回使用 OOXML patch，只替换确认映射的正文段落，保持原格式。
 请按强制链路执行，并在最后输出 FINAL_ACCEPTANCE_AUDIT。

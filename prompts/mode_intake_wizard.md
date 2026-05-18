@@ -22,7 +22,7 @@ The user may provide any combination of:
 2. On first contact for a new task, show the full copyable intake template from `workflow/intake_request_template.md`.
 3. Required fields must be filled before processing.
 3a. `current_similarity_rate` and `current_aigc_rate` are mandatory before rewriting. If either is missing, output `INTAKE_INCOMPLETE`; file reading and report parsing may continue only to complete intake.
-3b. If AIGC color work is requested, red/orange/purple/black counts or ratios are mandatory. If the user uploaded a color report, parse it first; otherwise ask for the distribution.
+3b. If AIGC color work is requested, red/orange/purple/black/gray counts or ratios are mandatory. If the user uploaded a color report, parse it first; otherwise ask for the distribution.
 4. Strongly recommended and optional fields must also be shown. The user may fill them, write `无`, write `跳过`, or write `请自动判断`.
 5. If the user submits only required fields, do not proceed yet; ask them to fill or explicitly skip the strongly recommended and optional sections.
 6. If the user submits a completed intake template, output `Intake Confirmation`, state the selected route, and proceed.
@@ -30,7 +30,7 @@ The user may provide any combination of:
 8. Always include selectable options plus "自动判断 / 其他补充".
 9. Use defaults only after the user has accepted defaults or written `请自动判断`:
    - Whole-thesis character delta: `±10%`.
-   - Report color legend: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
+   - Report color legend: red `>=70%`, orange `>=60%` and `<70%`, purple `>=50%` and `<60%`, black `<50%`, gray for non-scored/excluded text.
    - File input: create a copy and keep the original unchanged.
    - Protected items: citations, formulas, code, APIs, paths, table names, field names, parameters, experiment data, and reference entries.
 10. Never ask the user to provide fabricated data, fake reports, fake citations, or invented case facts.

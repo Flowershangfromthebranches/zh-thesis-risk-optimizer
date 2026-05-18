@@ -38,6 +38,9 @@ discipline_strategy_router:
 - If discipline is unknown, use conservative academic rewrite and request protected elements.
 - `LOCAL_ESCALATED_HUMANIZATION` may only run if the selected profile and section profile both allow it.
 - Medical, law, and engineering experimental sections default to conservative handling even when AIGC is high.
+- For one-pass handling, target AIGC `<=20%`, or cross-discipline tasks, load `references/one_pass_cross_discipline_strategy.md` after selecting the profile.
+- Do not force management-style evidence moves onto other profiles. Each profile must use its own evidence type and protected boundaries.
+- If a color report includes black or gray text, pass the freeze categories to `COLOR_BAND_ROUTER`; black/gray are not discipline-specific rewrite targets.
 
 ## Relation To SKILL.md
 

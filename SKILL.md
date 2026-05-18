@@ -34,9 +34,9 @@ When integrity or technical correctness conflicts with risk reduction, integrity
 5. If `current_similarity_rate`, `current_aigc_rate`, or required color distribution is missing, output `INTAKE_INCOMPLETE`; file reading and report parsing may continue, but rewriting must not start.
 6. Create a file copy for file input; never edit the original file directly.
 7. If a DOCX color report is present, extract color metadata before plain text.
-8. Run `COLOR_BAND_ROUTER` after report-color extraction.
+8. Run `COLOR_BAND_ROUTER` after report-color extraction, using the report legend or the default legend: red `>=70%`, orange `>=60%` and `<70%`, purple `>=50%` and `<60%`, black `<50%`, gray non-scored/excluded text.
 9. Run `RISK_BAND_COVERAGE_GATE` after color routing to verify red/orange/purple coverage planning.
-10. Select the minimal hard route from the mode router.
+10. Select the minimal hard route from the mode router and apply `references/one_pass_cross_discipline_strategy.md` when the user asks for one-pass handling, target AIGC is `<=20%`, AIGC has plateaued, or cross-discipline routing is required.
 11. Build protected items and frozen zones before revision.
 12. Process red/orange report targets with paragraph records and acceptance checks.
 13. Run `PURPLE_BAND_REBALANCER` and `GLOBAL_STYLE_VARIANCE_ENGINE` when triggered.
@@ -139,11 +139,13 @@ Do not use `FIRST_PASS_RED_ORANGE_ENGINE` for revised/current reports.
 
 ### 4.6 Color Band Rules
 
-- `COLOR_BAND_ROUTER` splits red, orange, purple, and black text into different actions.
+- Unless the report defines another legend, use: red `>=70%`, orange `>=60%` and `<70%`, purple `>=50%` and `<60%`, black `<50%`, gray for too-short fragments, headings, English, references, school-template text, or other non-scored/excluded text.
+- `COLOR_BAND_ROUTER` splits red, orange, purple, black, and gray text into different actions.
 - Red and orange enter red-orange engines.
 - Purple may enter `PURPLE_BAND_REBALANCER` when global AIGC remains high or style distribution is too uniform.
 - Purple is counted and routed from the first color report, not after red/orange is cleared.
-- Black text is frozen by default.
+- Black and gray text are frozen by default. They are not rewrite budget. Only tiny connector edits to non-protected black text are allowed when `GLOBAL_STYLE_VARIANCE_ENGINE` explicitly selects them.
+- When `target_aigc_rate <= 20%` and `current_aigc_rate > target_aigc_rate`, purple cannot be ignored; use `mandatory_rebalance` unless all purple targets are protected/non-body and validly frozen.
 - `RISK_BAND_COVERAGE_GATE` verifies that every red/orange/purple target has valid handling, a valid low-intensity purple action, or a valid freeze reason.
 - If red coverage is below 100%, orange coverage is below the required threshold, purple targets lack actions, or invalid skips exist, the task cannot be marked complete.
 
@@ -182,14 +184,14 @@ When `CONTROLLED_HUMANIZATION_ENGINE` or `LOCAL_ESCALATED_HUMANIZATION` is activ
 
 | Mode | Use When | Load |
 |---|---|---|
-| `RISK_INTAKE_GATE` | Before every rewrite task; collects current/target rates and selects strategy and humanization ceiling. | prompts/mode_risk_intake_gate.md, references/risk_intake_gate.md |
-| `DISCIPLINE_STRATEGY_ROUTER` | Selects discipline profile, protection scope, and allowed humanization level. | prompts/mode_discipline_strategy_router.md, references/discipline_strategy_router.md |
+| `RISK_INTAKE_GATE` | Before every rewrite task; collects current/target rates and selects strategy and humanization ceiling. | prompts/mode_risk_intake_gate.md, references/risk_intake_gate.md, references/one_pass_cross_discipline_strategy.md when triggered |
+| `DISCIPLINE_STRATEGY_ROUTER` | Selects discipline profile, protection scope, and allowed humanization level. | prompts/mode_discipline_strategy_router.md, references/discipline_strategy_router.md, references/one_pass_cross_discipline_strategy.md when cross-discipline routing is needed |
 | `INTAKE_WIZARD_PRECHECK` | Start of every matching task. | prompts/mode_intake_wizard.md, workflow/intake_request_template.md |
 | `FILE_INPUT_COPY_WORKFLOW` | User provides DOCX/TXT/Markdown/LaTeX file input. | references/file_input_copy_workflow.md |
 | `OOXML_DOCX_PATCH_WORKFLOW` | DOCX format preservation required; default writeback method. | references/ooxml_docx_patch_workflow.md, workflow/ooxml_patch_checklist.md |
 | `DOCX_COLOR_REPORT_EXTRACTION` | User provides Word/DOCX color report. | references/docx_color_report_extraction.md |
 | `THREE_MODE_COLOR_BAND_WORKFLOW` | Any AIGC/similarity/dual task with color bands. | prompts/mode_three_mode_color_band.md, references/three_mode_color_band_workflow.md |
-| `COLOR_BAND_ROUTER` | Splits red/orange/purple/black bands into different actions. | references/color_band_router.md |
+| `COLOR_BAND_ROUTER` | Splits red/orange/purple/black/gray bands into different actions. | references/color_band_router.md, references/one_pass_cross_discipline_strategy.md when one-pass or below-20 targeting is active |
 | `RISK_BAND_COVERAGE_GATE` | Verifies red/orange/purple target coverage before and after rewrite. | references/risk_band_coverage_gate.md |
 | `FIRST_PASS_RED_ORANGE_ENGINE` | Original thesis plus original AIGC color report. | prompts/mode_first_pass_red_orange.md, references/first_pass_red_orange_engine.md |
 | `CURRENT_REPORT_RED_ORANGE_ENGINE` | Revised/current thesis plus current AIGC color report. | prompts/mode_current_report_red_orange.md, references/current_report_red_orange_engine.md |
@@ -206,7 +208,7 @@ When `CONTROLLED_HUMANIZATION_ENGINE` or `LOCAL_ESCALATED_HUMANIZATION` is activ
 | `FIRST_PASS_EFFECTIVENESS_GATE` | Internal mandatory gate after first-pass rewrite; checks color migration, AIGC thresholds, tone, and format. | references/first_pass_effectiveness_gate.md |
 | `FINAL_ACCEPTANCE_AUDIT` | End of every report-driven or file-copy task. | prompts/mode_final_acceptance_audit.md, references/final_acceptance_audit.md |
 
-Internal sub-rules such as burstiness audit, orange-zone repair, conservative repair, structure rebuilding, evidence injection, paragraph strategies, second-pass rewrite, and effectiveness evaluation are not entry modes. Load them only through the main modes above when needed.
+Internal sub-rules such as one-pass cross-discipline strategy, burstiness audit, orange-zone repair, conservative repair, structure rebuilding, evidence injection, paragraph strategies, second-pass rewrite, and effectiveness evaluation are not entry modes. Load them only through the main modes above when needed.
 
 ## 6. Standard Output Blocks
 
@@ -253,12 +255,15 @@ Internal sub-rules such as burstiness audit, orange-zone repair, conservative re
 | orange_targets |  |
 | purple_targets |  |
 | black_targets |  |
+| gray_targets |  |
 | red_count / red_ratio |  |
 | orange_count / orange_ratio |  |
 | purple_count / purple_ratio |  |
 | black_count / black_ratio |  |
+| gray_count / gray_ratio |  |
 | purple_action | skip / observe / light_rebalance / mandatory_rebalance |
 | frozen_black_targets |  |
+| frozen_gray_targets |  |
 | band_action_plan |  |
 
 ### Risk Band Coverage Gate Output
@@ -365,6 +370,9 @@ Allowed `action_type` values:
 | purple_deferred_reason |  |  |
 | purple_remaining_risk |  |  |
 | global_style_variance_result |  |  |
+| black_gray_freeze_result |  |  |
+| one_pass_cross_discipline_strategy |  |  |
+| length_expansion_avoided |  |  |
 | section_profile_violations |  |  |
 | protected_element_violations |  |  |
 | final_aigc_strategy_summary |  |  |

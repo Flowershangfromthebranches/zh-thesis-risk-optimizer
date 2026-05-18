@@ -38,10 +38,11 @@ overlay_social_science_template_bottleneck:
 
 Forced route:
 
-- If `task_type = aigc_only`, input includes a DOCX AIGC color report, red/orange/purple/black rules are provided, and the user requests character control or no broad full-text rewrite, set `selected_mode: THREE_MODE_COLOR_BAND_WORKFLOW`.
+- If `task_type = aigc_only`, input includes a DOCX AIGC color report, red/orange/purple/black/gray rules are provided or accepted, and the user requests character control or no broad full-text rewrite, set `selected_mode: THREE_MODE_COLOR_BAND_WORKFLOW`.
 - Do not route to an old standalone AIGC entry or generic polishing.
 - If the report is for a revised/current draft, set `current_report_red_orange_engine: true`.
 - If the report is after a first rewrite and orange remains concentrated, set `overlay_aigc_plateau_breaker: true`.
+- If `target_aigc_rate <= 20%`, the user asks for one-pass handling, or cross-discipline routing is needed, load `references/one_pass_cross_discipline_strategy.md`.
 - If the discipline is HR, business administration, marketing, education management, or public administration, set `overlay_social_science_template_bottleneck: true`.
 
 ## 2. Color Legend
@@ -50,11 +51,11 @@ Use the default legend unless the report states otherwise:
 
 | color | suspicion range | handling |
 |---|---|---|
-| red | above 70% | primary target |
-| orange | 60%-70% | primary target |
-| purple | 50%-60% | light cleanup |
-| black | below 50% | freeze |
-| gray/white | low-risk or non-target | ignore |
+| red | `>=70%` | primary target |
+| orange | `>=60%` and `<70%` | primary target |
+| purple | `>=50%` and `<60%` | counted from first pass; light or mandatory rebalance |
+| black | `<50%` | freeze |
+| gray | non-scored/excluded, such as too-short fragments, headings, English, references, or template text | freeze |
 
 Do not invent color meanings when the report uses a different legend or does not explain colors.
 
@@ -79,8 +80,8 @@ Do not edit the original file directly.
 Rules:
 
 - Red and orange are primary targets.
-- Purple is optional light cleanup.
-- Black/gray/white text is frozen unless required for context.
+- Purple is mandatory low-intensity rebalance when target AIGC is `<=20%` and current AIGC remains above target, unless all purple targets are validly frozen.
+- Black/gray text is frozen unless a tiny non-protected black connector edit is explicitly selected by `GLOBAL_STYLE_VARIANCE_ENGINE`.
 - For current reports, every red and every orange paragraph must appear in the table.
 - Do not process only red.
 - Do not mark completion if any current-report red/orange paragraph is missing from the task table.

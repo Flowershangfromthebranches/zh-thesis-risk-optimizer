@@ -50,7 +50,7 @@ The following values are common in some reports, but they must be verified again
 | `F39800` | orange / medium AIGC suspicion |
 | `9D91E9` | purple / light AIGC suspicion |
 | `000000` | black / low-risk normal text |
-| `B0B0B0` | gray / low-risk, heading, English abstract, or non-target text |
+| `B0B0B0` | gray / non-scored or excluded text, such as too-short fragments, headings, English abstract/text, references, or template pages |
 
 If the report uses different colors, record the raw hex values and ask the user or mark the legend as uncertain. Do not invent thresholds.
 
@@ -66,7 +66,7 @@ If the report uses different colors, record the raw hex values and ask the user 
 8. If the input is original thesis plus original report, overlay `FIRST_PASS_RED_ORANGE_ENGINE`.
 9. If the input is current draft plus current report, overlay `CURRENT_REPORT_RED_ORANGE_ENGINE`.
 10. For similarity-only work, use `task_type = similarity_only` inside `THREE_MODE_COLOR_BAND_WORKFLOW`.
-11. Freeze black, gray, white, reference, declaration, and school-template areas unless the user explicitly asks otherwise.
+11. Freeze black, gray, reference, declaration, and school-template areas unless the user explicitly asks otherwise. Gray is not a rewrite target; it is recorded as non-scored/excluded text.
 
 ## Failure Mode
 

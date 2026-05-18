@@ -2,9 +2,9 @@
 
 ## Purpose
 
-`COLOR_BAND_ROUTER` assigns red, orange, purple, and black text to different intervention strategies immediately after the first `DOCX_COLOR_REPORT_EXTRACTION`. It prevents the workflow from treating only red/orange paragraphs while ignoring the purple band that may keep overall AIGC risk at 30%-40%.
+`COLOR_BAND_ROUTER` assigns red, orange, purple, black, and gray text to different intervention strategies immediately after the first `DOCX_COLOR_REPORT_EXTRACTION`. It prevents the workflow from treating only red/orange paragraphs while ignoring the purple band that may keep overall AIGC risk above the user target.
 
-Purple is not a late-stage afterthought. Red, orange, purple, and black must all be counted, routed, and audited from the first color report. Their processing intensity differs, but their presence must be visible in the task table.
+Purple is not a late-stage afterthought. Red, orange, purple, black, and gray must all be counted, routed, and audited from the first color report. Their processing intensity differs, but their presence must be visible in the task table or freeze summary.
 
 The router must output `band_action_plan` for every red, orange, and purple target. A target list without a planned action is incomplete and must fail `RISK_BAND_COVERAGE_GATE`.
 
@@ -13,9 +13,10 @@ The router must output `band_action_plan` for every red, orange, and purple targ
 | band | threshold | objective | route |
 |---|---:|---|---|
 | red | `>=70%` | structure reconstruction | `FIRST_PASS_RED_ORANGE_ENGINE`, `TEMPLATE_RESIDUE_DETECTOR` |
-| orange | `60%-70%` | statistical disruption | red-orange engine plus controlled humanization and template cleanup |
-| purple | `50%-60%` | global statistical rebalance | `PURPLE_BAND_REBALANCER` when `purple_action` is `light_rebalance` or `mandatory_rebalance` |
+| orange | `>=60%` and `<70%` | statistical disruption | red-orange engine plus controlled humanization and template cleanup |
+| purple | `>=50%` and `<60%` | global statistical rebalance | `PURPLE_BAND_REBALANCER` when `purple_action` is `light_rebalance` or `mandatory_rebalance` |
 | black | `<50%` | protection | freeze by default; only tiny connector edits if global variance requires it |
+| gray | non-scored / excluded | protection | freeze by default; do not rewrite headings, too-short fragments, English, references, or school-template text |
 
 ## Red Strategy
 
@@ -97,6 +98,15 @@ If `stage = second_pass`, `third_pass`, or `current_report_pass`, and `current_a
 purple_action: mandatory_rebalance
 ```
 
+If `target_aigc_rate <= 20%` and `current_aigc_rate > target_aigc_rate`, set:
+
+```yaml
+purple_action: mandatory_rebalance
+below_20_pushdown: true
+```
+
+unless every purple target is protected, non-body, or too short and therefore validly frozen.
+
 If third pass has finished and AIGC is still above 30%, set:
 
 ```yaml
@@ -110,6 +120,14 @@ final_acceptance_must_include_purple: true
 - Only allow tiny connector or transition adjustment when `GLOBAL_STYLE_VARIANCE_ENGINE` identifies whole-text uniformity.
 - Never rewrite protected black text.
 
+## Gray Strategy
+
+- Freeze by default.
+- Treat gray as non-scored or excluded text: too-short fragments, titles/headings, English abstract/text, references, declarations, cover pages, table of contents, school-template text, or other report-excluded spans.
+- Do not spend rewrite budget on gray text.
+- Do not use gray text to pad word count after high-risk paragraph compression.
+- Gray can provide context for mapping, but must not be automatically rewritten.
+
 ## Output
 
 ```yaml
@@ -118,15 +136,19 @@ color_band_router:
   orange_targets: <list/count>
   purple_targets: <list/count>
   black_targets: <list/count>
+  gray_targets: <list/count>
   frozen_black_targets: <list/count>
+  frozen_gray_targets: <list/count>
   red_count: <count>
   orange_count: <count>
   purple_count: <count>
   black_count: <count>
+  gray_count: <count>
   red_ratio: <ratio>
   orange_ratio: <ratio>
   purple_ratio: <ratio>
   black_ratio: <ratio>
+  gray_ratio: <ratio>
   purple_action: skip | observe | light_rebalance | mandatory_rebalance
   band_action_plan:
     red:
@@ -145,4 +167,8 @@ color_band_router:
       - target_id: <id>
         action: freeze_with_reason
         reason: <required>
+    gray:
+      - target_id: <id>
+        action: freeze_with_reason
+        reason: too_short | heading | english | reference | declaration | cover | toc | school_template | non_scored
 ```

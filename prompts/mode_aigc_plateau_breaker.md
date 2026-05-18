@@ -61,7 +61,7 @@ Only revise paragraphs whose band is red/orange/purple and whose protected const
 
 Requirements:
 
-- Freeze white/low-risk paragraphs.
+- Freeze black low-risk and gray non-scored/excluded paragraphs.
 - Do not repeat the same rewrite strategy from the last round.
 - Do not expand all paragraphs.
 - Do not fabricate survey, interview, system, code, or test facts.

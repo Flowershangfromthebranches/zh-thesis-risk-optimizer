@@ -87,8 +87,8 @@ Use this checklist before final output.
 - [ ] Original thesis plus original AIGC report routes to `FIRST_PASS_RED_ORANGE_ENGINE`.
 - [ ] Red/high-risk and orange/medium-risk fragments both appear in the first-pass primary task table.
 - [ ] Orange/medium-risk fragments are not deferred until plateau mode.
-- [ ] Purple/light-risk fragments are only local cleanup unless clearly connected to red/orange risks.
-- [ ] Black/white/low-risk paragraphs are frozen.
+- [ ] Purple/light-risk fragments are counted from the first pass; when target AIGC is `<=20%` and current AIGC remains above target, purple uses mandatory low-intensity rebalance unless validly frozen.
+- [ ] Black/low-risk and gray/non-scored paragraphs are frozen.
 - [ ] Internal rewrite loops have a fixed retry limit and use different repair moves.
 - [ ] The heuristic target is purple/black-like when safe, not merely red-to-orange demotion.
 - [ ] Whole-thesis character change is within `±10%` unless the user specified another range.
@@ -98,20 +98,22 @@ Use this checklist before final output.
 ## v0.8.3 Three-Mode File Workflow Checks
 
 - [ ] The task is routed to similarity-only, AIGC-only, or dual revision.
-- [ ] AIGC-only + DOCX AIGC color report + red/orange/purple/black rules + character control routes to `THREE_MODE_COLOR_BAND_WORKFLOW` with `task_type = aigc_only`, not any archived standalone prompt.
+- [ ] AIGC-only + DOCX AIGC color report + red/orange/purple/black/gray rules + character control routes to `THREE_MODE_COLOR_BAND_WORKFLOW` with `task_type = aigc_only`, not any archived standalone prompt.
 - [ ] A revised/current draft plus current AIGC report routes to `CURRENT_REPORT_RED_ORANGE_ENGINE`, not `FIRST_PASS_RED_ORANGE_ENGINE`.
 - [ ] If a relevant report is provided, report-driven processing is used.
 - [ ] If no report is provided, the output states that report-based localization would be better.
-- [ ] Color legend is applied correctly: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%, unless the report says otherwise.
+- [ ] Color legend is applied correctly: red `>=70%`, orange `>=60%` and `<70%`, purple `>=50%` and `<60%`, black `<50%`, gray non-scored/excluded, unless the report says otherwise.
 - [ ] Red and orange are primary targets.
 - [ ] Current-report red and orange paragraphs are all included in the task table.
-- [ ] Purple is only light cleanup.
-- [ ] Black, gray, and white text are frozen unless needed for context.
+- [ ] Purple is only light cleanup or mandatory low-intensity rebalance; it is not deep rewritten or ignored when below-20 targeting is active.
+- [ ] Black and gray text are frozen unless a tiny non-protected black connector edit is explicitly selected by `GLOBAL_STYLE_VARIANCE_ENGINE`.
+- [ ] Gray text such as headings, English, too-short fragments, references, declarations, cover pages, and school-template text is not rewritten.
 - [ ] Every red/orange fragment includes a reason analysis for its color.
 - [ ] Red-orange coverage acceptance table is output.
 - [ ] Each red/orange paragraph has a processing record.
 - [ ] Unprocessed red/orange count is zero before completion.
 - [ ] Whole-thesis character delta stays within `±10%` unless the user specified another range.
+- [ ] High-risk paragraph compression is preferred over adding length when word count and AIGC reduction conflict.
 - [ ] File input creates a copy and keeps the original untouched.
 - [ ] Revisions are written back only to HIGH or safe MEDIUM confidence mappings.
 - [ ] LOW or UNMAPPED file fragments are not written back automatically.

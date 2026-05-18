@@ -16,7 +16,7 @@ Use this engine inside `THREE_MODE_COLOR_BAND_WORKFLOW` when all of the followin
 
 1. The user chooses AIGC-only revision.
 2. Input includes a DOCX AIGC color report or equivalent color-marked AIGC report.
-3. The user provides or accepts red/orange/purple/black color rules.
+3. The user provides or accepts red/orange/purple/black/gray color rules.
 4. The user asks for character control, no broad full-text rewrite, or file-copy output.
 5. The report belongs to a revised/current draft, not the original unmodified thesis.
 
@@ -25,6 +25,7 @@ If there is evidence of a prior rewrite and a new report, do not route to `FIRST
 ## Routing Overlays
 
 - If the current report shows red decreased but orange remains high, overlay `AIGC_PLATEAU_BREAKER`.
+- If the target AIGC rate is `<=20%` and current AIGC remains above target, overlay `references/one_pass_cross_discipline_strategy.md` and require purple handling unless validly frozen.
 - If the discipline is human resource management, business administration, marketing, education management, or public administration, overlay `SOCIAL_SCIENCE_TEMPLATE_BOTTLENECK`.
 - Do not fall back to plain `AIGC_ONLY` or generic polishing when current-report color targeting is available.
 
@@ -34,8 +35,9 @@ If there is evidence of a prior rewrite and a new report, do not route to `FIRST
 |---|---|
 | red | all fragments must enter the task table and be processed unless protected or unmapped |
 | orange | all fragments must enter the task table and be processed unless protected or unmapped |
-| purple | only process when it shares the same paragraph with red/orange or is needed for local coherence |
+| purple | count and route from the start; process with low-intensity rebalance when target is below 20, current AIGC is above target, stage is later pass, or global variance requires it |
 | black / low risk | freeze |
+| gray / non-scored | freeze; headings, English, too-short fragments, references, and school-template text are not rewrite targets |
 | cover, table of contents, declaration, reference list, appendix | freeze by default |
 
 If a red/orange fragment is protected, unmapped, or evidence-limited, it still counts as a task and must appear in the unprocessed list with a reason.
@@ -87,7 +89,7 @@ If action type is missing, the paragraph is unprocessed.
 1. Confirm the report is for the current/revised draft.
 2. Extract DOCX color metadata before plain text when the report is a color-marked Word file.
 3. Map every red and orange fragment back to the current draft.
-4. Freeze black, low-risk, cover, table of contents, declarations, references, and appendices.
+4. Freeze black, gray, low-risk, cover, table of contents, declarations, references, and appendices.
 5. Build the red-orange task table.
 6. For every red/orange paragraph, run `AIGC_ACCEPTANCE_SELF_AUDIT`.
 7. If any audit item fails, run a second-pass rewrite with a different strategy.

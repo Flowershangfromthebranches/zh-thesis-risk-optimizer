@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`PURPLE_BAND_REBALANCER` handles light-risk purple text (`50%-60%`) from the first color report onward when `COLOR_BAND_ROUTER` sets `purple_action = light_rebalance` or `mandatory_rebalance`.
+`PURPLE_BAND_REBALANCER` handles light-risk purple text (`>=50% and <60%`) from the first color report onward when `COLOR_BAND_ROUTER` sets `purple_action = light_rebalance` or `mandatory_rebalance`.
 
 It performs low-intensity style rebalance, not deep rewriting.
 
@@ -21,6 +21,8 @@ Trigger from the first pass when one or more are true:
 - `GLOBAL_STYLE_VARIANCE_ENGINE` finds over-uniform rhythm.
 
 For `stage = second_pass`, `third_pass`, or `current_report_pass`, if `current_aigc_rate > target_aigc_rate`, `purple_action = mandatory_rebalance`.
+
+For target AIGC `<=20%`, if `current_aigc_rate > target_aigc_rate`, `purple_action = mandatory_rebalance` even when red/orange has already been reduced. The only exception is that all purple targets are protected, non-body, too short, or otherwise validly frozen.
 
 If a third pass has finished and AIGC is still above 30%, `purple_action = mandatory_rebalance` and `FINAL_ACCEPTANCE_AUDIT` must not ignore purple text.
 
@@ -45,6 +47,7 @@ If red/orange handling lowers high-risk bands but the overall AIGC rate remains 
 - Expressions such as `一圈查下来`, `头一个是`, `比较头疼`.
 - Data, terminology, formula, code, citation, path, table, field, or parameter changes.
 - Large expansion.
+- Word-count padding.
 - Level 4.
 
 ## Required Coordination

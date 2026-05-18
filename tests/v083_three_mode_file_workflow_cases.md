@@ -7,15 +7,15 @@ Input:
 ```yaml
 mode: similarity_only
 has_similarity_report: true
-colors: red, orange, purple, black
+colors: red, orange, purple, black, gray
 ```
 
 Expected:
 
 - Use report-driven similarity workflow.
 - Red and orange fragments are primary targets.
-- Purple is light cleanup.
-- Black/gray/white fragments are frozen.
+- Purple is light cleanup unless below-20 targeting requires mandatory low-intensity rebalance.
+- Black and gray fragments are frozen.
 - Character delta guard is enabled.
 
 ## Case 2: AIGC Report Provided
@@ -25,16 +25,19 @@ Input:
 ```yaml
 mode: aigc_only
 has_aigc_report: true
-red: above_70
-orange: 60_to_70
-purple: 50_to_60
+red: gte_70
+orange: gte_60_lt_70
+purple: gte_50_lt_60
 black: below_50
+gray: non_scored_excluded
 ```
 
 Expected:
 
 - Use report-driven AIGC workflow.
 - Analyze why each red/orange fragment has its color.
+- Count and route purple from the first pass.
+- Freeze black/gray text unless a valid exception applies.
 - Internally self-audit whether revised text is closer to purple/black level.
 
 ## Case 3: No Report

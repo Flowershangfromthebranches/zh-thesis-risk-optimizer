@@ -2,6 +2,14 @@
 
 > ARCHIVED_COMPATIBILITY_ONLY / internal branch, not an entry mode: legacy mode names in this file are historical compatibility labels or internal task-type references. Route through `SKILL.md` Minimal Mode Router.
 
+## v0.9.6-one-pass-cross-discipline
+
+- Added `references/one_pass_cross_discipline_strategy.md` for discipline-aware one-pass strategy selection across management, computer science, engineering, medicine, law, education, humanities, communication, and arts.
+- Standardized the default AIGC color legend as red `>=70%`, orange `>=60%` and `<70%`, purple `>=50%` and `<60%`, black `<50%`, and gray as non-scored/excluded text.
+- Strengthened below-20 targeting: near-threshold work now prioritizes residual orange, mandatory purple light rebalance, and template residue while freezing black/gray.
+- Added the lesson that word-count restoration can raise AIGC risk when it adds smooth template-like text; compression/replacement is preferred when AIGC reduction is the priority.
+- Updated color routing, risk-band coverage, plateau handling, final audit, README, quality checklist, and tests to include gray freezing and below-20 purple handling.
+
 ## v0.9.5-slim-forced-chain
 
 - Slimmed `SKILL.md` to Role, Safety Boundaries, Core Workflow, Hard Routing Rules, Minimal Mode Router, Standard Output Blocks, and File Layout.

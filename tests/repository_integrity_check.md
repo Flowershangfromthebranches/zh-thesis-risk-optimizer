@@ -57,7 +57,7 @@ Use this checklist before publishing documentation cleanup releases.
 - [ ] Targets such as similarity below 10% and AIGC below 20% are described as goals, not guarantees.
 - [ ] AIGC-focused work includes a length budget and does not encourage uncontrolled expansion.
 - [ ] AIGC plateau work does not treat red-risk reduction alone as completion.
-- [ ] Orange-zone work freezes white/low-risk paragraphs instead of rewriting everything again.
+- [ ] Orange-zone work freezes black low-risk and gray non-scored/excluded paragraphs instead of rewriting everything again.
 - [ ] First-pass red-orange work does not defer orange/medium-risk paragraphs to later rounds.
 - [ ] Whole-thesis character change defaults to `±10%` unless the user specifies another range.
 - [ ] File input workflows do not modify the original file directly.

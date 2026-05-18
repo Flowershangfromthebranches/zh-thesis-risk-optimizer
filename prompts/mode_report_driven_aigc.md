@@ -15,7 +15,7 @@ This mode only works with report content the user provides. Do not simulate, cra
 1. Identify report type.
 2. If the report is a color-marked DOCX, load `references/docx_color_report_extraction.md` and extract color metadata before plain-text processing.
 3. Extract high AIGC-risk fragments.
-4. If the report uses color bands, apply the default legend unless the report states otherwise: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
+4. If the report uses color bands, apply the default legend unless the report states otherwise: red `>=70%`, orange `>=60%` and `<70%`, purple `>=50%` and `<60%`, black `<50%`, gray non-scored/excluded.
 5. If this is the original thesis plus original AIGC report, route to `FIRST_PASS_RED_ORANGE_ENGINE`.
 6. In first-pass mode, extract both red/high-risk and orange/medium-risk fragments as primary targets.
 7. Analyze why each red/orange fragment has its color before rewriting.

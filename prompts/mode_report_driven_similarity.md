@@ -14,7 +14,7 @@ Do not invent report percentages, source titles, authors, URLs, or risk levels. 
 
 1. Identify report type.
 2. Extract marked fragments, repeated fragments, source notes, and contribution rates.
-3. If the report uses color bands, apply the default legend unless the report states otherwise: red above 70%, orange 60%-70%, purple 50%-60%, black below 50%.
+3. If the report uses color bands, apply the default legend unless the report states otherwise: red `>=70%`, orange `>=60%` and `<70%`, purple `>=50%` and `<60%`, black `<50%`, gray non-scored/excluded.
 4. Treat red and orange fragments as primary targets.
 5. Analyze why each red/orange fragment has its color before rewriting.
 6. Map each report fragment back to the thesis source text.

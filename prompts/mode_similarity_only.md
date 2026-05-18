@@ -18,9 +18,9 @@ If a similarity report is provided, first map report fragments back to source te
 
 If a color-band report is provided, use `references/three_mode_color_band_workflow.md`:
 
-- Red above 70% and orange from 60%-70% are primary targets.
-- Purple from 50%-60% is light cleanup only.
-- Black below 50% and gray/white text are frozen unless needed for context.
+- Red `>=70%` and orange `>=60%` and `<70%` are primary targets.
+- Purple `>=50%` and `<60%` is light cleanup only unless a dual/AIGC target requires mandatory low-intensity rebalance.
+- Black `<50%` and gray non-scored/excluded text are frozen unless needed only as mapping context.
 - Analyze why each red/orange fragment has that color before rewriting.
 - Aim heuristically to bring safe red/orange fragments toward purple/black style level.
 - Apply whole-thesis character delta guard, default `±10%`.

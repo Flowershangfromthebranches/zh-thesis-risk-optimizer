@@ -15,8 +15,8 @@ Real test failure from a human resource management thesis:
 | band | threshold | chars | percentage |
 |---|---|---|---|
 | red | >=70% AIGC suspicion | 8601 | 39.4% |
-| orange | 60%-70% | 5311 | 24.4% |
-| purple | 50%-60% | 692 | 3.2% |
+| orange | >=60% and <70% | 5311 | 24.4% |
+| purple | >=50% and <60% | 692 | 3.2% |
 | black | <50% | 1502 | 6.9% |
 | **total analyzed** | — | **16106** | **73.9%** (rest is cover/toc/references) |
 
@@ -28,8 +28,8 @@ Real test failure from a human resource management thesis:
 | band | threshold | chars | percentage |
 |---|---|---|---|
 | red | >=70% AIGC suspicion | 3027 | 13.6% |
-| orange | 60%-70% | 9376 | 42.3% |
-| purple | 50%-60% | 905 | 4.1% |
+| orange | >=60% and <70% | 9376 | 42.3% |
+| purple | >=50% and <60% | 905 | 4.1% |
 | black | <50% | 3237 | 14.6% |
 | **total analyzed** | — | **16545** | **74.6%** |
 

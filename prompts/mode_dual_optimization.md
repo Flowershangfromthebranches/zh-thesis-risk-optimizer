@@ -30,7 +30,7 @@ When both similarity and AIGC reports have color bands:
 
 - Red and orange are primary targets in each dimension.
 - Purple is light cleanup only.
-- Black/gray/white is frozen unless needed for context.
+- Black and gray are frozen unless needed only for mapping context; gray is not rewritten.
 - Analyze why each red/orange fragment has its color before rewriting.
 - Similarity pass runs first, then AIGC pass.
 

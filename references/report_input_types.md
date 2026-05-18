@@ -20,10 +20,11 @@ When the user provides the following legend, use it exactly:
 
 | color | suspicion range |
 |---|---|
-| red | above 70%, high suspicion |
-| orange | 60%-70%, medium suspicion |
-| purple | 50%-60%, light suspicion |
-| black | below 50% |
+| red | `>=70%`, high suspicion |
+| orange | `>=60%` and `<70%`, medium suspicion |
+| purple | `>=50%` and `<60%`, light suspicion |
+| black | `<50%`, low suspicion |
+| gray | non-scored/excluded text, such as too-short fragments, headings, English, references, or template pages |
 
 If the report uses colors but does not explain them, do not invent meanings. Ask the user or mark the color meaning as uncertain.
 
@@ -42,7 +43,7 @@ When the input is a file, load `references/file_input_copy_workflow.md`.
 
 When a Word / DOCX report uses font colors to mark AIGC or similarity risk, also load `references/docx_color_report_extraction.md`.
 
-Do not flatten the report directly into plain text before extracting color metadata. Plain-text conversion can lose the red/orange/purple/black markers and make report-driven processing fail.
+Do not flatten the report directly into plain text before extracting color metadata. Plain-text conversion can lose the red/orange/purple/black/gray markers and make report-driven processing fail.
 
 Required steps:
 

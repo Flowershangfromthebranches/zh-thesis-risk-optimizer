@@ -51,7 +51,8 @@ If there is no AIGC color report and no user-provided color distribution:
 
 Normative thresholds:
 
-- `current_aigc_rate < 30`: `strategy = conservative_repair`, `max_humanization_level = 2`, `level_4_allowed = false`.
+- `current_aigc_rate < 20`: `strategy = maintenance_only`, `max_humanization_level = 1.5`, `level_4_allowed = false`.
+- `20 <= current_aigc_rate < 30`: `strategy = near_threshold_pushdown` when `target_aigc_rate <= 20` and `current_aigc_rate > target_aigc_rate`; otherwise `strategy = conservative_repair`, `max_humanization_level = 2`, `level_4_allowed = false`.
 - `30 <= current_aigc_rate < 50`: `strategy = moderate_controlled_humanization`, `max_humanization_level = 3`, `level_4_allowed = false`.
 - `50 <= current_aigc_rate < 70`: `strategy = high_risk_controlled_humanization`, `max_humanization_level = 3.5`, `level_4_allowed = local_only`.
 - `current_aigc_rate >= 70`: `strategy = escalated_local_humanization`, `max_humanization_level = 4`, `level_4_allowed = local_only`.
@@ -59,11 +60,15 @@ Normative thresholds:
 
 | current_aigc_rate | selected_strategy | max_humanization_level | level_4_allowed | rule |
 |---:|---|---:|---|---|
-| `<30` | `conservative_repair` | 2 | `false` | Only repair local grammar issues, template residue, and red segments. Avoid broad rewriting. |
+| `<20` | `maintenance_only` | 1.5 | `false` | Do not run broad de-AIGC rewriting. Only repair user-requested local issues, formatting, or factual errors. |
+| `20-29.99` and target `<=20` | `near_threshold_pushdown` | 2 | `false` | Residual orange/purple and template residue only. Prefer compression/replacement over expansion. Freeze black/gray. |
+| `20-29.99` otherwise | `conservative_repair` | 2 | `false` | Only repair local grammar issues, template residue, and red/orange segments. Avoid broad rewriting. |
 | `30-49.99` | `moderate_controlled_humanization` | 3 | `false` | Focus on red and large orange blocks while preserving thesis register. |
 | `50-69.99` | `high_risk_controlled_humanization` | 3.5 | `local_only` | Level 4 may be used only in Chapter 4/5 problem-analysis and countermeasure paragraphs. Abstract, theory, and conclusion max at 3.5. |
 | `>=70` | `escalated_local_humanization` | 4 | `local_only` | Allow `LOCAL_ESCALATED_HUMANIZATION` for residual red/orange paragraphs. Never use full-text Level 4. Strict sections max at 3.5 and must pass `THESIS_REGISTER_GUARD`. |
 | `>=75` and `stage in [second_pass, first_pass_failure]` | `aggressive_but_localized_repair` | 4 | `local_only` | Allow local Level 4 only in Chapter 4/5 high-risk residual paragraphs. Output `style_risk_warning` and `academic_tone_repair_plan`. |
+
+When `target_aigc_rate <= 20`, always load `references/one_pass_cross_discipline_strategy.md`. The near-threshold rule is intentionally conservative: do not add length merely to restore word count, and do not rewrite black/gray text to chase a marginal rate change.
 
 ## Similarity Rules
 
@@ -72,6 +77,8 @@ Normative thresholds:
 | `current_similarity_rate <= target_similarity_rate` | `already_passed` | Do not perform broad similarity rewriting. If `task_type = aigc_only`, process only AIGC red/orange targets and template residue. |
 | `current_similarity_rate > target_similarity_rate` | `needs_similarity_reduction` | Prioritize overlap between high similarity risk and AIGC red/orange risk. Do not preserve highly similar expression just because humanization is active. |
 | `current_similarity_rate <= 10` and `current_aigc_rate <= 30` | `already_low_risk` | Set `final_strategy = minimal_repair_only`; warn that broad rewriting is not recommended. |
+
+If `current_similarity_rate <= target_similarity_rate` and `target_aigc_rate <= 20`, similarity reduction must stay inactive unless the same fragment is also an AIGC red/orange/purple target. Do not introduce similarity-oriented paraphrase churn into black/gray or protected text.
 
 ## Level 4 Trigger Contract
 
@@ -109,9 +116,11 @@ risk_intake_decision:
   current_black_ratio: <ratio or unknown>
   similarity_status: already_passed | needs_similarity_reduction | already_low_risk
   selected_strategy: <strategy>
-  max_humanization_level: 2 | 3 | 3.5 | 4
+  max_humanization_level: 1.5 | 2 | 3 | 3.5 | 4
   level_4_allowed: false | local_only
   final_strategy: minimal_repair_only | targeted_repair | report_driven_repair
+  one_pass_cross_discipline_strategy: enabled | not_triggered
+  length_expansion_policy: avoid_expansion | bounded_growth | user_specified
   style_risk_warning: <required when strategy is aggressive_but_localized_repair>
   academic_tone_repair_plan: <required when local Level 4 may be used>
 ```

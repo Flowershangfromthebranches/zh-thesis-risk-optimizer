@@ -111,7 +111,7 @@ Switch to `AIGC_PLATEAU_BREAKER` when:
 - The same paragraphs keep appearing in reports.
 - The next likely edit would repeat synonym replacement, connector changes, or append-based explanation.
 
-In plateau mode, freeze white/low-risk text and treat orange paragraphs as the primary target.
+In plateau mode, freeze black low-risk and gray non-scored/excluded text and treat orange paragraphs as the primary target.
 
 ## Relation To SKILL.md
 

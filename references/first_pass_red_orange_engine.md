@@ -4,7 +4,7 @@
 
 `FIRST_PASS_RED_ORANGE_ENGINE` is used when the user provides the original thesis and the original AIGC report. It prevents the common failure mode where the first pass only reduces red/high-risk text and leaves orange/medium-risk text as the next bottleneck.
 
-This engine treats red and orange report bands as the first-pass main work area, but it must not ignore purple. It receives red/orange/purple/black routing from `COLOR_BAND_ROUTER` immediately after the first color extraction.
+This engine treats red and orange report bands as the first-pass main work area, but it must not ignore purple. It receives red/orange/purple/black/gray routing from `COLOR_BAND_ROUTER` immediately after the first color extraction.
 
 It does not promise that any external system will mark the result as purple, black, or low risk.
 
@@ -15,7 +15,7 @@ It must not repeat the failure mode where 90 red/orange/purple risk paragraphs a
 Enter this mode when:
 
 - The user provides the original thesis plus the original AIGC report.
-- The report has color bands or risk bands such as red, orange, purple, and black/white.
+- The report has color bands or risk bands such as red, orange, purple, black, and gray.
 - The user wants AIGC reduction in the first pass.
 - The user asks to avoid repeated second/third rounds caused by orange plateau.
 
@@ -28,7 +28,8 @@ Do not use this mode when the user provides a revised/current draft and the curr
 | red/high | primary target | strong reconstruction with protection checks | must reach purple or below; red→orange is UNPASSED |
 | orange/medium | primary target | structural repair, rhythm repair, evidence placement | must reach black or near-black; orange→light-orange is UNPASSED |
 | purple/light | tracked target | light rebalance if `COLOR_BAND_ROUTER` sets `purple_action = light_rebalance` or `mandatory_rebalance` | no Level 4 |
-| black/white/low | frozen | do not rewrite unless user explicitly asks | — |
+| black/low | frozen | do not rewrite unless user explicitly asks or a tiny non-protected connector edit is selected | — |
+| gray/non-scored | frozen | do not rewrite headings, English text, too-short fragments, references, declarations, cover, table of contents, or school-template text | — |
 | protected | no-edit or surrounding-edit only | preserve exact data, code, citations, terms, formulas, paths, parameters | — |
 
 Red and orange paragraphs must both enter the first-pass task table. Orange is not deferred to a later plateau stage. Purple must also enter the color task table with `purple_targets_count`, `purple_action`, `purple_deferred_reason`, and `next_purple_action_trigger`.
@@ -47,7 +48,7 @@ Red and orange paragraphs must both enter the first-pass task table. Orange is n
 ## First-Pass Workflow
 
 1. Parse the user-provided report and record the meaning of each color/risk band.
-2. Call `COLOR_BAND_ROUTER` and receive `red_targets`, `orange_targets`, `purple_targets`, `black_targets`, counts, ratios, and `purple_action`.
+2. Call `COLOR_BAND_ROUTER` and receive `red_targets`, `orange_targets`, `purple_targets`, `black_targets`, `gray_targets`, counts, ratios, freeze summaries, and `purple_action`.
 3. Call `RISK_BAND_COVERAGE_GATE` to verify that every red/orange/purple target has a planned action or valid freeze reason.
 4. Map red and orange fragments back to the thesis source.
 5. Build a protected list before any rewrite.
@@ -58,7 +59,7 @@ Red and orange paragraphs must both enter the first-pass task table. Orange is n
    - `B_ARGUMENT_PATH_REWRITE`
    - `C_TEMPLATE_SKELETON_BREAK`
    - `D_AUTHOR_MATERIAL_REQUEST`
-9. Apply replacement-based reconstruction, not append-based expansion.
+9. Apply replacement-based reconstruction, not append-based expansion. If the user removes word-count constraints or a prior expansion increased AIGC, prefer compression of high-risk generic paragraphs.
 10. Record the action type in the paragraph processing record.
 11. Run band-target self-audit.
 12. If red/orange risk remains in the heuristic self-audit, run one limited internal retry with a different repair move.
@@ -79,6 +80,7 @@ If a red/orange paragraph does not have one of the four action types, it is unpr
 - All body orange targets must be handled or placed into the active batch queue.
 - If `current_aigc_rate >= 70`, orange targets must be 100% handled or explicitly frozen with a valid reason.
 - Purple targets must be listed in the task table and routed by `purple_action`.
+- Black and gray targets must be frozen with a summary. Gray is not a rewrite target.
 - If processing budget is insufficient, output `batch_plan`; do not mark `completed`.
 - Do not leave unhandled red/orange targets for "retest and see".
 
