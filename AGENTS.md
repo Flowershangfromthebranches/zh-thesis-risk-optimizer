@@ -220,3 +220,22 @@
 - Prompts cover AIGC_ONLY, SIMILARITY_ONLY, DUAL_OPTIMIZATION, scoring diagnosis, sentence-level diagnosis, report-driven mapping, full-thesis project management, progress tracking, handoff, engineering/science mode, general academic mode, heatmap use, and checklist use.
 - Examples cover AIGC-only, similarity-only, dual optimization, engineering thesis, citation-heavy text, long-thesis workflow, scoring diagnosis, sentence-level localization, before/after comparison, report mapping, report-driven revision, full-thesis project setup, chapter tasks, progress tracking, iterative revision, project handoff, and Skill slimming.
 - Tests document structure checks, safety checks, scoring-output checks, report-mapping checks, report-driven safety checks, workflow-template checks, full-thesis project checks, and Skill slimming checks.
+
+## v2.0 Final Refactoring Rules (SUPERSEDES conflicting historical rules)
+
+- This is the final version. Do not add new modes, routers, gates, or agents.
+- The project is a skill/workflow/规范系统, not a training model.
+- Core workflow is 7 steps: IntakeGate → MajorRoute → RiskPlan → PermissionGate → EvidencePlan → ExecuteOptimize → OutcomeReport.
+- IntakeGate enforces 8 required fields. If any is missing, return the missing list and STOP.
+- MajorRoute uses user declaration as HIGHEST priority. System MUST NOT auto-guess major and override.
+- 8 major routes: computer_engineering, human_resource, business_management, education, literature_language, law_governance, medical_nursing, universal_light.
+- universal_light is NOT suitable for high-AIGC bulk rewrite/rebuild.
+- RiskPlan outputs modify/rewrite/rebuild ratios based on current_rate and target_rate.
+- PermissionGate requires user confirmation before execution when: rewrite disallowed but needed, supplement disallowed but needed, no report available, supplement allowed but no materials.
+- EvidencePlan enforces material priority: thesis original > user materials > references > supplementary > web search > model knowledge (conservative).
+- FABRICATION_FORBIDDEN: specific survey counts, interview counts, percentages, enterprise data, experiment values, version numbers, function names, DB tables, prices, case judgments, clinical cases, classroom statistics.
+- OutcomeReport must be honest: failed = AIGC rate increased or risk_chars increased or rate drop < 5pp. Unverifiable = no report + no AIGC rate. Never write a success report when outcome is unverifiable.
+- Do not re-introduce complex agent/router/gate patterns deleted in v2.0.
+- Do not add new historical version rules beyond v2.0.
+- All changes must pass both test_core.py and test_final_workflow.py.
+
