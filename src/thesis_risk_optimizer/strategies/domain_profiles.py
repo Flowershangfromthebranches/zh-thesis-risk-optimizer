@@ -59,7 +59,7 @@ DOMAIN_PROFILES: dict[str, DomainProfile] = {
     "management": DomainProfile(
         name="management",
         label="管理/工商管理/人力资源",
-        aliases=("business_administration", "human_resource", "hr", "business", "management"),
+        aliases=("business_administration", "business", "management"),
         material_anchors={
             "公司": ("公司", "企业", "案例企业", "A公司", "某企业"),
             "案例背景": ("案例背景", "企业概况", "行业背景"),
@@ -84,6 +84,43 @@ DOMAIN_PROFILES: dict[str, DomainProfile] = {
         classifier_keywords=(
             "工商管理", "人力资源", "绩效", "薪酬", "招聘", "企业", "岗位",
             "访谈", "问卷", "组织结构", "市场营销", "财务管理",
+        ),
+    ),
+    "human_resource": DomainProfile(
+        name="human_resource",
+        label="人力资源管理",
+        aliases=("hr", "human_resource_management"),
+        material_anchors={
+            "公司": ("公司", "企业", "案例企业", "A公司", "某企业"),
+            "部门": ("部门", "人事部", "业务部门", "门店"),
+            "岗位": ("岗位", "员工", "招聘专员", "主管", "一线"),
+            "制度": ("制度", "绩效", "薪酬", "考核", "晋升", "培训"),
+            "招聘": ("招聘", "初筛", "面试", "录用"),
+            "培训": ("培训", "课程", "岗位任务"),
+            "绩效": ("绩效", "考核指标", "考核周期"),
+            "薪酬": ("薪酬", "激励", "奖金"),
+            "离职": ("离职", "流失", "留任"),
+            "流程": ("流程", "招聘流程", "绩效流程", "培训流程"),
+            "访谈": ("访谈", "访谈对象", "员工反馈", "反馈主题"),
+            "问卷": ("问卷", "问卷维度", "调查", "量表"),
+            "问题表现": ("问题表现", "不一致", "脱节", "执行不到位"),
+            "原因分析": ("原因", "制度设计", "执行过程", "沟通反馈"),
+            "对策落地": ("责任部门", "负责人", "执行步骤", "检查效果"),
+        },
+        style_guidance=(
+            "像学生基于案例企业和员工反馈整理出的人力资源分析",
+            "不要写成咨询报告或政策报告",
+            "对策写谁负责、怎么做、如何检查效果",
+        ),
+        natural_phrases=("在该企业中", "访谈中", "实际执行时", "员工反馈里"),
+        avoid_phrases=(
+            "完善机制", "加强培训", "提升员工满意度", "增强企业凝聚力",
+            "推动企业高质量发展", "构建长效机制", "多措并举",
+            "从制度层面、管理层面、员工层面",
+        ),
+        classifier_keywords=(
+            "人力资源", "招聘", "培训", "绩效", "薪酬", "晋升", "离职",
+            "员工满意度", "岗位", "访谈", "问卷", "员工反馈",
         ),
     ),
     "education": DomainProfile(
@@ -363,7 +400,7 @@ def classify_domain(
         return DOMAIN_PROFILES["universal"], []
 
     sorted_scores = sorted(scores.values(), reverse=True)
-    if len(sorted_scores) > 1 and sorted_scores[0] - sorted_scores[1] < 1.0:
+    if len(sorted_scores) > 1 and sorted_scores[0] - sorted_scores[1] < 1.0 and best_name != "human_resource":
         return DOMAIN_PROFILES["universal"], evidence.get(best_name, [])
 
     return DOMAIN_PROFILES[best_name], evidence.get(best_name, [])

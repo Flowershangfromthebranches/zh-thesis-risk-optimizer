@@ -1,0 +1,45 @@
+{
+  "name": "human_resource_case_template_regression",
+  "domain": "human_resource",
+  "major": "人力资源管理",
+  "purpose": "Track whether low_aigc_humanized reduces template residue for HR theses without introducing computer terms or consulting-style cliches.",
+  "baseline": {
+    "original_aigc_rate": 31.86,
+    "optimized_aigc_rate": 34.77,
+    "verdict": "regression_observed"
+  },
+  "metrics": {
+    "template_phrase_density": {
+      "description": "Count repeated phrases such as 主要用于, 能够, 便于, 完善机制, 提升水平 per 1000 Chinese characters.",
+      "target": "decrease"
+    },
+    "enterprise_material_anchor_retention_rate": {
+      "description": "Retention rate for original enterprise, post, system, employee, questionnaire, and interview anchors.",
+      "target": ">= 0.95"
+    },
+    "fabricated_data_added": {
+      "description": "Whether new employee counts, questionnaire counts, percentages, turnover rates, satisfaction rates, or enterprise revenue data appear without source text.",
+      "target": false
+    },
+    "management_cliche_present": {
+      "description": "Whether output contains empty HR/management cliches such as 完善机制, 提升员工满意度, 增强企业凝聚力, 推动企业高质量发展, 构建长效机制, 多措并举.",
+      "target": false
+    },
+    "computer_terms_present": {
+      "description": "Whether output contains source code, interface, field, database, version, API, or software testing terms not present in the original HR thesis.",
+      "target": false
+    }
+  },
+  "sample_paragraphs": [
+    {
+      "id": "hr-template-001",
+      "original": "A公司招聘岗位制度主要用于完善机制，能够提升员工满意度，并增强企业凝聚力，推动企业高质量发展。",
+      "required_anchor_terms": ["A公司", "招聘", "岗位", "制度", "员工"],
+      "forbidden_output_terms": ["完善机制", "提升员工满意度", "增强企业凝聚力", "推动企业高质量发展", "源码", "接口", "字段", "数据库", "版本号"]
+    }
+  ],
+  "notes": [
+    "This benchmark is a regression fixture, not a promise about any external detector.",
+    "Future measured rates should be filled from real user-provided reports only; do not fabricate AIGC percentages."
+  ]
+}

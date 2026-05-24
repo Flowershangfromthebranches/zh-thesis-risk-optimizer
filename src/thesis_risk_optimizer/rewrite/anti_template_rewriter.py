@@ -9,6 +9,7 @@ from ..analysis.template_risk_detector import TemplateRiskDetector
 from ..document_io.text_units import RiskLevel, TextUnit
 from ..strategies.domain_profiles import DomainProfile, get_domain_profile
 from ..strategies.section_profiles import get_section_profile
+from .human_variation import HumanVariationLayer
 
 
 @dataclass
@@ -56,8 +57,7 @@ class AntiTemplateRewriter:
         original = text
         needs_material = risk.material_anchor_score == 0 and risk.template_risk_score >= 45
 
-        text = self._break_repeated_opener(text, sequence_index)
-        text = self._replace_template_phrases(text)
+        text = HumanVariationLayer(profile).apply_text(text, sequence_index=sequence_index)
         text = self._domain_safe_cleanup(text, profile, needs_material)
         text = self._enforce_length(text, original)
 

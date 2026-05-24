@@ -35,7 +35,7 @@ SECTION_PROFILES: dict[str, SectionProfile] = {
     ),
     "methodology": SectionProfile(
         name="methodology",
-        guidance="方法/设计/实现多写具体步骤、对象、工具、字段、样本或流程，少写抽象意义。",
+        guidance="方法/设计/实现多写具体步骤、对象、工具、样本或流程，少写抽象意义。",
         avoid=("提供支撑", "形成闭环"),
         prefer=("步骤", "对象", "流程"),
     ),

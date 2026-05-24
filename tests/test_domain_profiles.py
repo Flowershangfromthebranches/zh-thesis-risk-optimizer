@@ -38,7 +38,7 @@ def test_auto_domain_classifier_uses_title_abstract_keywords_and_headings():
         headings=["企业概况", "绩效制度现状", "访谈结果分析"],
     )
 
-    assert profile.name == "management"
+    assert profile.name == "human_resource"
     assert any("岗位" in item or "绩效" in item for item in evidence)
 
 

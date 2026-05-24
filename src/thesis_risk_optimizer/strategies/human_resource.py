@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from .base import BaseStrategy
 from .contract import StrategyContract
 from ..document_io.text_units import TextUnit, ActionType
-from ..analysis.paragraph_diagnoser import ParagraphDiagnosis
+from ..analysis.paragraph_diagnoser import DiagnosisTag, ParagraphDiagnosis
 
 
 # -- HR anti-template guard ---------------------------------------------------
@@ -424,6 +424,45 @@ class HumanResourceStrategy(BaseStrategy):
             "conclusion": "对策落地方式、衡量指标、后续改进计划",
         }
         return suggestions.get(section, "企业场景、员工反馈、管理制度、调研数据")
+
+    def rebuild_section_structure(self, section: str) -> list[str]:
+        """HR-specific rebuild structure with no computer defaults."""
+        structures = {
+            "abstract": ["案例企业/研究对象", "调研材料依据", "主要问题表现", "改进方向与限制"],
+            "introduction": ["企业或行业用工背景", "具体人力资源问题", "选题来源", "研究范围与限制"],
+            "literature_review": ["理论或研究对象差异", "对企业案例的适用性", "已有研究不足", "本文切入点"],
+            "requirements": ["企业部门/岗位情况", "制度执行现状", "员工反馈或问卷维度", "问题边界"],
+            "design": ["问题表现", "原因分析", "制度执行矛盾", "员工反馈对应关系"],
+            "implementation": ["对策对应的问题", "负责部门或岗位", "执行步骤", "检查效果的方式"],
+            "testing": ["评价对象", "员工反馈主题", "制度执行变化", "不能确认的限制"],
+            "conclusion": ["已发现的问题", "对策落地范围", "研究限制", "后续需要补充的材料"],
+        }
+        return structures.get(section, ["案例企业/研究对象", "材料依据", "分析过程", "结论限制"])
+
+    def rebuild_required_details(self, unit: TextUnit, diagnosis: ParagraphDiagnosis) -> list[str]:
+        """HR-specific details for rebuild planning."""
+        details: list[str] = []
+        section = unit.section
+
+        if DiagnosisTag.MISSING_DETAIL in diagnosis.tags:
+            if section == "implementation":
+                details.extend(["企业/岗位对应问题", "制度执行步骤", "责任部门或岗位", "效果检查方式"])
+            elif section in ("requirements", "design"):
+                details.extend(["企业场景", "岗位或制度现状", "问卷维度/访谈对象类型", "员工反馈主题"])
+            elif section == "testing":
+                details.extend(["制度执行变化", "员工反馈主题", "无法确认的数据限制"])
+            else:
+                details.append("企业、岗位、制度、员工反馈或调研材料")
+
+        if DiagnosisTag.ABSTRACT_ONLY in diagnosis.tags:
+            details.append("抽象管理概念在案例企业中的具体表现")
+        if DiagnosisTag.HOLLOW_CONCLUSION in diagnosis.tags:
+            details.append("结论对应的企业材料、员工反馈和研究限制")
+
+        if not details:
+            details.append("企业实际情况、岗位制度或员工反馈中的具体材料")
+
+        return details
 
     # -- HR-specific length limits ------------------------------------------------
 

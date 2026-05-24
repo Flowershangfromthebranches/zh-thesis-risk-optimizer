@@ -20,6 +20,7 @@ from .anti_ai_style_guard import AntiAIStyleGuard, GuardResult
 from .anti_stuffing_guard import check_stuffing, StuffingResult
 from .evidence_policy import check_evidence, check_no_fabrication, EvidenceCheckResult, LengthPolicy
 from .anti_template_rewriter import AntiTemplateRewriter
+from .human_variation import HumanVariationLayer
 from ..strategies.domain_profiles import get_domain_profile
 from ..strategies.section_profiles import get_section_profile
 
@@ -83,6 +84,7 @@ class RewriteEngine:
         self.guard = AntiAIStyleGuard()
         self.diagnoser = ParagraphDiagnoser()
         self.anti_template_rewriter = AntiTemplateRewriter()
+        self.human_variation = HumanVariationLayer(self.domain)
 
     def process_units(self, units: list[TextUnit]) -> BatchResult:
         batch = BatchResult()
@@ -110,6 +112,8 @@ class RewriteEngine:
         # Try LLM first
         rewritten = self._try_llm(unit, diagnosis)
         if rewritten is not None:
+            if self.style == "low_aigc_humanized":
+                rewritten = self.human_variation.apply_text(rewritten)
             # Apply guard
             guard_result = self.guard.check(rewritten, unit.original_text, unit.action)
             if guard_result.passed:
@@ -250,6 +254,12 @@ class RewriteEngine:
                 f"- 不要把所有专业改成计算机工程复盘风格。\n"
                 f"- 材料不足时只保守改写或提示需要材料，不伪造不存在的材料。\n"
             )
+        if self.domain in {"computer_engineering"}:
+            no_fabrication_line = "- 不编造数据、版本号、函数名、表名、参数值，不编造文献和实验"
+            no_stuffing_line = "- 不堆砌技术术语（不要用术语清单代替论证）"
+        else:
+            no_fabrication_line = "- 不编造数据、文献、访谈、问卷、案例、实验或不存在的材料"
+            no_stuffing_line = "- 不把文本改成咨询报告、政策报告或技术说明模板"
 
         return (
             f"【任务】对以下论文段落进行{unit.action.value}操作。\n\n"
@@ -258,8 +268,8 @@ class RewriteEngine:
             f"【原文】\n{unit.original_text}\n\n"
             f"【要求】\n"
             f"- 保持毕业论文基本规范，但不要过度正式、过度统一、过度模板化\n"
-            f"- 不编造数据、版本号、函数名、表名、参数值，不编造文献和实验\n"
-            f"- 不堆砌技术术语（不要用术语清单代替论证）\n"
+            f"{no_fabrication_line}\n"
+            f"{no_stuffing_line}\n"
             f"- 优先改变表达路径和论证结构，而不是增加新材料\n"
             f"- {length_hint}，禁止把一句话扩写成一整段\n"
             f"- 做等长或微增替换，不要大幅扩写\n"

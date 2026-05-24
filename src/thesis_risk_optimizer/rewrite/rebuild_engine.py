@@ -88,36 +88,8 @@ class RebuildEngine:
 
     def _section_structure(self, section: str) -> list[str]:
         """Return recommended paragraph structure for a section."""
-        structures = {
-            "abstract": ["研究对象/系统", "核心功能/方法", "关键发现/测试结果", "实际结论(含局限)"],
-            "introduction": ["具体问题描述", "现有方案不足", "本文解决思路", "本文范围与限制"],
-            "tech_background": ["技术名称与版本", "在本系统中的角色", "为什么选它(对比替代方案)", "使用方式和配置"],
-            "design": ["模块功能", "模块间关系", "数据流/输入输出", "设计取舍理由"],
-            "implementation": ["开发环境与依赖", "核心实现逻辑", "关键代码/流程", "遇到的异常与处理"],
-            "testing": ["测试环境", "测试步骤", "测试用例与参数", "预期vs实际结果", "不足与改进"],
-            "conclusion": ["已完成工作总结", "实际效果/发现", "局限与不足", "后续改进方向"],
-        }
-        return structures.get(section, ["主题句", "具体内容/证据", "分析/论证", "小结或过渡"])
+        return self.strategy.rebuild_section_structure(section)
 
     def _required_details(self, unit: TextUnit, diagnosis: ParagraphDiagnosis) -> list[str]:
         """List what details should be added to make the paragraph concrete."""
-        details = []
-        section = unit.section
-
-        if DiagnosisTag.MISSING_DETAIL in diagnosis.tags:
-            if section == "implementation":
-                details.extend(["开发环境版本号", "核心函数输入输出", "异常处理方式"])
-            elif section == "testing":
-                details.extend(["测试用例", "测试参数", "实际运行结果"])
-            elif section == "design":
-                details.extend(["模块接口定义", "数据流方向", "设计取舍理由"])
-            else:
-                details.append("具体数据/过程/案例")
-
-        if DiagnosisTag.ABSTRACT_ONLY in diagnosis.tags:
-            details.append("该概念/技术在本文系统中的具体应用方式")
-
-        if not details:
-            details.append("更具体的研究过程或实现细节")
-
-        return details
+        return self.strategy.rebuild_required_details(unit, diagnosis)
