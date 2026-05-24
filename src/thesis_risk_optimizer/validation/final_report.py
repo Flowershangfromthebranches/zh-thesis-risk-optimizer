@@ -30,6 +30,8 @@ from ..validation.length_validator import LengthReport
 from ..document_io.format_preserver import FROZEN_UNIT_TYPES
 from ..validation.risk_delta_evaluator import RiskDeltaResult
 from ..rewrite.denominator_dilution_guard import DilutionResult
+from ..analysis.template_risk_detector import TemplateRiskDetector
+from ..analysis.material_anchor_detector import MaterialAnchorDetector
 
 
 @dataclass
@@ -48,6 +50,9 @@ class ReportContext:
     detected_discipline: str = ""
     selected_strategy: str = ""
     user_forced_major: bool = False
+    domain_profile_name: str = ""
+    domain_profile_evidence: list[str] = field(default_factory=list)
+    domain_user_specified: bool = False
 
 
 @dataclass
@@ -87,6 +92,21 @@ class FinalReport:
     remaining_high_risk: list[str] = field(default_factory=list)
     remaining_risk_reasons: list[str] = field(default_factory=list)
     suggested_materials: list[str] = field(default_factory=list)
+    domain_profile_name: str = ""
+    domain_profile_evidence: list[str] = field(default_factory=list)
+    domain_user_specified: bool = False
+    template_phrase_counts: dict[str, int] = field(default_factory=dict)
+    template_high_risk_count: int = 0
+    template_action_counts: dict[str, int] = field(default_factory=dict)
+    material_anchors_by_section: dict[str, list[str]] = field(default_factory=dict)
+    abstract_material_shortages: list[str] = field(default_factory=list)
+    over_polish_warnings: list[str] = field(default_factory=list)
+
+    @staticmethod
+    def _format_counts(counts: dict[str, int]) -> str:
+        if not counts:
+            return "无"
+        return "、".join(f"{key}({value})" for key, value in list(counts.items())[:12])
 
     # Honest reporting flags
     honest_warnings: list[str] = field(default_factory=list)
@@ -174,8 +194,57 @@ class FinalReport:
             lines.append(f"- 重点章节: {', '.join(self.focused_sections)}")
         lines.append("")
 
-        # 6. 字数变化
-        lines.append("## 6. 字数变化")
+        # 6. Domain profile
+        lines.append("## 6. domain profile 判断结果")
+        lines.append(f"- 使用的专业画像: {self.domain_profile_name or self.detected_discipline or 'universal'}")
+        lines.append(f"- 判断方式: {'用户指定 --domain' if self.domain_user_specified else 'auto / 专业路由辅助判断'}")
+        if self.domain_profile_evidence:
+            lines.append(f"- 识别依据: {', '.join(self.domain_profile_evidence[:12])}")
+        else:
+            lines.append("- 识别依据: 未获得明显专业锚点，按通用规则保守处理")
+        lines.append("")
+
+        # 7. Template risk
+        lines.append("## 7. 模板化风险报告")
+        lines.append(f"- 高频模板短语: {self._format_counts(self.template_phrase_counts)}")
+        lines.append(f"- 高风险段落数量: {self.template_high_risk_count}")
+        lines.append(f"- 处理方式统计: {self._format_counts(self.template_action_counts)}")
+        lines.append("")
+
+        # 8. Material anchors
+        lines.append("## 8. 材料锚点报告")
+        if self.material_anchors_by_section:
+            for section, anchors in self.material_anchors_by_section.items():
+                lines.append(f"- {section or '未分节'}: {', '.join(anchors)}")
+        else:
+            lines.append("- 暂未识别到稳定的专业材料锚点")
+        if self.abstract_material_shortages:
+            lines.append(f"- 过于抽象或材料不足段落: {len(self.abstract_material_shortages)}")
+            for item in self.abstract_material_shortages[:8]:
+                lines.append(f"  - {item}")
+            lines.append("- 存在材料不足时，无法安全补充不存在的数据、访谈、案例、实验或源码功能")
+        else:
+            lines.append("- 未发现必须提示的材料不足段落")
+        lines.append("")
+
+        # 9. Over-polish warning
+        lines.append("## 9. 过度润色警告")
+        if self.over_polish_warnings:
+            for warning in self.over_polish_warnings:
+                lines.append(f"- {warning}")
+        else:
+            lines.append("- 未发现提供支撑、具有重要意义、提升效率、形成闭环、主要用于、便于等表达的明显堆积")
+        lines.append("")
+
+        # 10. Uncertainty
+        lines.append("## 10. 不确定性说明")
+        lines.append("- 不承诺任何检测器一定降低。")
+        lines.append("- 本次主要处理模板化、抽象化、同质化风险，并保留毕业论文基本规范。")
+        lines.append("- 材料不足时只提示需要补充，不伪造数据、文献、访谈、问卷、实验、案例或功能。")
+        lines.append("")
+
+        # 11. 字数变化
+        lines.append("## 11. 字数变化")
         lines.append(f"- 原文字数: {self.original_chars}")
         lines.append(f"- 优化后字数: {self.modified_chars}")
         lines.append(f"- 变化比例: {self.length_delta_pct:.1%}")
@@ -239,6 +308,9 @@ class FinalReportGenerator:
         report.strategy_misuse_risk = ctx.strategy_misuse_risk
         report.selected_strategy = ctx.selected_strategy
         report.user_forced_major = ctx.user_forced_major
+        report.domain_profile_name = ctx.domain_profile_name or discipline or "universal"
+        report.domain_profile_evidence = list(ctx.domain_profile_evidence or [])
+        report.domain_user_specified = ctx.domain_user_specified
         report.recommend_user_specify = (
             ctx.classification_confidence is not None and ctx.classification_confidence < 0.65
         )
@@ -291,6 +363,8 @@ class FinalReportGenerator:
         evidence_items = get_evidence_report_items(units)
         if evidence_items:
             report.suggested_materials = evidence_items
+
+        self._populate_humanized_risk_report(report, units, report.domain_profile_name)
 
         # Risk delta evaluation (v2.0)
         report.risk_delta_result = risk_delta_result
@@ -415,3 +489,48 @@ class FinalReportGenerator:
         path = Path(path)
         path.write_text(report.to_markdown(), encoding="utf-8")
         return path
+
+    def _populate_humanized_risk_report(self, report: FinalReport, units: list[TextUnit], domain: str) -> None:
+        detector = TemplateRiskDetector()
+        anchor_detector = MaterialAnchorDetector()
+        body_units = [u for u in units if u.is_body]
+
+        phrase_counts: dict[str, int] = {}
+        action_counts: dict[str, int] = {}
+        high_count = 0
+        shortages: list[str] = []
+        anchors_by_section: dict[str, set[str]] = {}
+        over_polish_terms = ["提供支撑", "具有重要意义", "提升效率", "形成闭环", "主要用于", "便于"]
+        over_polish_counts = {term: 0 for term in over_polish_terms}
+
+        for unit in body_units:
+            risk = detector.detect_paragraph(unit.text, paragraph_id=unit.uid, domain=domain)
+            if risk.template_risk_score >= 55:
+                high_count += 1
+            action_counts[risk.suggested_action] = action_counts.get(risk.suggested_action, 0) + 1
+            for pattern in risk.matched_patterns:
+                phrase_counts[pattern] = phrase_counts.get(pattern, 0) + 1
+
+            anchor = anchor_detector.detect(unit.text, domain)
+            if anchor.anchor_terms:
+                section = unit.section or "未分节"
+                anchors_by_section.setdefault(section, set()).update(anchor.anchor_terms)
+            if anchor.missing_anchor_warning and risk.template_risk_score >= 45:
+                shortages.append(f"{unit.uid} / {unit.section or '未分节'}: {anchor.missing_anchor_warning}")
+
+            for term in over_polish_terms:
+                over_polish_counts[term] += unit.text.count(term)
+
+        report.template_phrase_counts = dict(sorted(phrase_counts.items(), key=lambda item: item[1], reverse=True))
+        report.template_action_counts = dict(sorted(action_counts.items(), key=lambda item: item[0]))
+        report.template_high_risk_count = high_count
+        report.material_anchors_by_section = {
+            section: sorted(anchors)
+            for section, anchors in sorted(anchors_by_section.items())
+        }
+        report.abstract_material_shortages = shortages
+        report.over_polish_warnings = [
+            f"{term} 出现 {count} 次，建议人工复查是否过度规范化"
+            for term, count in over_polish_counts.items()
+            if count >= 2
+        ]

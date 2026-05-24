@@ -19,6 +19,9 @@ from .evidence_injector import EvidenceInjector
 from .anti_ai_style_guard import AntiAIStyleGuard, GuardResult
 from .anti_stuffing_guard import check_stuffing, StuffingResult
 from .evidence_policy import check_evidence, check_no_fabrication, EvidenceCheckResult, LengthPolicy
+from .anti_template_rewriter import AntiTemplateRewriter
+from ..strategies.domain_profiles import get_domain_profile
+from ..strategies.section_profiles import get_section_profile
 
 
 @dataclass
@@ -66,15 +69,20 @@ class RewriteEngine:
         strategy: BaseStrategy,
         llm: Optional[LLMProvider] = None,
         system_prompt: str = "",
+        style: str = "low_aigc_humanized",
+        domain: str = "universal",
     ):
         self.strategy = strategy
         self.llm = llm
         self.system_prompt = system_prompt
+        self.style = style
+        self.domain = get_domain_profile(domain).name
         self.modify_engine = ModifyEngine(strategy)
         self.rebuild_engine = RebuildEngine(strategy)
         self.evidence_injector = EvidenceInjector()
         self.guard = AntiAIStyleGuard()
         self.diagnoser = ParagraphDiagnoser()
+        self.anti_template_rewriter = AntiTemplateRewriter()
 
     def process_units(self, units: list[TextUnit]) -> BatchResult:
         batch = BatchResult()
@@ -133,7 +141,17 @@ class RewriteEngine:
 
         # Fallback: rule-based for modify actions
         if unit.action == ActionType.MODIFY:
-            rewritten = self.modify_engine.rewrite(unit, diagnosis)
+            rewritten = None
+            if self.style == "low_aigc_humanized":
+                anti_template = self.anti_template_rewriter.rewrite_unit(unit, domain=self.domain)
+                unit.metadata["low_aigc_action"] = anti_template.action
+                unit.metadata["low_aigc_needs_material"] = anti_template.needs_material
+                if anti_template.warnings:
+                    unit.metadata["low_aigc_warnings"] = anti_template.warnings
+                if anti_template.action != "keep" and anti_template.text != unit.original_text:
+                    rewritten = anti_template.text
+            if rewritten is None:
+                rewritten = self.modify_engine.rewrite(unit, diagnosis)
             if rewritten and rewritten != unit.original_text:
                 guard_result = self.guard.check(rewritten, unit.original_text, unit.action)
                 if guard_result.passed:
@@ -214,18 +232,32 @@ class RewriteEngine:
     def _build_prompt(self, unit: TextUnit, guidance: str) -> str:
         # Length control guidance based on action type
         if unit.action == ActionType.REWRITE:
-            length_hint = "改写后字数控制在原文 80%-140% 内"
+            length_hint = "改写后字数默认控制在原文 90%-115% 内，除非用户明确允许扩写"
         elif unit.action == ActionType.REBUILD:
-            length_hint = "重构后字数控制在原文 90%-160% 内"
+            length_hint = "重构后字数尽量控制在原文 90%-115% 内；材料不足时不要硬扩写"
         else:
             length_hint = "修改后字数尽量与原文接近"
+
+        domain_profile = get_domain_profile(self.domain)
+        section_profile = get_section_profile(unit.section)
+        low_aigc_guidance = ""
+        if self.style == "low_aigc_humanized":
+            low_aigc_guidance = (
+                f"\n【low_aigc_humanized 通用策略】\n"
+                f"- 不是单纯学术润色；目标是降低模板化、抽象化、同质化风险。\n"
+                f"- {domain_profile.prompt_summary}\n"
+                f"- 章节策略: {section_profile.guidance}\n"
+                f"- 不要把所有专业改成计算机工程复盘风格。\n"
+                f"- 材料不足时只保守改写或提示需要材料，不伪造不存在的材料。\n"
+            )
 
         return (
             f"【任务】对以下论文段落进行{unit.action.value}操作。\n\n"
             f"{guidance}\n\n"
+            f"{low_aigc_guidance}\n"
             f"【原文】\n{unit.original_text}\n\n"
             f"【要求】\n"
-            f"- 保持专业性和学术规范\n"
+            f"- 保持毕业论文基本规范，但不要过度正式、过度统一、过度模板化\n"
             f"- 不编造数据、版本号、函数名、表名、参数值，不编造文献和实验\n"
             f"- 不堆砌技术术语（不要用术语清单代替论证）\n"
             f"- 优先改变表达路径和论证结构，而不是增加新材料\n"

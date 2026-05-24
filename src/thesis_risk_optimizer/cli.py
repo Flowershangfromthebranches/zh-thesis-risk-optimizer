@@ -26,6 +26,7 @@ from .analysis.paragraph_diagnoser import ParagraphDiagnoser
 from .analysis.rewrite_ratio_planner import RewriteRatioPlanner, RatioPlan
 from .strategies import get_strategy
 from .strategies.base import BaseStrategy
+from .strategies.domain_profiles import DomainProfile, classify_domain, get_domain_profile
 from .rewrite.rewrite_engine import RewriteEngine, BatchResult, LLMProvider
 from .rewrite.anti_ai_style_guard import AntiAIStyleGuard, GuardResult
 from .rewrite.evidence_injector import get_evidence_report_items
@@ -221,6 +222,11 @@ def _add_intake_args(parser):
 def _add_processing_args(parser):
     """Add processing-related arguments to a subparser."""
     parser.add_argument("--aigc-report", help="AIGC 标红报告 (.docx)")
+    parser.add_argument("--style", default="low_aigc_humanized",
+                         choices=["low_aigc_humanized", "standard"],
+                         help="改写风格策略 (默认 low_aigc_humanized)")
+    parser.add_argument("--domain", default="auto",
+                         help="专业画像: auto/computer_engineering/management/education/literature/law/economics/medicine/art_design/engineering_general/marxism")
     parser.add_argument("--conservative", action="store_true",
                          help="启用保守模式")
     parser.add_argument("--output", help="输出文件")
@@ -517,6 +523,7 @@ def _execute_optimize(args, intake) -> int:
 
     # Route to strategy
     strategy = get_strategy(route.strategy_name)
+    domain_profile, domain_evidence, domain_user_specified = _resolve_domain_profile(args, intake, units, route)
 
     # HR conservative default: auto-enable if current_rate >= 70
     is_hr = route.strategy_name == "human_resource"
@@ -533,6 +540,9 @@ def _execute_optimize(args, intake) -> int:
         print(f"\n✏️  采用策略: {strategy.label}")
 
     print(f"   路线: {route.route_name}")
+    print(f"   domain profile: {domain_profile.name}")
+    if domain_evidence:
+        print(f"   profile 依据: {', '.join(domain_evidence[:8])}")
     print(f"   AIGC 疑似率: {aigc_rate}%")
 
     # Plan rewrite ratios
@@ -567,6 +577,9 @@ def _execute_optimize(args, intake) -> int:
     report_context.selected_strategy = strategy.name
     report_context.classification_confidence = 1.0  # user-declared
     report_context.user_forced_major = True
+    report_context.domain_profile_name = domain_profile.name
+    report_context.domain_profile_evidence = domain_evidence
+    report_context.domain_user_specified = domain_user_specified
 
     # -- DRY-RUN ---------------------------------------------------------------
     if getattr(args, 'dry_run', False):
@@ -583,6 +596,16 @@ def _execute_optimize(args, intake) -> int:
     sp_path = prompt_dir / "system_prompt.md"
     if sp_path.exists():
         system_prompt = sp_path.read_text(encoding="utf-8")
+
+    style = getattr(args, "style", "low_aigc_humanized")
+    if style == "low_aigc_humanized":
+        hp_path = prompt_dir / "low_aigc_humanized_prompt.md"
+        if hp_path.exists():
+            system_prompt += "\n\n" + hp_path.read_text(encoding="utf-8")
+        system_prompt += "\n\n## 当前专业画像\n"
+        system_prompt += f"- profile: {domain_profile.name} / {domain_profile.label}\n"
+        system_prompt += f"- anchors: {', '.join(domain_profile.material_anchors.keys())}\n"
+        system_prompt += f"- style: {'; '.join(domain_profile.style_guidance)}\n"
 
     # Inject evidence constraints into system prompt
     if not intake.has_materials:
@@ -612,7 +635,13 @@ def _execute_optimize(args, intake) -> int:
             print("  已使用 --allow-no-llm，将仅做规则修改 (效果有限)。")
             report_context.no_llm = True
 
-    engine = RewriteEngine(strategy=strategy, llm=llm, system_prompt=system_prompt)
+    engine = RewriteEngine(
+        strategy=strategy,
+        llm=llm,
+        system_prompt=system_prompt,
+        style=style,
+        domain=domain_profile.name,
+    )
     batch_result = engine.process_units(units)
 
     guard_results = [r.guard_result for r in batch_result.results if r.guard_result]
@@ -719,6 +748,33 @@ def _cap_hr_rebuild(units, plan):
             if u.action == ActionType.REWRITE and downgraded < excess:
                 u.action = ActionType.MODIFY
                 downgraded += 1
+
+
+def _resolve_domain_profile(args, intake, units, route) -> tuple[DomainProfile, list[str], bool]:
+    """Resolve explicit or automatic domain profile for low-AIGC mode."""
+    requested = getattr(args, "domain", "auto") or "auto"
+    if requested != "auto":
+        profile = get_domain_profile(requested)
+        return profile, [f"--domain {requested}"], True
+
+    headings = [u.text for u in units if u.unit_type == TextUnitType.HEADING]
+    abstract = "\n".join(
+        u.text for u in units
+        if u.section == "abstract" or u.unit_type == TextUnitType.ABSTRACT
+    )
+    profile, evidence = classify_domain(
+        title=intake.title,
+        abstract=abstract,
+        headings=headings,
+        declared_major=intake.major,
+    )
+
+    if profile.name == "universal" and route.strategy_name:
+        routed_profile = get_domain_profile(route.strategy_name)
+        if routed_profile.name != "universal":
+            return routed_profile, [f"专业路由: {route.route_name}"], False
+
+    return profile, evidence, False
 
 
 def _inject_honest_verdict(report: FinalReport, ctx: ReportContext):
