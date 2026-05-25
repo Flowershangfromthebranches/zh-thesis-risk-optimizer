@@ -27,6 +27,12 @@ class ComputerStrategy(BaseStrategy):
 
     name = "computer"
     label = "计算机/软件工程策略"
+    domain_name = "computer_engineering"
+    preferred_anchors = ["源码", "页面", "字段", "接口", "数据库表", "测试用例", "输入输出"]
+    allowed_natural_expressions = ["源码中", "实际测试时", "当前版本", "这里"]
+    banned_strong_oral = ["说白了", "搞不清", "糊弄", "太拉了", "很离谱"]
+    template_phrases_to_avoid = ["具有重要意义", "提供支撑", "形成闭环", "赋能", "助力"]
+    oral_threshold_profile = "computer_engineering"
 
     paragraph_transforms = (
         "【计算机论文转换模板】\n"

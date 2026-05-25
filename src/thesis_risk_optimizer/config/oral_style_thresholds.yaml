@@ -1,0 +1,45 @@
+global:
+  max_mild_oral_per_10_sentences: 1
+  max_strong_oral_per_body: 0
+  allow_strong_oral_in_quotes: true
+  require_quote_source_for_strong_oral: true
+
+section:
+  abstract:
+    max_mild_oral_per_10_sentences: 0
+    max_strong_oral: 0
+  theory:
+    max_mild_oral_per_10_sentences: 0
+    max_strong_oral: 0
+  methodology:
+    max_mild_oral_per_10_sentences: 0
+    max_strong_oral: 0
+  analysis:
+    max_mild_oral_per_10_sentences: 1
+    max_strong_oral: 0
+  countermeasure:
+    max_mild_oral_per_10_sentences: 1
+    max_strong_oral: 0
+  conclusion:
+    max_mild_oral_per_10_sentences: 0
+    max_strong_oral: 0
+  acknowledgement:
+    max_mild_oral_per_10_sentences: 2
+    max_strong_oral: 0
+
+domain_overrides:
+  medical_nursing:
+    max_mild_oral_per_10_sentences: 0
+    max_strong_oral_per_body: 0
+  law:
+    max_mild_oral_per_10_sentences: 0
+    max_strong_oral_per_body: 0
+  literature_language:
+    max_mild_oral_per_10_sentences: 1
+    max_strong_oral_per_body: 0
+  computer_engineering:
+    max_mild_oral_per_10_sentences: 1
+    max_strong_oral_per_body: 0
+  education:
+    max_mild_oral_per_10_sentences: 1
+    max_strong_oral_per_body: 0

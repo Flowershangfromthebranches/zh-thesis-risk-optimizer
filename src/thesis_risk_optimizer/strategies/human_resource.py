@@ -145,6 +145,21 @@ class HumanResourceStrategy(BaseStrategy):
 
     name = "human_resource"
     label = "人力资源策略"
+    domain_name = "human_resource"
+    preferred_anchors = [
+        "岗位序列", "薪酬结构", "绩效制度", "晋升通道", "培训安排",
+        "员工反馈", "问卷", "访谈", "离职意向", "组织沟通",
+    ]
+    allowed_natural_expressions = ["在该企业中", "访谈中", "实际执行时", "员工反馈里"]
+    banned_strong_oral = [
+        "说白了", "没人管", "不被当回事", "看不见的活", "上面说下面听",
+        "心累", "这公司还行", "不是不想干活", "被打卡框死", "糊弄",
+    ]
+    template_phrases_to_avoid = [
+        "完善机制", "加强培训", "提升员工满意度", "增强企业凝聚力",
+        "推动企业高质量发展", "构建长效机制", "多措并举",
+    ]
+    oral_threshold_profile = "human_resource"
 
     # Whether to use conservative mode (set externally)
     conservative_mode: bool = False

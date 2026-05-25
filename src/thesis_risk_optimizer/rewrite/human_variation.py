@@ -12,6 +12,9 @@ from dataclasses import dataclass, field
 
 from ..document_io.text_units import RiskLevel, TextUnit
 from ..strategies.domain_profiles import DomainProfile, get_domain_profile
+from ..validation.oral_style_guard import MILD_ORAL_TERMS, OralStyleGuard
+from .anchor_first_policy import AnchorFirstPolicy
+from .oral_style_rewriter import OralStyleRewriter
 
 
 @dataclass
@@ -56,9 +59,26 @@ class HumanVariationLayer:
     )
 
     COMPUTER_TERMS = ("源码", "接口", "字段", "数据库", "数据表", "版本号", "Python", "Java", "API")
+    MILD_ORAL_REPLACEMENTS: tuple[tuple[str, str], ...] = (
+        ("比较明显", "较为明显"),
+        ("不够及时", "及时性不足"),
+        ("跟不上", "难以适应"),
+        ("来得慢", "响应较慢"),
+        ("看不清", "识别不清"),
+        ("做得不够", "落实不足"),
+        ("差距较大", "差异较大"),
+        ("难以落地", "落实存在难度"),
+        ("有一定影响", "产生一定影响"),
+        ("受到限制", "存在限制"),
+        ("过程没有被记录", "过程记录不足"),
+        ("实际执行中容易出现问题", "实际执行中存在问题"),
+    )
 
     def __init__(self, domain: str | DomainProfile | None = None):
         self.profile = domain if isinstance(domain, DomainProfile) else get_domain_profile(domain)
+        self.anchor_policy = AnchorFirstPolicy()
+        self.oral_guard = OralStyleGuard()
+        self.oral_rewriter = OralStyleRewriter()
 
     def apply_units(self, units: list[TextUnit]) -> list[HumanVariationResult]:
         results: list[HumanVariationResult] = []
@@ -70,12 +90,13 @@ class HumanVariationLayer:
         if unit.risk_level in (RiskLevel.MINIMAL, RiskLevel.LOW) and not self._has_template(unit.original_text):
             return HumanVariationResult(unit.uid, unit.original_text, action="keep")
 
-        text = self.apply_text(unit.original_text, sequence_index=sequence_index)
+        text = self.apply_text(unit.original_text, sequence_index=sequence_index, section=unit.section)
         action = "light_edit" if text != unit.original_text else "keep"
         return HumanVariationResult(unit.uid, text, action=action)
 
-    def apply_text(self, text: str, sequence_index: int = 0) -> str:
+    def apply_text(self, text: str, sequence_index: int = 0, section: str = "body") -> str:
         original = text
+        policy = self.anchor_policy.evaluate(original, self.profile, section=section)
         text = self._vary_opener(text, sequence_index)
         text = self._apply_replacements(text, self.COMMON_REPLACEMENTS)
 
@@ -86,6 +107,10 @@ class HumanVariationLayer:
             text = self._avoid_computer_insertions(text, original)
 
         text = self._vary_sentence_length(text)
+        text = self.oral_rewriter.rewrite(text, section=section, domain=self.profile.name).text
+        text = self._converge_mild_oral(text, section=section)
+        if not policy.has_anchor:
+            text = self._avoid_added_oral_terms(text, original)
         return self._tidy(text)
 
     @classmethod
@@ -117,6 +142,24 @@ class HumanVariationLayer:
 
     def _avoid_computer_insertions(self, text: str, original: str) -> str:
         for term in self.COMPUTER_TERMS:
+            if term in text and term not in original:
+                text = text.replace(term, "")
+        return text
+
+    def _converge_mild_oral(self, text: str, section: str) -> str:
+        result = self.oral_guard.check(text, section=section, domain=self.profile.name)
+        if result.status == "pass":
+            return text
+        for term, replacement in self.MILD_ORAL_REPLACEMENTS:
+            if term in text:
+                text = text.replace(term, replacement)
+                if self.oral_guard.check(text, section=section, domain=self.profile.name).status == "pass":
+                    return text
+        return text
+
+    @staticmethod
+    def _avoid_added_oral_terms(text: str, original: str) -> str:
+        for term in MILD_ORAL_TERMS:
             if term in text and term not in original:
                 text = text.replace(term, "")
         return text

@@ -21,6 +21,8 @@ from .anti_stuffing_guard import check_stuffing, StuffingResult
 from .evidence_policy import check_evidence, check_no_fabrication, EvidenceCheckResult, LengthPolicy
 from .anti_template_rewriter import AntiTemplateRewriter
 from .human_variation import HumanVariationLayer
+from .oral_style_rewriter import OralStyleRewriter
+from ..validation.oral_style_guard import OralStyleGuard
 from ..strategies.domain_profiles import get_domain_profile
 from ..strategies.section_profiles import get_section_profile
 
@@ -48,6 +50,7 @@ class BatchResult:
     stuffing_rejections: int = 0
     evidence_rejections: int = 0
     length_violations: int = 0
+    oral_style_rejections: int = 0
 
 
 class LLMProvider(Protocol):
@@ -85,6 +88,8 @@ class RewriteEngine:
         self.diagnoser = ParagraphDiagnoser()
         self.anti_template_rewriter = AntiTemplateRewriter()
         self.human_variation = HumanVariationLayer(self.domain)
+        self.oral_guard = OralStyleGuard()
+        self.oral_rewriter = OralStyleRewriter()
 
     def process_units(self, units: list[TextUnit]) -> BatchResult:
         batch = BatchResult()
@@ -113,7 +118,7 @@ class RewriteEngine:
         rewritten = self._try_llm(unit, diagnosis)
         if rewritten is not None:
             if self.style == "low_aigc_humanized":
-                rewritten = self.human_variation.apply_text(rewritten)
+                rewritten = self.human_variation.apply_text(rewritten, section=unit.section)
             # Apply guard
             guard_result = self.guard.check(rewritten, unit.original_text, unit.action)
             if guard_result.passed:
@@ -124,7 +129,7 @@ class RewriteEngine:
                         original_text=unit.original_text,
                         rewritten_text=unit.original_text, success=False,
                         guard_result=guard_result,
-                        error="Quality guards rejected (stuffing/evidence/length)",
+                        error="Quality guards rejected (oral/stuffing/evidence/length)",
                     )
                 rewritten = self.evidence_injector.inject(rewritten, unit, self.strategy)
                 return RewriteResult(
@@ -159,6 +164,15 @@ class RewriteEngine:
             if rewritten and rewritten != unit.original_text:
                 guard_result = self.guard.check(rewritten, unit.original_text, unit.action)
                 if guard_result.passed:
+                    rewritten = self._apply_quality_guards(rewritten, unit, batch)
+                    if rewritten is None:
+                        return RewriteResult(
+                            unit_uid=unit.uid, action=unit.action,
+                            original_text=unit.original_text,
+                            rewritten_text=unit.original_text, success=False,
+                            guard_result=guard_result,
+                            error="Quality guards rejected (oral/stuffing/evidence/length)",
+                        )
                     rewritten = self.evidence_injector.inject(rewritten, unit, self.strategy)
                     return RewriteResult(
                         unit_uid=unit.uid, action=unit.action,
@@ -206,7 +220,34 @@ class RewriteEngine:
     def _apply_quality_guards(self, text: str, unit: TextUnit,
                               batch: BatchResult) -> str | None:
         """Run stuffing / evidence / length guards. Returns text or None if rejected."""
-        # 1. Anti-stuffing guard
+        # 1. Oral-style guard and recovery
+        oral_rewrite = self.oral_rewriter.rewrite(text, section=unit.section, domain=self.domain)
+        text = oral_rewrite.text
+        if oral_rewrite.replacements:
+            unit.metadata["oral_rewrite_log"] = [
+                {
+                    "original": item.original,
+                    "replacement": item.replacement,
+                    "section": item.section,
+                    "reason": item.reason,
+                }
+                for item in oral_rewrite.replacements
+            ]
+        oral = oral_rewrite.guard_result or self.oral_guard.check(text, section=unit.section, domain=self.domain)
+        unit.metadata["oral_style_summary"] = {
+            "total_sentences": oral.total_sentences,
+            "mild_oral_count": oral.mild_oral_count,
+            "strong_oral_count": oral.strong_oral_count,
+            "oral_density": oral.oral_density,
+            "status": oral.status,
+        }
+        if oral.status == "fail":
+            batch.oral_style_rejections += 1
+            unit.metadata["oral_style_failed"] = True
+            unit.metadata["oral_style_warnings"] = oral.warnings
+            return None
+
+        # 2. Anti-stuffing guard
         stuffing = check_stuffing(text, unit.original_text)
         if not stuffing.passed:
             batch.stuffing_rejections += 1
@@ -214,7 +255,7 @@ class RewriteEngine:
             unit.metadata["stuffing_reasons"] = stuffing.reasons
             return None
 
-        # 2. Evidence check (no fabrication)
+        # 3. Evidence check (no fabrication)
         evidence = check_evidence(text)
         fabrication = check_no_fabrication(text, unit.original_text)
         if not evidence.passed or not fabrication.passed:
@@ -222,7 +263,7 @@ class RewriteEngine:
             unit.metadata["evidence_failed"] = True
             return None
 
-        # 3. Length check (per paragraph)
+        # 4. Length check (per paragraph)
         length_check = LengthPolicy.check_paragraph(
             len(unit.original_text), len(text)
         )
@@ -253,6 +294,9 @@ class RewriteEngine:
                 f"- 章节策略: {section_profile.guidance}\n"
                 f"- 不要把所有专业改成计算机工程复盘风格。\n"
                 f"- 材料不足时只保守改写或提示需要材料，不伪造不存在的材料。\n"
+                f"- 不要通过大量口语化降低 AI 写作痕迹；正文每 10 句话最多 1 句轻微口语化，摘要、理论、方法、结论不使用明显口语。\n"
+                f"- 优先使用该专业的真实材料锚点，不把聊天记录、口头汇报、公众号文章或散文当作论文风格。\n"
+                f"- 回收口语时不得改成“具有重要意义、提供支撑、完善机制、提升水平、优化路径、促进发展、形成闭环、赋能、助力”等模板话。\n"
             )
         if self.domain in {"computer_engineering"}:
             no_fabrication_line = "- 不编造数据、版本号、函数名、表名、参数值，不编造文献和实验"

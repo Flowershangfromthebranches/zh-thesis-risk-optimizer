@@ -38,6 +38,15 @@ class BaseStrategy(ABC):
 
     name: str = "base"
     label: str = "Base Strategy"
+    domain_name: str = "universal"
+    preferred_anchors: list[str] = ["研究对象", "原文材料", "分析过程", "结论限制"]
+    allowed_natural_expressions: list[str] = ["具体来看", "从材料看", "对研究对象而言"]
+    banned_strong_oral: list[str] = ["说白了", "没人管", "糊弄", "很离谱"]
+    template_phrases_to_avoid: list[str] = [
+        "具有重要意义", "提供支撑", "完善机制", "提升水平", "优化路径",
+        "促进发展", "形成闭环",
+    ]
+    oral_threshold_profile: str = "global"
 
     # -- What to avoid in output (populated per discipline) -------------------
     FORBIDDEN_PATTERNS: list[str] = []
@@ -173,6 +182,7 @@ class UniversalStrategy(BaseStrategy):
 
     name = "universal"
     label = "通用策略"
+    domain_name = "universal"
 
     FORBIDDEN_PATTERNS = [
         "不要使用模板句(随着...发展、具有重要意义等)",

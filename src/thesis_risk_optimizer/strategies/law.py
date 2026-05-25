@@ -13,6 +13,12 @@ class LawStrategy(BaseStrategy):
 
     name = "law"
     label = "法学策略"
+    domain_name = "law"
+    preferred_anchors = ["法条", "案例事实", "争议焦点", "裁判逻辑", "权利义务关系", "法律适用条件", "责任承担"]
+    allowed_natural_expressions = ["在该案中", "争议集中在", "从规范适用看"]
+    banned_strong_oral = ["说白了", "对不上", "搞不清", "没人管", "很离谱", "说不过去"]
+    template_phrases_to_avoid = ["具有重要法治价值", "法治意义重大", "具有重要意义", "促进法治建设"]
+    oral_threshold_profile = "law"
 
     paragraph_transforms = (
         "【法学论文转换模板】\n"

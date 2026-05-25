@@ -13,6 +13,12 @@ class EducationStrategy(BaseStrategy):
 
     name = "education"
     label = "教育学策略"
+    domain_name = "education"
+    preferred_anchors = ["学校", "班级", "学生表现", "课堂活动", "教学环节", "作业反馈", "教师行为", "问卷", "访谈"]
+    allowed_natural_expressions = ["课堂上", "学生在完成任务时", "教师反馈中"]
+    banned_strong_oral = ["说白了", "没劲", "一堆问题", "乱七八糟", "很离谱"]
+    template_phrases_to_avoid = ["培养全面发展的人才", "提升教学质量", "促进学生发展", "具有重要意义"]
+    oral_threshold_profile = "education"
 
     paragraph_transforms = (
         "【教育论文转换模板】\n"

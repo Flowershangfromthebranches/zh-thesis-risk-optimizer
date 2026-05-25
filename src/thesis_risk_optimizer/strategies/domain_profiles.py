@@ -59,7 +59,7 @@ DOMAIN_PROFILES: dict[str, DomainProfile] = {
     "management": DomainProfile(
         name="management",
         label="管理/工商管理/人力资源",
-        aliases=("business_administration", "business", "management"),
+        aliases=("business_administration", "business", "management", "management_business"),
         material_anchors={
             "公司": ("公司", "企业", "案例企业", "A公司", "某企业"),
             "案例背景": ("案例背景", "企业概况", "行业背景"),
@@ -194,7 +194,7 @@ DOMAIN_PROFILES: dict[str, DomainProfile] = {
     "economics": DomainProfile(
         name="economics",
         label="经济/金融",
-        aliases=("finance", "economy"),
+        aliases=("finance", "economy", "economics_finance"),
         material_anchors={
             "指标": ("指标", "资产负债率", "收益率", "增长率", "GDP", "CPI"),
             "年份": ("2019", "2020", "2021", "2022", "2023", "2024", "年份"),
@@ -292,7 +292,10 @@ DOMAIN_PROFILES: dict[str, DomainProfile] = {
     "marxism": DomainProfile(
         name="marxism",
         label="马克思主义/思政/公共管理",
-        aliases=("ideological_political", "public_administration", "public_management"),
+        aliases=(
+            "ideological_political", "public_administration", "public_management",
+            "public_administration_marxism",
+        ),
         material_anchors={
             "政策文本": ("政策文本", "政策", "文件", "条例"),
             "地方实践": ("地方实践", "地区", "社区", "基层"),
@@ -319,6 +322,9 @@ DOMAIN_PROFILES: dict[str, DomainProfile] = {
             "过程": ("过程", "步骤", "环节"),
             "限制": ("限制", "不足", "局限"),
             "原文材料": ("原文", "材料", "依据"),
+            "章节逻辑": ("章节", "逻辑", "结构"),
+            "问题表现": ("问题表现", "现象", "矛盾"),
+            "材料来源": ("材料来源", "数据来源", "访谈来源", "文本来源"),
         },
         style_guidance=(
             "降低模板化和可预测性",

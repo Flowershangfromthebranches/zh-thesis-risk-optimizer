@@ -30,6 +30,8 @@ from .strategies.domain_profiles import DomainProfile, classify_domain, get_doma
 from .rewrite.rewrite_engine import RewriteEngine, BatchResult, LLMProvider
 from .rewrite.anti_ai_style_guard import AntiAIStyleGuard, GuardResult
 from .rewrite.evidence_injector import get_evidence_report_items
+from .rewrite.oral_style_rewriter import OralStyleRewriter
+from .validation.oral_style_guard import OralStyleGuard
 from .validation.structure_validator import StructureValidator
 from .validation.format_validator import FormatValidator
 from .validation.length_validator import LengthValidator
@@ -643,6 +645,9 @@ def _execute_optimize(args, intake) -> int:
         domain=domain_profile.name,
     )
     batch_result = engine.process_units(units)
+    oral_failures = _apply_final_oral_validation(units, domain_profile.name)
+    if oral_failures:
+        print(f"\n⚠️  口语化限流复检仍有 {oral_failures} 个段落未通过，报告中会标记 warning。")
 
     guard_results = [r.guard_result for r in batch_result.results if r.guard_result]
     guard_failures = sum(1 for g in guard_results if g and not g.passed)
@@ -748,6 +753,47 @@ def _cap_hr_rebuild(units, plan):
             if u.action == ActionType.REWRITE and downgraded < excess:
                 u.action = ActionType.MODIFY
                 downgraded += 1
+
+
+def _apply_final_oral_validation(units, domain: str = "universal") -> int:
+    """Final oral-style recovery before DOCX writing.
+
+    Strong oral expressions are recovered once. If a paragraph still fails the
+    guard, we keep the text but record a warning for the final report instead
+    of adding more oral language or inventing materials.
+    """
+    guard = OralStyleGuard()
+    rewriter = OralStyleRewriter()
+    failures = 0
+    for unit in units:
+        if not unit.is_body or unit.action == ActionType.FREEZE:
+            continue
+        rewritten = rewriter.rewrite(unit.text, section=unit.section, domain=domain)
+        if rewritten.text != unit.text:
+            unit.text = rewritten.text
+            unit.metadata.setdefault("oral_rewrite_log", [])
+            unit.metadata["oral_rewrite_log"].extend(
+                {
+                    "original": item.original,
+                    "replacement": item.replacement,
+                    "section": item.section,
+                    "reason": item.reason,
+                }
+                for item in rewritten.replacements
+            )
+        result = guard.check(unit.text, section=unit.section, domain=domain)
+        unit.metadata["final_oral_style_summary"] = {
+            "total_sentences": result.total_sentences,
+            "mild_oral_count": result.mild_oral_count,
+            "strong_oral_count": result.strong_oral_count,
+            "oral_density": result.oral_density,
+            "status": result.status,
+        }
+        if result.status == "fail":
+            failures += 1
+            unit.metadata["final_oral_style_failed"] = True
+            unit.metadata["final_oral_style_warnings"] = result.warnings
+    return failures
 
 
 def _resolve_domain_profile(args, intake, units, route) -> tuple[DomainProfile, list[str], bool]:

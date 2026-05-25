@@ -32,6 +32,8 @@ from ..validation.risk_delta_evaluator import RiskDeltaResult
 from ..rewrite.denominator_dilution_guard import DilutionResult
 from ..analysis.template_risk_detector import TemplateRiskDetector
 from ..analysis.material_anchor_detector import MaterialAnchorDetector
+from ..rewrite.anchor_first_policy import AnchorFirstPolicy
+from ..validation.oral_style_guard import OralStyleGuard
 
 
 @dataclass
@@ -101,6 +103,10 @@ class FinalReport:
     material_anchors_by_section: dict[str, list[str]] = field(default_factory=dict)
     abstract_material_shortages: list[str] = field(default_factory=list)
     over_polish_warnings: list[str] = field(default_factory=list)
+    oral_style_summary: dict[str, object] = field(default_factory=dict)
+    oral_rewrite_log: list[dict[str, str]] = field(default_factory=list)
+    anchor_first_summary: dict[str, object] = field(default_factory=dict)
+    domain_integrity_check: dict[str, object] = field(default_factory=dict)
 
     @staticmethod
     def _format_counts(counts: dict[str, int]) -> str:
@@ -227,8 +233,60 @@ class FinalReport:
             lines.append("- 未发现必须提示的材料不足段落")
         lines.append("")
 
-        # 9. Over-polish warning
-        lines.append("## 9. 过度润色警告")
+        # 9. Oral style guard
+        lines.append("## 9. oral_style_summary")
+        if self.oral_style_summary:
+            lines.append(f"- 总句数: {self.oral_style_summary.get('total_sentences', 0)}")
+            lines.append(f"- mild_oral 数量: {self.oral_style_summary.get('mild_oral_count', 0)}")
+            lines.append(f"- strong_oral 数量: {self.oral_style_summary.get('strong_oral_count', 0)}")
+            lines.append(f"- 每 10 句口语化密度: {self.oral_style_summary.get('mild_per_10', 0)}")
+            lines.append(f"- 是否通过阈值: {self.oral_style_summary.get('status', 'unknown')}")
+        else:
+            lines.append("- 暂无口语化统计")
+        lines.append("")
+
+        lines.append("## 10. oral_rewrite_log")
+        if self.oral_rewrite_log:
+            for item in self.oral_rewrite_log[:20]:
+                lines.append(
+                    f"- {item.get('section', '未分节')}: "
+                    f"{item.get('original', '')} -> {item.get('replacement', '')} "
+                    f"({item.get('reason', '')})"
+                )
+        else:
+            lines.append("- 未触发过度口语表达回收")
+        lines.append("")
+
+        lines.append("## 11. anchor_first_summary")
+        if self.anchor_first_summary:
+            anchors = self.anchor_first_summary.get("used_anchors", [])
+            missing = self.anchor_first_summary.get("missing_anchor_sections", [])
+            lines.append(f"- 使用了哪些专业锚点: {', '.join(anchors) if anchors else '无'}")
+            lines.append(f"- 哪些章节缺少锚点: {', '.join(missing) if missing else '无'}")
+            lines.append(
+                f"- 是否存在用口语化替代材料的风险: "
+                f"{'是' if self.anchor_first_summary.get('oralization_without_anchor_risk') else '否'}"
+            )
+        else:
+            lines.append("- 暂无 anchor-first 统计")
+        lines.append("")
+
+        lines.append("## 12. domain_integrity_check")
+        if self.domain_integrity_check:
+            pollution = self.domain_integrity_check.get("cross_domain_pollution", [])
+            lines.append(f"- 是否出现跨专业污染: {'是' if pollution else '否'}")
+            if pollution:
+                lines.append(f"- 不属于本专业的锚点: {', '.join(pollution)}")
+            lines.append(
+                f"- 是否保留了本专业核心材料: "
+                f"{'是' if self.domain_integrity_check.get('kept_domain_anchors') else '否'}"
+            )
+        else:
+            lines.append("- 暂无专业完整性检查结果")
+        lines.append("")
+
+        # 13. Over-polish warning
+        lines.append("## 13. 过度润色警告")
         if self.over_polish_warnings:
             for warning in self.over_polish_warnings:
                 lines.append(f"- {warning}")
@@ -236,15 +294,15 @@ class FinalReport:
             lines.append("- 未发现提供支撑、具有重要意义、提升效率、形成闭环、主要用于、便于等表达的明显堆积")
         lines.append("")
 
-        # 10. Uncertainty
-        lines.append("## 10. 不确定性说明")
+        # 14. Uncertainty
+        lines.append("## 14. 不确定性说明")
         lines.append("- 不承诺任何检测器一定降低。")
         lines.append("- 本次主要处理模板化、抽象化、同质化风险，并保留毕业论文基本规范。")
         lines.append("- 材料不足时只提示需要补充，不伪造数据、文献、访谈、问卷、实验、案例或功能。")
         lines.append("")
 
-        # 11. 字数变化
-        lines.append("## 11. 字数变化")
+        # 15. 字数变化
+        lines.append("## 15. 字数变化")
         lines.append(f"- 原文字数: {self.original_chars}")
         lines.append(f"- 优化后字数: {self.modified_chars}")
         lines.append(f"- 变化比例: {self.length_delta_pct:.1%}")
@@ -365,6 +423,7 @@ class FinalReportGenerator:
             report.suggested_materials = evidence_items
 
         self._populate_humanized_risk_report(report, units, report.domain_profile_name)
+        self._populate_oral_anchor_report(report, units, report.domain_profile_name)
 
         # Risk delta evaluation (v2.0)
         report.risk_delta_result = risk_delta_result
@@ -534,3 +593,71 @@ class FinalReportGenerator:
             for term, count in over_polish_counts.items()
             if count >= 2
         ]
+
+    def _populate_oral_anchor_report(self, report: FinalReport, units: list[TextUnit], domain: str) -> None:
+        guard = OralStyleGuard()
+        policy = AnchorFirstPolicy()
+        body_units = [u for u in units if u.is_body]
+        body_text = "".join(u.text for u in body_units)
+        oral = guard.check(body_text, section="body", domain=domain)
+
+        report.oral_style_summary = {
+            "total_sentences": oral.total_sentences,
+            "mild_oral_count": oral.mild_oral_count,
+            "strong_oral_count": oral.strong_oral_count,
+            "mild_per_10": round((oral.mild_oral_count / max(1, oral.total_sentences)) * 10, 2),
+            "status": oral.status,
+        }
+
+        rewrite_log: list[dict[str, str]] = []
+        used_anchors: set[str] = set()
+        missing_sections: set[str] = set()
+        oralization_without_anchor_risk = False
+
+        for unit in body_units:
+            for item in unit.metadata.get("oral_rewrite_log", []):
+                rewrite_log.append({
+                    "original": str(item.get("original", "")),
+                    "replacement": str(item.get("replacement", "")),
+                    "section": str(item.get("section", unit.section or "未分节")),
+                    "reason": str(item.get("reason", "过度口语化表达回收")),
+                })
+
+            anchor_result = policy.evaluate(unit.text, domain, section=unit.section)
+            used_anchors.update(anchor_result.anchor_terms)
+            if anchor_result.missing_anchor_warning:
+                missing_sections.add(unit.section or "未分节")
+                unit_oral = guard.check(unit.text, section=unit.section, domain=domain)
+                if unit_oral.mild_oral_count or unit_oral.strong_oral_count:
+                    oralization_without_anchor_risk = True
+
+        report.oral_rewrite_log = rewrite_log
+        report.anchor_first_summary = {
+            "used_anchors": sorted(used_anchors),
+            "missing_anchor_sections": sorted(missing_sections),
+            "oralization_without_anchor_risk": oralization_without_anchor_risk,
+        }
+
+        computer_terms = ["源码", "接口", "字段", "数据库", "数据表", "版本号", "API"]
+        original_text = "".join(u.original_text for u in body_units)
+        cross_pollution: list[str] = []
+        if domain not in {"computer_engineering", "engineering_general"}:
+            cross_pollution = [
+                term for term in computer_terms
+                if term in body_text and term not in original_text
+            ]
+
+        report.domain_integrity_check = {
+            "cross_domain_pollution": cross_pollution,
+            "kept_domain_anchors": bool(used_anchors),
+            "domain": domain,
+        }
+
+        if oral.status == "fail":
+            report.honest_warnings.append(
+                "口语化限流检查未通过，输出中仍有过度口语化或轻微口语密度超阈值。"
+            )
+        if oralization_without_anchor_risk:
+            report.honest_warnings.append(
+                "部分缺少材料锚点的段落存在口语化替代材料的风险，建议补充真实材料。"
+            )

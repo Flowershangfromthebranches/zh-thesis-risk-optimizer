@@ -97,6 +97,8 @@ thesis-optimize optimize --input thesis.docx --style low_aigc_humanized --domain
 
 Domain profiles preserve different real-material anchors. Computer theses preserve engineering implementation traces; management theses preserve cases, posts, processes, surveys and interviews; education theses preserve classroom and student evidence; literature theses preserve close reading; law theses preserve statutes and case facts; economics/finance theses preserve indicators and data; medicine/nursing theses preserve clinical or nursing process; design theses preserve scheme and creative process. Missing materials are reported, not fabricated.
 
+The mode is not a colloquialization mode. Body text allows at most 1 mild oral expression per 10 sentences, formal sections are stricter, and strong oral expressions are recovered before output. When a paragraph has no professional anchors, the tool reports material shortage rather than adding oral language.
+
 The current slim router exposes these entry modes and internal mandatory engines:
 
 | mode | use when |
