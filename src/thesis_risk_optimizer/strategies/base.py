@@ -38,6 +38,15 @@ class BaseStrategy(ABC):
 
     name: str = "base"
     label: str = "Base Strategy"
+    domain_name: str = "universal"
+    preferred_anchors: list[str] = ["研究对象", "原文材料", "分析过程", "结论限制"]
+    allowed_natural_expressions: list[str] = ["具体来看", "从材料看", "对研究对象而言"]
+    banned_strong_oral: list[str] = ["说白了", "没人管", "糊弄", "很离谱"]
+    template_phrases_to_avoid: list[str] = [
+        "具有重要意义", "提供支撑", "完善机制", "提升水平", "优化路径",
+        "促进发展", "形成闭环",
+    ]
+    oral_threshold_profile: str = "global"
 
     # -- What to avoid in output (populated per discipline) -------------------
     FORBIDDEN_PATTERNS: list[str] = []
@@ -132,12 +141,48 @@ class BaseStrategy(ABC):
         """Suggest what evidence would help rewrite this unit."""
         return ""
 
+    # -- Rebuild planning -----------------------------------------------------
+
+    def rebuild_section_structure(self, section: str) -> list[str]:
+        """Discipline-neutral paragraph structure for rebuild planning.
+
+        This base structure must stay free of computer/software terms.  Specific
+        disciplines can override it with their own material anchors.
+        """
+        structures = {
+            "abstract": ["研究对象", "材料依据", "分析方法", "主要发现与限制"],
+            "introduction": ["具体问题描述", "研究对象来源", "已有处理不足", "本文范围与限制"],
+            "literature_review": ["研究对象差异", "方法差异", "已有不足", "本文切入点"],
+            "requirements": ["研究对象", "材料依据", "问题表现", "分析边界"],
+            "design": ["研究对象", "材料依据", "分析过程", "结论限制"],
+            "implementation": ["研究对象", "材料依据", "分析过程", "结论限制"],
+            "testing": ["评价对象", "材料依据", "分析过程", "结论限制"],
+            "conclusion": ["完成内容", "主要发现", "研究限制", "后续处理方向"],
+        }
+        return structures.get(section, ["研究对象", "材料依据", "分析过程", "结论限制"])
+
+    def rebuild_required_details(
+        self, unit: TextUnit, diagnosis: ParagraphDiagnosis
+    ) -> list[str]:
+        """Discipline-neutral details needed during rebuild."""
+        details: list[str] = []
+        if DiagnosisTag.MISSING_DETAIL in diagnosis.tags:
+            details.append("原文已有的具体对象、过程或材料")
+        if DiagnosisTag.ABSTRACT_ONLY in diagnosis.tags:
+            details.append("该概念在本文研究对象中的具体对应关系")
+        if DiagnosisTag.HOLLOW_CONCLUSION in diagnosis.tags:
+            details.append("结论对应的材料依据和限制")
+        if not details:
+            details.append("更具体的研究过程或材料依据")
+        return details
+
 
 class UniversalStrategy(BaseStrategy):
     """Default strategy for unclassified disciplines."""
 
     name = "universal"
     label = "通用策略"
+    domain_name = "universal"
 
     FORBIDDEN_PATTERNS = [
         "不要使用模板句(随着...发展、具有重要意义等)",

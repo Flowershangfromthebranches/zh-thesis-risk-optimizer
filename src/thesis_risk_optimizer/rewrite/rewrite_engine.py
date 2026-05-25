@@ -19,6 +19,12 @@ from .evidence_injector import EvidenceInjector
 from .anti_ai_style_guard import AntiAIStyleGuard, GuardResult
 from .anti_stuffing_guard import check_stuffing, StuffingResult
 from .evidence_policy import check_evidence, check_no_fabrication, EvidenceCheckResult, LengthPolicy
+from .anti_template_rewriter import AntiTemplateRewriter
+from .human_variation import HumanVariationLayer
+from .oral_style_rewriter import OralStyleRewriter
+from ..validation.oral_style_guard import OralStyleGuard
+from ..strategies.domain_profiles import get_domain_profile
+from ..strategies.section_profiles import get_section_profile
 
 
 @dataclass
@@ -44,6 +50,7 @@ class BatchResult:
     stuffing_rejections: int = 0
     evidence_rejections: int = 0
     length_violations: int = 0
+    oral_style_rejections: int = 0
 
 
 class LLMProvider(Protocol):
@@ -66,15 +73,23 @@ class RewriteEngine:
         strategy: BaseStrategy,
         llm: Optional[LLMProvider] = None,
         system_prompt: str = "",
+        style: str = "low_aigc_humanized",
+        domain: str = "universal",
     ):
         self.strategy = strategy
         self.llm = llm
         self.system_prompt = system_prompt
+        self.style = style
+        self.domain = get_domain_profile(domain).name
         self.modify_engine = ModifyEngine(strategy)
         self.rebuild_engine = RebuildEngine(strategy)
         self.evidence_injector = EvidenceInjector()
         self.guard = AntiAIStyleGuard()
         self.diagnoser = ParagraphDiagnoser()
+        self.anti_template_rewriter = AntiTemplateRewriter()
+        self.human_variation = HumanVariationLayer(self.domain)
+        self.oral_guard = OralStyleGuard()
+        self.oral_rewriter = OralStyleRewriter()
 
     def process_units(self, units: list[TextUnit]) -> BatchResult:
         batch = BatchResult()
@@ -102,6 +117,8 @@ class RewriteEngine:
         # Try LLM first
         rewritten = self._try_llm(unit, diagnosis)
         if rewritten is not None:
+            if self.style == "low_aigc_humanized":
+                rewritten = self.human_variation.apply_text(rewritten, section=unit.section)
             # Apply guard
             guard_result = self.guard.check(rewritten, unit.original_text, unit.action)
             if guard_result.passed:
@@ -112,7 +129,7 @@ class RewriteEngine:
                         original_text=unit.original_text,
                         rewritten_text=unit.original_text, success=False,
                         guard_result=guard_result,
-                        error="Quality guards rejected (stuffing/evidence/length)",
+                        error="Quality guards rejected (oral/stuffing/evidence/length)",
                     )
                 rewritten = self.evidence_injector.inject(rewritten, unit, self.strategy)
                 return RewriteResult(
@@ -133,10 +150,29 @@ class RewriteEngine:
 
         # Fallback: rule-based for modify actions
         if unit.action == ActionType.MODIFY:
-            rewritten = self.modify_engine.rewrite(unit, diagnosis)
+            rewritten = None
+            if self.style == "low_aigc_humanized":
+                anti_template = self.anti_template_rewriter.rewrite_unit(unit, domain=self.domain)
+                unit.metadata["low_aigc_action"] = anti_template.action
+                unit.metadata["low_aigc_needs_material"] = anti_template.needs_material
+                if anti_template.warnings:
+                    unit.metadata["low_aigc_warnings"] = anti_template.warnings
+                if anti_template.action != "keep" and anti_template.text != unit.original_text:
+                    rewritten = anti_template.text
+            if rewritten is None:
+                rewritten = self.modify_engine.rewrite(unit, diagnosis)
             if rewritten and rewritten != unit.original_text:
                 guard_result = self.guard.check(rewritten, unit.original_text, unit.action)
                 if guard_result.passed:
+                    rewritten = self._apply_quality_guards(rewritten, unit, batch)
+                    if rewritten is None:
+                        return RewriteResult(
+                            unit_uid=unit.uid, action=unit.action,
+                            original_text=unit.original_text,
+                            rewritten_text=unit.original_text, success=False,
+                            guard_result=guard_result,
+                            error="Quality guards rejected (oral/stuffing/evidence/length)",
+                        )
                     rewritten = self.evidence_injector.inject(rewritten, unit, self.strategy)
                     return RewriteResult(
                         unit_uid=unit.uid, action=unit.action,
@@ -184,7 +220,34 @@ class RewriteEngine:
     def _apply_quality_guards(self, text: str, unit: TextUnit,
                               batch: BatchResult) -> str | None:
         """Run stuffing / evidence / length guards. Returns text or None if rejected."""
-        # 1. Anti-stuffing guard
+        # 1. Oral-style guard and recovery
+        oral_rewrite = self.oral_rewriter.rewrite(text, section=unit.section, domain=self.domain)
+        text = oral_rewrite.text
+        if oral_rewrite.replacements:
+            unit.metadata["oral_rewrite_log"] = [
+                {
+                    "original": item.original,
+                    "replacement": item.replacement,
+                    "section": item.section,
+                    "reason": item.reason,
+                }
+                for item in oral_rewrite.replacements
+            ]
+        oral = oral_rewrite.guard_result or self.oral_guard.check(text, section=unit.section, domain=self.domain)
+        unit.metadata["oral_style_summary"] = {
+            "total_sentences": oral.total_sentences,
+            "mild_oral_count": oral.mild_oral_count,
+            "strong_oral_count": oral.strong_oral_count,
+            "oral_density": oral.oral_density,
+            "status": oral.status,
+        }
+        if oral.status == "fail":
+            batch.oral_style_rejections += 1
+            unit.metadata["oral_style_failed"] = True
+            unit.metadata["oral_style_warnings"] = oral.warnings
+            return None
+
+        # 2. Anti-stuffing guard
         stuffing = check_stuffing(text, unit.original_text)
         if not stuffing.passed:
             batch.stuffing_rejections += 1
@@ -192,7 +255,7 @@ class RewriteEngine:
             unit.metadata["stuffing_reasons"] = stuffing.reasons
             return None
 
-        # 2. Evidence check (no fabrication)
+        # 3. Evidence check (no fabrication)
         evidence = check_evidence(text)
         fabrication = check_no_fabrication(text, unit.original_text)
         if not evidence.passed or not fabrication.passed:
@@ -200,7 +263,7 @@ class RewriteEngine:
             unit.metadata["evidence_failed"] = True
             return None
 
-        # 3. Length check (per paragraph)
+        # 4. Length check (per paragraph)
         length_check = LengthPolicy.check_paragraph(
             len(unit.original_text), len(text)
         )
@@ -214,20 +277,43 @@ class RewriteEngine:
     def _build_prompt(self, unit: TextUnit, guidance: str) -> str:
         # Length control guidance based on action type
         if unit.action == ActionType.REWRITE:
-            length_hint = "改写后字数控制在原文 80%-140% 内"
+            length_hint = "改写后字数默认控制在原文 90%-115% 内，除非用户明确允许扩写"
         elif unit.action == ActionType.REBUILD:
-            length_hint = "重构后字数控制在原文 90%-160% 内"
+            length_hint = "重构后字数尽量控制在原文 90%-115% 内；材料不足时不要硬扩写"
         else:
             length_hint = "修改后字数尽量与原文接近"
+
+        domain_profile = get_domain_profile(self.domain)
+        section_profile = get_section_profile(unit.section)
+        low_aigc_guidance = ""
+        if self.style == "low_aigc_humanized":
+            low_aigc_guidance = (
+                f"\n【low_aigc_humanized 通用策略】\n"
+                f"- 不是单纯学术润色；目标是降低模板化、抽象化、同质化风险。\n"
+                f"- {domain_profile.prompt_summary}\n"
+                f"- 章节策略: {section_profile.guidance}\n"
+                f"- 不要把所有专业改成计算机工程复盘风格。\n"
+                f"- 材料不足时只保守改写或提示需要材料，不伪造不存在的材料。\n"
+                f"- 不要通过大量口语化降低 AI 写作痕迹；正文每 10 句话最多 1 句轻微口语化，摘要、理论、方法、结论不使用明显口语。\n"
+                f"- 优先使用该专业的真实材料锚点，不把聊天记录、口头汇报、公众号文章或散文当作论文风格。\n"
+                f"- 回收口语时不得改成“具有重要意义、提供支撑、完善机制、提升水平、优化路径、促进发展、形成闭环、赋能、助力”等模板话。\n"
+            )
+        if self.domain in {"computer_engineering"}:
+            no_fabrication_line = "- 不编造数据、版本号、函数名、表名、参数值，不编造文献和实验"
+            no_stuffing_line = "- 不堆砌技术术语（不要用术语清单代替论证）"
+        else:
+            no_fabrication_line = "- 不编造数据、文献、访谈、问卷、案例、实验或不存在的材料"
+            no_stuffing_line = "- 不把文本改成咨询报告、政策报告或技术说明模板"
 
         return (
             f"【任务】对以下论文段落进行{unit.action.value}操作。\n\n"
             f"{guidance}\n\n"
+            f"{low_aigc_guidance}\n"
             f"【原文】\n{unit.original_text}\n\n"
             f"【要求】\n"
-            f"- 保持专业性和学术规范\n"
-            f"- 不编造数据、版本号、函数名、表名、参数值，不编造文献和实验\n"
-            f"- 不堆砌技术术语（不要用术语清单代替论证）\n"
+            f"- 保持毕业论文基本规范，但不要过度正式、过度统一、过度模板化\n"
+            f"{no_fabrication_line}\n"
+            f"{no_stuffing_line}\n"
             f"- 优先改变表达路径和论证结构，而不是增加新材料\n"
             f"- {length_hint}，禁止把一句话扩写成一整段\n"
             f"- 做等长或微增替换，不要大幅扩写\n"

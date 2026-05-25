@@ -14,6 +14,12 @@ class ManagementStrategy(BaseStrategy):
 
     name = "management"
     label = "管理/商科策略"
+    domain_name = "management_business"
+    preferred_anchors = ["企业背景", "业务流程", "组织结构", "岗位职责", "经营数据", "制度执行", "访谈", "问卷"]
+    allowed_natural_expressions = ["在该企业中", "访谈中", "实际执行时", "从调研看"]
+    banned_strong_oral = ["说白了", "没人管", "不被当回事", "这公司还行", "糊弄"]
+    template_phrases_to_avoid = ["完善机制", "提升水平", "构建长效机制", "多措并举", "推动企业高质量发展"]
+    oral_threshold_profile = "management_business"
 
     paragraph_transforms = (
         "【管理论文转换模板】\n"

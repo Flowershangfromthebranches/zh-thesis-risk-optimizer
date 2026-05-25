@@ -16,6 +16,7 @@ Use `zh-thesis-risk-optimizer` when you need a Chinese thesis revision workflow 
 - Template residue detection after patching.
 - Risk-band coverage gating for red/orange/purple targets.
 - Final acceptance auditing before delivery.
+- General low-AIGC humanization across multiple thesis domains.
 
 The Skill does not promise any external detection-platform result. It does not crack, simulate, reverse engineer, or forge detection systems or reports.
 
@@ -83,6 +84,20 @@ If you already know the inputs, fill the template directly:
 ```
 
 ## 3. Entry Modes and Internal Engines
+
+Default CLI mode:
+
+```bash
+thesis-optimize optimize --input thesis.docx --style low_aigc_humanized --domain auto
+thesis-optimize optimize --input thesis.docx --style low_aigc_humanized --domain management
+thesis-optimize optimize --input thesis.docx --style low_aigc_humanized --domain computer_engineering
+```
+
+`low_aigc_humanized` is not academic polishing. It reduces template residue, abstract-density risk, repeated paragraph skeletons, and over-unified thesis voice while preserving the academic register. `--domain auto` selects a domain profile from title, abstract, keywords, headings, and declared major. Explicit `--domain` values are available for `computer_engineering`, `management`, `education`, `literature`, `law`, `economics`, `medicine`, `art_design`, `engineering_general`, and `marxism`.
+
+Domain profiles preserve different real-material anchors. Computer theses preserve engineering implementation traces; management theses preserve cases, posts, processes, surveys and interviews; education theses preserve classroom and student evidence; literature theses preserve close reading; law theses preserve statutes and case facts; economics/finance theses preserve indicators and data; medicine/nursing theses preserve clinical or nursing process; design theses preserve scheme and creative process. Missing materials are reported, not fabricated.
+
+The mode is not a colloquialization mode. Body text allows at most 1 mild oral expression per 10 sentences, formal sections are stricter, and strong oral expressions are recovered before output. When a paragraph has no professional anchors, the tool reports material shortage rather than adding oral language.
 
 The current slim router exposes these entry modes and internal mandatory engines:
 

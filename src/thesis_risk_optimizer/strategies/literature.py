@@ -13,6 +13,12 @@ class LiteratureStrategy(BaseStrategy):
 
     name = "literature"
     label = "文学/人文策略"
+    domain_name = "literature_language"
+    preferred_anchors = ["作品名称", "人物", "情节", "叙事视角", "意象", "语言风格", "文本细节", "作者表达"]
+    allowed_natural_expressions = ["这一处描写", "从情节看", "文本中"]
+    banned_strong_oral = ["说白了", "很离谱", "特别扯", "硬凑", "糊弄"]
+    template_phrases_to_avoid = ["具有深刻意义", "展现人性光辉", "具有重要意义", "主题升华"]
+    oral_threshold_profile = "literature_language"
 
     paragraph_transforms = (
         "【文学/人文论文转换模板】\n"

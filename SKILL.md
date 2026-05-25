@@ -13,11 +13,16 @@ Use this skill when:
 - The user wants to reduce AI-like writing patterns while improving academic quality
 - The input is a `.docx` thesis file (optionally with an AIGC color-marked report)
 - The user needs discipline-specific rewriting (not one-size-fits-all polishing)
+- The task needs general low-AIGC humanization across multiple majors without forcing a computer-engineering style
+- The user needs low-template, anchor-first revision that stays in thesis register instead of becoming colloquial writing
 
 Do NOT use this skill for:
 - Simple synonym replacement or "lowering similarity rate"
 - Making text more formal/academic/模板化
+- Making text more colloquial/chatty as the main risk-reduction method
 - Tasks that require fabricating data, citations, or experimental results
+- Turning all majors into software/system-design writing
+- Turning theses into chat records, oral reports, essays, or public-account style articles
 
 ## 2. Inputs
 
@@ -42,11 +47,12 @@ Do NOT use this skill for:
 ```
 1. IntakeGate       → Validate all required fields. Missing → return prompt, stop.
 2. MajorRoute       → User-declared major → route to strategy (8 routes).
-3. RiskPlan         → current_rate + target_rate → modify/rewrite/rebuild ratios.
-4. PermissionGate   → Show plan, get user confirmation. No confirmation → stop.
-5. EvidencePlan     → Set material priority order + fabrication prohibitions.
-6. ExecuteOptimize  → RewriteEngine + strategy + guards → output .docx copy.
-7. OutcomeReport    → Honest evaluation: success / failed / partial / unverifiable.
+3. DomainProfile    → choose `low_aigc_humanized` profile (`--domain auto` or explicit domain).
+4. RiskPlan         → current_rate + target_rate → modify/rewrite/rebuild ratios.
+5. PermissionGate   → Show plan, get user confirmation. No confirmation → stop.
+6. EvidencePlan     → Set material priority order + fabrication prohibitions.
+7. ExecuteOptimize  → RewriteEngine + strategy + guards → output .docx copy.
+8. OutcomeReport    → Honest evaluation: success / failed / partial / unverifiable.
 ```
 
 ## 4. Major routing (8 routes)
@@ -63,6 +69,28 @@ Do NOT use this skill for:
 | universal_light | universal | 其他 (NOT for high-AIGC bulk rewrite) |
 
 **Rule: User declaration has highest priority. System MUST NOT auto-classify and override.**
+
+## 4.1 Domain profiles for low_aigc_humanized
+
+`--style low_aigc_humanized` is the default. `--domain auto` is the default domain profile mode.
+
+Supported domain profiles:
+- `computer_engineering` / `software_engineering` / `information_system`: preserve source code, pages, interfaces, fields, database tables, configuration, test cases.
+- `management` / `business_administration` / `human_resource`: preserve enterprise cases, departments, posts, systems, processes, interviews, questionnaires, indicators.
+- `education`: preserve school, class, students, classroom links, teaching activities, homework, evaluation, teacher feedback.
+- `literature` / `chinese_language`: preserve works, characters, plots, narrative perspective, imagery, textual detail.
+- `law`: preserve statutes, case facts, dispute focus, judgment result, legal interpretation and responsibility.
+- `economics` / `finance`: preserve indicators, years, samples, variables, models, statistical results and trends.
+- `medicine` / `nursing`: preserve cases, samples, nursing process, observation indicators, intervention, follow-up and risk control.
+- `art_design`: preserve design theme, composition, color, materials, sketches, iteration and work display.
+- `engineering_general` / `mechanical` / `electrical` / `civil`: preserve parameters, equipment, structures, conditions, drawings, calculations and standards.
+- `marxism` / `ideological_political` / `public_administration`: preserve policy texts, local practice, grassroots cases, theory source and governance scenarios.
+
+The universal rule is:真实、具体、不模板化, not 高级、漂亮、统一. Low-risk paragraphs should not be heavily rewritten.
+
+This skill is not a colloquialization tool. Oral wording is only a very low-frequency natural variation: by default, body text allows at most 1 mild oral expression per 10 sentences; abstracts, theory, methods, data analysis, and conclusions are stricter and should not contain obvious oral wording. Strong oral expressions are recovered automatically into thesis-appropriate wording, without converting them into template phrases such as "具有重要意义", "提供支撑", "完善机制", "提升水平", "优化路径", or "促进发展".
+
+Anchor-first policy is mandatory. Before rewriting, check whether the paragraph has professional material anchors. If anchors exist, preserve and reorganize around them. If anchors are missing, only do light anti-template and rhythm edits, report the material shortage, and do not add colloquial language to fake authenticity.
 
 ## 5. Risk planning
 
@@ -103,6 +131,10 @@ Critical rules:
 - High AIGC → prefer rewrite/rebuild, not light modify
 - Different disciplines use DIFFERENT strategies — never force one template on all
 - AntiAIStyleGuard rejects: template sentences, overly abstract phrases, synonym-only rewrites
+- Avoid over-polished phrases such as "主要用于", "能够", "便于", "提供支撑", "具有重要意义", "形成闭环" when they appear as repeated templates
+- Keep discipline-specific material anchors, but never invent missing materials
+- Do not reduce AI-like writing traces by adding many oral expressions
+- Strong oral expressions must be recovered before final output; if the guard still fails, report a warning instead of adding more naturalized wording
 
 ## 9. Format preservation
 
@@ -133,6 +165,8 @@ The final report MUST be honest:
 6. When evidence is insufficient, mark "需要用户提供资料" — do not invent
 7. Do not auto-guess major and proceed with bulk rewrite
 8. If information is incomplete, return missing fields — do not proceed
+9. When materials are insufficient, ask for real materials instead of adding colloquial style
+10. Never promise any detector-specific percentage outcome
 
 **PRIORITY:**
 - Goal achievement over code preservation

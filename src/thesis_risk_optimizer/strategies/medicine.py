@@ -13,6 +13,12 @@ class MedicineStrategy(BaseStrategy):
 
     name = "medicine"
     label = "医学/护理策略"
+    domain_name = "medical_nursing"
+    preferred_anchors = ["病例资料", "护理流程", "观察指标", "干预措施", "风险控制", "操作规范", "随访记录", "伦理限制"]
+    allowed_natural_expressions = ["护理过程中", "观察记录显示", "风险控制上"]
+    banned_strong_oral = ["说白了", "心累", "撑不住", "太拉了", "很离谱", "一堆问题"]
+    template_phrases_to_avoid = ["具有重要意义", "显著提升疗效", "提供支撑", "优化路径", "促进康复"]
+    oral_threshold_profile = "medical_nursing"
 
     paragraph_transforms = (
         "【医学/护理论文转换模板】\n"
